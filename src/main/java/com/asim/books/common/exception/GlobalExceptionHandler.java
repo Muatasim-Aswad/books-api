@@ -1,9 +1,10 @@
 package com.asim.books.common.exception;
 
-import com.asim.books.common.exception.custom.ResourceNotFoundException;
 import com.asim.books.common.exception.custom.DuplicateResourceException;
+import com.asim.books.common.exception.custom.IllegalAttemptToModify;
+import com.asim.books.common.exception.custom.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,69 +16,83 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     //in case of validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
     }
 
     //in any request for a specific resource that does not exist
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-        ErrorResponse error = new ErrorResponse(
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleResourceNotFound(ResourceNotFoundException ex) {
+        return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
         );
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     // in attempt to create a resource that already exists
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
-        ErrorResponse error = new ErrorResponse(
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateResource(DuplicateResourceException ex) {
+        return new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage()
         );
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     // Handle invalid method argument type like passing a string instead of a number
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        ErrorResponse error = new ErrorResponse(
+    public ErrorResponse handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid parameter: " + ex.getName() + " should be of type " + ex.getRequiredType().getSimpleName()
         );
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     // when the request body is not a valid JSON
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        ErrorResponse error = new ErrorResponse(
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Malformed JSON request: " + ex.getMessage()
         );
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // Illegal attempt to modify a resource
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IllegalAttemptToModify.class)
+    public ErrorResponse handleIllegalAttemptToModify(IllegalAttemptToModify ex) {
+        return new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage()
+        );
     }
 
     // This should be the last resort exception handler
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse error = new ErrorResponse(
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleGenericException(Exception ex) {
+        log.error("An unexpected error occurred", ex);
+
+        return new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An unexpected error occurred: " + ex.getMessage()
+                "An unexpected error occurred. Please try again later."
         );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

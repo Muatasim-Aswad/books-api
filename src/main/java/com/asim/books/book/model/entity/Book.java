@@ -20,12 +20,12 @@ public class Book {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private Long isbn;
+    private String isbn;
 
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private Author author;
 }

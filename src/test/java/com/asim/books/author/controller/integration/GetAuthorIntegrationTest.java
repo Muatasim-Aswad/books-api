@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,10 +24,10 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -42,9 +41,9 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return author successfully")
     void testGetAuthor_Success() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL + "/{id}", authorId)
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL + "/{id}", authorId)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
@@ -57,9 +56,9 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     void testGetAuthor_NotFound() throws Exception {
         Long nonExistingId = 9999L;
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL + "/{id}", nonExistingId)
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL + "/{id}", nonExistingId)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -68,9 +67,9 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when id is invalid")
     void testGetAuthor_InvalidId() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL + "/{id}", "invalid-id")
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL + "/{id}", "invalid-id")
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest());
     }

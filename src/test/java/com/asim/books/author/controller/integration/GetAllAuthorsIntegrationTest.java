@@ -27,10 +27,10 @@ class GetAllAuthorsIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(status().isCreated());
     }
@@ -39,9 +39,9 @@ class GetAllAuthorsIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return all authors successfully")
     void testGetAllAuthors_Success() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL)
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
@@ -55,9 +55,9 @@ class GetAllAuthorsIntegrationTest extends BaseAuthorControllerIntegrationTest {
     void testGetAllAuthors_EmptyDatabase() throws Exception {
         // First delete all authors
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL)
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(result -> {
@@ -74,9 +74,9 @@ class GetAllAuthorsIntegrationTest extends BaseAuthorControllerIntegrationTest {
 
         // Then verify empty result
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL)
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));

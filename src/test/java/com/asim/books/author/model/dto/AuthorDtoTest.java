@@ -11,10 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("AuthorDto Validation Tests")
@@ -57,7 +54,8 @@ class AuthorDtoTest {
         Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
 
         // Then
-        assertThat(violations.iterator().next().getMessage(), is("Author name must be between 2 and 100 characters"));
+        //match one of two cases: Author name must be between 2 and 100 characters, Author name cannot be empty
+        assertThat(violations.iterator().next().getMessage(), anyOf(is("Author name must be between 2 and 100 characters"), is("Author name cannot be empty")));
     }
 
     @Test

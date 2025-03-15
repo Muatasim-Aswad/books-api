@@ -1,13 +1,23 @@
 package com.asim.books.common.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class ErrorResponse {
     private int status;
     private String message;
+    private Map<String, String> schemaViolations;
+
+    public ErrorResponse(int value, Map<String, String> errors) {
+        this.status = value;
+        this.schemaViolations = errors;
+    }
+
+    public ErrorResponse(int value, String message) {
+        this.status = value;
+        this.message = message;
+    }
 }

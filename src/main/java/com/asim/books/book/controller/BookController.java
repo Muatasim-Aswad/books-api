@@ -2,6 +2,8 @@ package com.asim.books.book.controller;
 
 import com.asim.books.book.model.dto.BookDto;
 import com.asim.books.book.service.BookService;
+import com.asim.books.common.exception.custom.IllegalAttemptToModify;
+import com.asim.books.common.exception.custom.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/books")
 public class BookController {
-
     private final BookService bookService;
 
     public BookController(BookService bookService) {
@@ -20,13 +21,13 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<BookDto> createBook(@Valid @RequestBody BookDto book) {
+    public ResponseEntity<BookDto> createBook(@Valid @RequestBody BookDto book) throws IllegalAttemptToModify {
         BookDto addedBook = bookService.addBook(book);
         return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDto> getBook(@PathVariable Long id) {
+    public ResponseEntity<BookDto> getBook(@PathVariable Long id) throws ResourceNotFoundException {
         return ResponseEntity.ok(bookService.getBook(id));
     }
 
@@ -36,12 +37,12 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookDto> updateBook(@PathVariable Long id, @Valid @RequestBody BookDto book) {
+    public ResponseEntity<BookDto> updateBook(@PathVariable Long id, @Valid @RequestBody BookDto book) throws ResourceNotFoundException {
         return ResponseEntity.ok(bookService.updateBook(id, book));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) throws ResourceNotFoundException {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }

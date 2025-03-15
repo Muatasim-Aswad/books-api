@@ -20,10 +20,10 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -34,16 +34,16 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
 
         // Then delete the author
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .delete(BASE_URL + "/{id}", authorId)
+                        MockMvcRequestBuilders
+                                .delete(BASE_URL + "/{id}", authorId)
                 )
                 .andExpect(status().isOk());
 
         // Verify the author is deleted
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(BASE_URL + "/{id}", authorId)
-                        .accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders
+                                .get(BASE_URL + "/{id}", authorId)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -53,8 +53,8 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     void testDeleteAuthor_NotFound() throws Exception {
         Long nonExistingId = 9999L;
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .delete(BASE_URL + "/{id}", nonExistingId)
+                        MockMvcRequestBuilders
+                                .delete(BASE_URL + "/{id}", nonExistingId)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -63,8 +63,8 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when id is invalid")
     void testDeleteAuthor_InvalidId() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .delete(BASE_URL + "/{id}", "invalid-id")
+                        MockMvcRequestBuilders
+                                .delete(BASE_URL + "/{id}", "invalid-id")
                 )
                 .andExpect(status().isBadRequest());
     }

@@ -24,10 +24,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -44,10 +44,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         updateDto.setName("Updated Name");
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .patch(BASE_URL + "/{id}", authorId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
+                        MockMvcRequestBuilders
+                                .patch(BASE_URL + "/{id}", authorId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDto))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
@@ -62,10 +62,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         updateDto.setAge(45);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .patch(BASE_URL + "/{id}", authorId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
+                        MockMvcRequestBuilders
+                                .patch(BASE_URL + "/{id}", authorId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDto))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
@@ -81,10 +81,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         updateDto.setAge(55);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .patch(BASE_URL + "/{id}", authorId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
+                        MockMvcRequestBuilders
+                                .patch(BASE_URL + "/{id}", authorId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDto))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
@@ -99,10 +99,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         updateDto.setAge(-10);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .patch(BASE_URL + "/{id}", authorId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
+                        MockMvcRequestBuilders
+                                .patch(BASE_URL + "/{id}", authorId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDto))
                 )
                 .andExpect(status().isBadRequest());
     }
@@ -114,10 +114,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         updateDto.setName("A"); // Too short
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .patch(BASE_URL + "/{id}", authorId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
+                        MockMvcRequestBuilders
+                                .patch(BASE_URL + "/{id}", authorId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDto))
                 )
                 .andExpect(status().isBadRequest());
     }
@@ -129,10 +129,10 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         updateDto.setName("Valid Name");
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .patch(BASE_URL + "/{id}", 9999L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
+                        MockMvcRequestBuilders
+                                .patch(BASE_URL + "/{id}", 9999L)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDto))
                 )
                 .andExpect(status().isNotFound());
     }

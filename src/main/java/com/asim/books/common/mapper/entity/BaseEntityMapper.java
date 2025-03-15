@@ -1,6 +1,7 @@
 package com.asim.books.common.mapper.entity;
 
 import org.modelmapper.ModelMapper;
+
 import java.util.Objects;
 
 public abstract class BaseEntityMapper<Entity, Dto> implements EntityMapper<Entity, Dto> {

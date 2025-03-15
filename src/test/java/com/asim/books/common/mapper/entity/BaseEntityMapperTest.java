@@ -11,30 +11,6 @@ import static org.hamcrest.Matchers.*;
 
 public class BaseEntityMapperTest {
 
-    // Test classes
-    @Setter
-    @Getter
-    static class TestEntity {
-        private Long id;
-        private String name;
-        private Integer value;
-    }
-
-    @Setter
-    @Getter
-    static class TestDto {
-        private Long id;
-        private String name;
-        private Integer value;
-    }
-
-    // Concrete implementation of BaseEntityMapper
-    static class TestEntityMapper extends BaseEntityMapper<TestEntity, TestDto> {
-        public TestEntityMapper(ModelMapper modelMapper) {
-            super(modelMapper, TestEntity.class, TestDto.class);
-        }
-    }
-
     private TestEntityMapper mapper;
 
     @BeforeEach
@@ -110,5 +86,29 @@ public class BaseEntityMapperTest {
     @Test
     void shouldCorrectlyMapNullDto() {
         assertThat(mapper.toEntity(null), nullValue());
+    }
+
+    // Test classes
+    @Setter
+    @Getter
+    static class TestEntity {
+        private Long id;
+        private String name;
+        private Integer value;
+    }
+
+    @Setter
+    @Getter
+    static class TestDto {
+        private Long id;
+        private String name;
+        private Integer value;
+    }
+
+    // Concrete implementation of BaseEntityMapper
+    static class TestEntityMapper extends BaseEntityMapper<TestEntity, TestDto> {
+        public TestEntityMapper(ModelMapper modelMapper) {
+            super(modelMapper, TestEntity.class, TestDto.class);
+        }
     }
 }

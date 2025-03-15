@@ -12,7 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Post Author Integration Tests")
 class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
-
+    /*
+     * Test Cases:
+     * 1. addAuthor_WhenAuthorIsValid_ThenReturn201
+     * 2. addAuthor_WhenAuthorIsInvalid_ThenReturn400
+     * 3. addAuthor_WhenAuthorIsNull_ThenReturn400
+     * 4. addAuthor_WhenAuthorIsDuplicate_ThenReturn400
+     * */
     @Test
     @DisplayName("should add author successfully")
     void testAddAuthor_Success() throws Exception {
@@ -20,10 +26,10 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(jsonPath("$.name").value("J.K. Rowling"))
@@ -38,10 +44,10 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -53,10 +59,10 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -67,10 +73,10 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String invalidJson = "{\"name\": \"Invalid Author\", age: invalid}";
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(invalidJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -81,10 +87,10 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String incompleteJson = "{\"age\": 45}";
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(incompleteJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(incompleteJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -96,10 +102,10 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = objectMapper.writeValueAsString(author);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(jsonPath("$.name").value("Author name must be between 2 and 100 characters"));
@@ -111,12 +117,35 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         String authorJson = "{\"name\": \"Valid Author\", \"age\": null}";
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(jsonPath("$.age").value("Age cannot be null"));
+    }
+
+    @Test
+    @DisplayName("should return 409 when author already exists")
+    void testAddAuthor_DuplicateAuthor() throws Exception {
+        AuthorDto author = new AuthorDto("J.K. Rowling", 56);
+        String authorJson = objectMapper.writeValueAsString(author);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
+                )
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .post(BASE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(authorJson)
+                )
+                .andExpect(MockMvcResultMatchers.status().isConflict());
     }
 }
