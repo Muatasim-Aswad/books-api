@@ -1,8 +1,10 @@
 package com.asim.books.common.exception;
 
+import com.asim.books.common.exception.custom.BadRequestException;
 import com.asim.books.common.exception.custom.DuplicateResourceException;
 import com.asim.books.common.exception.custom.IllegalAttemptToModify;
 import com.asim.books.common.exception.custom.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,15 +14,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //in case of validation errors
+    //in case of schema validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -32,6 +37,15 @@ public class GlobalExceptionHandler {
         });
 
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(BadRequestException ex) {
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+        );
     }
 
     //in any request for a specific resource that does not exist
@@ -81,6 +95,16 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
                 ex.getMessage()
+        );
+    }
+
+    // Handles non-existing/undefined resources and paths
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNoHandlerFound(Exception ex) {
+        return new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "The requested resource does not exist"
         );
     }
 

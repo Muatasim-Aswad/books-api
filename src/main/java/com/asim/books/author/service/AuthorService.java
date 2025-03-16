@@ -4,8 +4,8 @@ import com.asim.books.author.model.dto.AuthorDto;
 import com.asim.books.common.exception.custom.DuplicateResourceException;
 import com.asim.books.common.exception.custom.NoIdIsProvidedException;
 import com.asim.books.common.exception.custom.ResourceNotFoundException;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface AuthorService {
     /**
@@ -43,11 +43,13 @@ public interface AuthorService {
     void deleteAuthor(Long id) throws ResourceNotFoundException;
 
     /**
-     * Gets all authors
+     * Gets all authors with pagination, sorting and filtering
      *
-     * @return List of AuthorDto
+     * @param pageable Pagination and sorting information
+     * @param name     Optional name filter
+     * @return Page of AuthorDto
      */
-    List<AuthorDto> getAuthors();
+    Page<AuthorDto> getAuthors(Pageable pageable, String name);
 
     /**
      * Checks if author exists

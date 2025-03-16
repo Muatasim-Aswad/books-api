@@ -1,34 +1,58 @@
 package com.asim.books.author.model.dto;
 
-import jakarta.validation.constraints.*;
+import com.asim.books.common.annotation.validation.Age;
+import com.asim.books.common.annotation.validation.FullName;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
+
+/**
+ * Data transfer object for author entities.
+ * The following groups are used for external input validation:
+ * - Default:
+ * - id: null
+ * - name: notNull, size(2, 100)
+ * - age: notNull, min(0), max(150)
+ * - Optional(excludes notNull constraints).
+ * * null constraint prevents user from providing values for auto generated fields.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class AuthorDto {
-    @Null(message = "Id must only be specified for existing authors using the path variable")
-    private Long id;
-
-
+    @FullName(groups = {Default.class, Optional.class})
     @NotBlank(message = "Author name cannot be empty")
-    @Size(min = 2, max = 100, message = "Author name must be between 2 and 100 characters",
-            groups = {Default.class, Optional.class})
     private String name;
 
+    @Age(groups = {Default.class, Optional.class})
     @NotNull(message = "Age cannot be null")
-    @Min(value = 0, message = "Age must be a positive number",
-            groups = {Default.class, Optional.class})
-    @Max(value = 150, message = "Age must be less than 150",
-            groups = {Default.class, Optional.class})
     private Integer age;
 
+    //Read only fields
+    @Null(message = "Id must only be specified for existing authors resources using the path variable", groups = {Default.class, Optional.class})
+    private Long id;
+    @Null(message = "Created at is read-only", groups = {Default.class, Optional.class})
+    private ZonedDateTime createdAt;
+    @Null(message = "Updated at is read-only", groups = {Default.class, Optional.class})
+    private ZonedDateTime updatedAt;
+    @Null(message = "Created by is read-only", groups = {Default.class, Optional.class})
+    private Integer version;
+
     public AuthorDto(String name, Integer age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public AuthorDto(Long id, String name, Integer age) {
+        this.id = id;
         this.name = name;
         this.age = age;
     }

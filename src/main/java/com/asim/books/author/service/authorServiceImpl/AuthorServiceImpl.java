@@ -7,9 +7,10 @@ import com.asim.books.common.exception.custom.DuplicateResourceException;
 import com.asim.books.common.exception.custom.NoIdIsProvidedException;
 import com.asim.books.common.exception.custom.ResourceNotFoundException;
 import com.asim.books.common.mapper.entity.EntityMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class AuthorServiceImpl implements com.asim.books.author.service.AuthorService {
@@ -70,12 +71,17 @@ public class AuthorServiceImpl implements com.asim.books.author.service.AuthorSe
     }
 
     @Override
-    public List<AuthorDto> getAuthors() {
-        List<Author> authors = authorRepository.findAll();
-        return authors.
-                stream().
-                map(authorMapper::toDto).
-                toList();
+    public Page<AuthorDto> getAuthors(Pageable pageable, String name) {
+        // Create specifications based on filters
+        Specification<Author> spec = Specification.where(null);
+
+        if (name != null && !name.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+        }
+
+        Page<Author> authorsPage = authorRepository.findAll(spec, pageable);
+        return authorsPage.map(authorMapper::toDto);
     }
 
     @Override

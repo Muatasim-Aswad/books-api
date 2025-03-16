@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
+//@AutoConfigureRestDocs
 public abstract class BaseControllerIntegrationTest {
 
     protected final ObjectMapper objectMapper = new ObjectMapper();

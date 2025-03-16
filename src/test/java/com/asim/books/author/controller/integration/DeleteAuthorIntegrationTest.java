@@ -37,7 +37,7 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
                         MockMvcRequestBuilders
                                 .delete(BASE_URL + "/{id}", authorId)
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         // Verify the author is deleted
         mockMvc.perform(

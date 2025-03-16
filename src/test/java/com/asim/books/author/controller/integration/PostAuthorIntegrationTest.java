@@ -108,7 +108,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
                                 .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(jsonPath("$.name").value("Author name must be between 2 and 100 characters"));
+                .andExpect(jsonPath("$.schemaViolations.name").value("Author name must be between 2 and 100 characters"));
     }
 
     @Test
@@ -123,7 +123,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
                                 .content(authorJson)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(jsonPath("$.age").value("Age cannot be null"));
+                .andExpect(jsonPath("$.schemaViolations.age").value("Age cannot be null"));
     }
 
     @Test
