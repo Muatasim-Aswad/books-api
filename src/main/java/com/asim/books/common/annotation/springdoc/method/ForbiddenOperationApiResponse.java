@@ -1,4 +1,4 @@
-package com.asim.books.common.annotation.springdoc;
+package com.asim.books.common.annotation.springdoc.method;
 
 import com.asim.books.common.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,14 +9,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.lang.annotation.*;
 
 /**
- * Common response for validation errors (400).
+ * Common response for forbidden operations (403).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ApiResponses({
-        @ApiResponse(responseCode = "400", description = "Invalid input - validation errors",
+        @ApiResponse(responseCode = "403", description = "Operation not permitted",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 })
-public @interface ValidationErrorResponse {
+public @interface ForbiddenOperationApiResponse {
 }

@@ -5,6 +5,7 @@ import com.asim.books.common.exception.custom.DuplicateResourceException;
 import com.asim.books.common.exception.custom.IllegalAttemptToModify;
 import com.asim.books.common.exception.custom.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -39,21 +40,25 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
     }
 
+    //in case of a parameter validation error
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationExceptions(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach((error) -> {
+            String fieldName = error.getPropertyPath().toString();
+            String errorMessage = error.getMessage();
+            errors.put(fieldName, errorMessage);
+        });
+
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequestException(BadRequestException ex) {
         return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage()
-        );
-    }
-
-    //in any request for a specific resource that does not exist
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleResourceNotFound(ResourceNotFoundException ex) {
-        return new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
         );
     }
@@ -99,12 +104,14 @@ public class GlobalExceptionHandler {
     }
 
     // Handles non-existing/undefined resources and paths
-    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class, ResourceNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNoHandlerFound(Exception ex) {
+        log.error(ex.getMessage(), ex);
+
         return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                "The requested resource does not exist"
+                ex.getMessage()
         );
     }
 

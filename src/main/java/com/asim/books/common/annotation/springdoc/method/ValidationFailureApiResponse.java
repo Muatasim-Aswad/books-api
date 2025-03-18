@@ -1,4 +1,4 @@
-package com.asim.books.common.annotation.springdoc;
+package com.asim.books.common.annotation.springdoc.method;
 
 import com.asim.books.common.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,14 +9,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.lang.annotation.*;
 
 /**
- * Common response for resource not found (404).
+ * Common response for validation errors (400).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ApiResponses({
-        @ApiResponse(responseCode = "404", description = "Resource not found",
+        @ApiResponse(responseCode = "400", description = "Invalid input - validation errors",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 })
-public @interface ResourceNotFoundResponse {
+public @interface ValidationFailureApiResponse {
 }

@@ -3,18 +3,16 @@ package com.asim.books.author.controller;
 import com.asim.books.author.model.dto.AuthorDto;
 import com.asim.books.author.service.AuthorService;
 import com.asim.books.common.util.SortUtil;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authors")
-public class AuthorController implements AuthorControllerDocs {
+public class AuthorController implements AuthorApi {
     private final AuthorService authorService;
 
     public AuthorController(AuthorService authorService) {
@@ -23,7 +21,7 @@ public class AuthorController implements AuthorControllerDocs {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthorDto addAuthor(@Valid @RequestBody AuthorDto author) {
+    public AuthorDto addAuthor(@RequestBody AuthorDto author) {
         return authorService.addAuthor(author);
     }
 
@@ -33,12 +31,13 @@ public class AuthorController implements AuthorControllerDocs {
     }
 
     @PatchMapping("/{id}")
-    public AuthorDto updateAuthor(@PathVariable Long id, @Validated(AuthorDto.Optional.class) @RequestBody AuthorDto author) {
+    public AuthorDto updateAuthor(@PathVariable Long id,
+                                  @RequestBody AuthorDto author) {
         return authorService.updateAuthor(id, author);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
     }
@@ -47,7 +46,7 @@ public class AuthorController implements AuthorControllerDocs {
     public Page<AuthorDto> getAuthors(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String[] sort,
+            @RequestParam(required = false) String[] sort,
             @RequestParam(required = false) String name) {
 
         Sort sortObj = SortUtil.createObject(sort);
@@ -55,5 +54,4 @@ public class AuthorController implements AuthorControllerDocs {
 
         return authorService.getAuthors(pageable, name);
     }
-
 }

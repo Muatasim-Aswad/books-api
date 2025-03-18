@@ -37,15 +37,18 @@ public class AuthorDto {
     private Integer age;
 
     //Read only fields
-    @Null(message = "Id must only be specified for existing authors resources using the path variable", groups = {Default.class, Optional.class})
+    @Null(message = "Id is read only, to perform an action on a specific resource use the path parameter. e.g. author/1", groups = {Default.class, Optional.class})
     private Long id;
-    @Null(message = "Created at is read-only", groups = {Default.class, Optional.class})
+
+    @Null(message = "CreatedAt is read-only", groups = {Default.class, Optional.class})
     private ZonedDateTime createdAt;
-    @Null(message = "Updated at is read-only", groups = {Default.class, Optional.class})
+    @Null(message = "UpdatedAt is read-only", groups = {Default.class, Optional.class})
     private ZonedDateTime updatedAt;
-    @Null(message = "Created by is read-only", groups = {Default.class, Optional.class})
+
+    @Null(message = "Version is read-only", groups = {Default.class, Optional.class})
     private Integer version;
 
+    //Constructors and methods
     public AuthorDto(String name, Integer age) {
         this.name = name;
         this.age = age;
@@ -77,13 +80,14 @@ public class AuthorDto {
     /**
      * Helper method to check if two values contradict each other.
      * A contradiction exists if both values are non-null and not equal.
+     * A null value does not contradict any other value.
      *
      * @param value1 First value to compare
      * @param value2 Second value to compare
      * @return true if values contradict, false otherwise
      */
     private <T> boolean contradicts(T value1, T value2) {
-        return value1 != null && !value1.equals(value2);
+        return value1 != null && value2 != null && !value1.equals(value2);
     }
 
     /**

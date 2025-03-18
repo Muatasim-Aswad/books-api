@@ -15,9 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 //@AutoConfigureRestDocs
 public abstract class BaseControllerIntegrationTest {
-
-    protected final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    protected ObjectMapper objectMapper;
     @Autowired
     protected MockMvc mockMvc;
-
 }

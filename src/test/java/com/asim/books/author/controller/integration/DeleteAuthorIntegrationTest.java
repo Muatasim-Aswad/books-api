@@ -1,12 +1,13 @@
 package com.asim.books.author.controller.integration;
 
 import com.asim.books.author.model.dto.AuthorDto;
+import com.asim.books.test.util.AuthorTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Delete Author Integration Tests")
@@ -15,57 +16,75 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @Test
     @DisplayName("should delete author successfully")
     void testDeleteAuthor_Success() throws Exception {
-        // First create an author
-        AuthorDto author = new AuthorDto("Author To Delete", 35);
-        String authorJson = objectMapper.writeValueAsString(author);
-
-        MvcResult result = mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .post(BASE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(authorJson)
-                )
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        AuthorDto createdAuthor = objectMapper.readValue(
-                result.getResponse().getContentAsString(), AuthorDto.class);
+        // Arrange: Create an author first
+        AuthorDto createdAuthor = createAndReturnAuthor(AuthorTestFixtures.getOneDto());
         Long authorId = createdAuthor.getId();
 
-        // Then delete the author
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .delete(BASE_URL + "/{id}", authorId)
-                )
+        // Act: Delete the author
+        deleteAuthor(authorId)
                 .andExpect(status().isNoContent());
 
-        // Verify the author is deleted
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .get(BASE_URL + "/{id}", authorId)
-                                .accept(MediaType.APPLICATION_JSON)
-                )
+        // Assert: Verify the author is deleted
+        getAuthor(authorId)
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("should return 404 when author not found")
     void testDeleteAuthor_NotFound() throws Exception {
-        Long nonExistingId = 9999L;
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .delete(BASE_URL + "/{id}", nonExistingId)
-                )
+        // Arrange
+        Long nonExistingId = AuthorTestFixtures.NON_EXISTING_ID;
+
+        // Act & Assert
+        deleteAuthor(nonExistingId)
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("should return 400 when id is invalid")
+    @DisplayName("should return 400 when ID is invalid")
     void testDeleteAuthor_InvalidId() throws Exception {
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .delete(BASE_URL + "/{id}", "invalid-id")
-                )
+        // Arrange
+        String invalidId = AuthorTestFixtures.STRING_ID;
+
+        // Act & Assert
+        deleteAuthorWithStringId(invalidId)
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("should return 400 when ID is negative")
+    void testDeleteAuthor_NegativeId() throws Exception {
+        // Arrange
+        Long negativeId = AuthorTestFixtures.NEGATIVE_ID;
+
+        // Act & Assert
+        deleteAuthor(negativeId)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("should return 400 when ID is zero")
+    void testDeleteAuthor_ZeroId() throws Exception {
+        // Arrange
+        Long zeroId = AuthorTestFixtures.ZERO_ID;
+
+        // Act & Assert
+        deleteAuthor(zeroId)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("should reject null ID with 400 or 404 error")
+    void testDeleteAuthor_NullId() throws Exception {
+        // Act & Assert
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .delete(BASE_URL + "/{id}", (Object) null)
+        ).andExpect(status().is(
+                anyOf(
+                        equalTo(400),
+                        equalTo(404)
+                )
+        ));
     }
 }

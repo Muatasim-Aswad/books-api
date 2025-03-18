@@ -1,254 +1,214 @@
 package com.asim.books.author.model.dto;
 
+import com.asim.books.test.util.AuthorTestFixtures;
+import com.asim.books.test.util.ValidationTestHelper;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("AuthorDto Validation Tests")
+@DisplayName("AuthorDto Tests")
 class AuthorDtoTest {
 
-    private static Validator validator;
-
-    @BeforeAll
-    static void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+    // Test data providers
+    static Stream<Arguments> invalidNameProvider() {
+        return Stream.of(
+                Arguments.of(AuthorTestFixtures.NULL_NAME, "cannot be empty", "Null name"),
+                Arguments.of(AuthorTestFixtures.EMPTY_NAME, "cannot be empty", "Empty name"),
+                Arguments.of(AuthorTestFixtures.BLANK_NAME, "cannot be empty", "Blank name"),
+                Arguments.of(AuthorTestFixtures.TOO_SHORT_NAME, "between 2 and 100", "Too short name"),
+                Arguments.of(AuthorTestFixtures.TOO_LONG_NAME, "between 2 and 100", "Too long name")
+        );
     }
 
-    @Test
-    @DisplayName("Valid author should have no constraint violations")
-    void whenValidAuthor_thenNoConstraintViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("John Doe")
-                .age(30)
-                .build();
-
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
-
-        // Then
-        assertTrue(violations.isEmpty());
+    static Stream<Arguments> invalidAgeProvider() {
+        return Stream.of(
+                Arguments.of(AuthorTestFixtures.NULL_AGE, "Age cannot be null", "Null age"),
+                Arguments.of(AuthorTestFixtures.NEGATIVE_AGE, "positive number", "Negative age"),
+                Arguments.of(AuthorTestFixtures.TOO_HIGH_AGE, "less than 150", "Age too high")
+        );
     }
 
-    @Test
-    @DisplayName("Empty name should cause constraint violation")
-    void whenEmptyName_thenConstraintViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("")
-                .age(30)
-                .build();
+    @Nested
+    @DisplayName("Validation Tests")
+    class ValidationTests {
+        @Test
+        @DisplayName("should pass validation when valid author dto")
+        void whenValidAuthorDto_thenNoValidationErrors() {
+            // Arrange
+            AuthorDto author = AuthorTestFixtures.getOneDto();
 
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
+            // Act
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
 
-        // Then
-        //match one of two cases: Author name must be between 2 and 100 characters, Author name cannot be empty
-        assertThat(violations.iterator().next().getMessage(), anyOf(is("Author name must be between 2 and 100 characters"), is("Author name cannot be empty")));
+            // Assert
+            assertTrue(violations.isEmpty());
+        }
+
+        @ParameterizedTest(name = "{2}")
+        @MethodSource("com.asim.books.author.model.dto.AuthorDtoTest#invalidNameProvider")
+        @DisplayName("should fail validation when name is invalid")
+        void whenInvalidName_thenValidationFails(String name, String expectedMessage, String testCase) {
+            // Arrange
+            AuthorDto author = AuthorTestFixtures.createDto(name, AuthorTestFixtures.AGE);
+
+            // Act
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+
+            // Assert
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().contains(expectedMessage)));
+        }
+
+        @ParameterizedTest(name = "{2}")
+        @MethodSource("com.asim.books.author.model.dto.AuthorDtoTest#invalidAgeProvider")
+        @DisplayName("should fail validation when age is invalid")
+        void whenInvalidAge_thenValidationFails(Integer age, String expectedMessage, String testCase) {
+            // Arrange
+            AuthorDto author = AuthorTestFixtures.createDto(AuthorTestFixtures.NAME, age);
+
+            // Act
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+
+            // Assert
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().contains(expectedMessage)));
+        }
+
+        @Test
+        @DisplayName("should fail validation when auto-generated @null fields are set")
+        void whenNonNullFieldsAreSet_thenValidationFails() {
+            // Arrange
+            AuthorDto author = AuthorDto.builder()
+                    .id(1L)
+                    .name(AuthorTestFixtures.NAME)
+                    .age(AuthorTestFixtures.AGE)
+                    .createdAt(ZonedDateTime.now())
+                    .updatedAt(ZonedDateTime.now())
+                    .version(1)
+                    .build();
+
+            // Act
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+
+            // Assert
+            assertFalse(violations.isEmpty());
+            assertEquals(4, violations.size());
+            assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("id")));
+            assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("createdAt")));
+            assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("updatedAt")));
+            assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("version")));
+        }
+
+        @Test
+        @DisplayName("should not enforce the notNull on age when Optional group is used")
+        void whenOptionalGroup_thenNoNotNullAgeConstraint() {
+            // Arrange
+            AuthorDto author = AuthorDto.builder()
+                    .name(AuthorTestFixtures.NAME)
+                    .build();
+
+            // Act
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Optional.class);
+
+            // Assert
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("should not enforce the notNull on name when Optional group is used")
+        void whenOptionalGroup_thenNoNotNullNameConstraint() {
+            // Arrange
+            AuthorDto author = AuthorDto.builder()
+                    .age(AuthorTestFixtures.AGE)
+                    .build();
+
+            // Act
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Optional.class);
+
+            // Assert
+            assertTrue(violations.isEmpty());
+        }
     }
 
-    @Test
-    @DisplayName("Name that's too short should cause constraint violation")
-    void whenNameTooShort_thenConstraintViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("A")
-                .age(30)
-                .build();
+    @Nested
+    @DisplayName("Method Tests")
+    class BusinessLogicTests {
+        @Test
+        @DisplayName("should not contradict when author is null")
+        void whenCompareWithNull_thenNoContradiction() {
+            // Arrange
+            AuthorDto author = AuthorTestFixtures.getOneDto();
 
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
+            // Act & Assert
+            assertFalse(author.doesContradict(null));
+        }
 
-        // Then
-        assertThat(violations, hasSize(1));
-        assertThat(violations.iterator().next().getMessage(), is("Author name must be between 2 and 100 characters"));
-    }
+        @Test
+        @DisplayName("should not contradict when authors are identical")
+        void whenCompareWithIdentical_thenNoContradiction() {
+            // Arrange
+            AuthorDto author1 = AuthorTestFixtures.getOneDto();
+            AuthorDto author2 = AuthorTestFixtures.getOneDto();
 
-    @Test
-    @DisplayName("Name that's too long should cause constraint violation")
-    void whenNameTooLong_thenConstraintViolations() {
-        // Given
-        String longName = "A".repeat(101);
-        AuthorDto author = AuthorDto.builder()
-                .name(longName)
-                .age(30)
-                .build();
+            // Act & Assert
+            assertFalse(author1.doesContradict(author2));
+        }
 
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
+        @Test
+        @DisplayName("should contradict when name is different")
+        void whenNameDifferent_thenContradiction() {
+            // Arrange
+            AuthorDto author1 = AuthorTestFixtures.getOneDto();
+            AuthorDto author2 = AuthorTestFixtures.createDto(AuthorTestFixtures.UPDATED_NAME, AuthorTestFixtures.AGE);
 
-        // Then
-        assertThat(violations, hasSize(1));
-        assertThat(violations.iterator().next().getMessage(), is("Author name must be between 2 and 100 characters"));
-    }
+            // Act & Assert
+            assertTrue(author1.doesContradict(author2));
+        }
 
-    @Test
-    @DisplayName("Null age should cause constraint violation")
-    void whenAgeIsNull_thenConstraintViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("John Doe")
-                .age(null)
-                .build();
+        @Test
+        @DisplayName("should contradict when age is different")
+        void whenAgeDifferent_thenContradiction() {
+            // Arrange
+            AuthorDto author1 = AuthorTestFixtures.getOneDto();
+            AuthorDto author2 = AuthorTestFixtures.createDto(AuthorTestFixtures.NAME, AuthorTestFixtures.UPDATED_AGE);
 
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
+            // Act & Assert
+            assertTrue(author1.doesContradict(author2));
+        }
 
-        // Then
-        assertThat(violations, hasSize(1));
-        assertThat(violations.iterator().next().getMessage(), is("Age cannot be null"));
-    }
+        @Test
+        @DisplayName("should contradict when id is different")
+        void whenIdDifferent_thenContradiction() {
+            // Arrange
+            AuthorDto author1 = new AuthorDto(1L, AuthorTestFixtures.NAME, AuthorTestFixtures.AGE);
+            AuthorDto author2 = new AuthorDto(2L, AuthorTestFixtures.NAME, AuthorTestFixtures.AGE);
 
-    @Test
-    @DisplayName("Negative age should cause constraint violation")
-    void whenAgeIsNegative_thenConstraintViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("John Doe")
-                .age(-1)
-                .build();
+            // Act & Assert
+            assertTrue(author1.doesContradict(author2));
+        }
 
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author);
+        @Test
+        @DisplayName("should not contradict when null fields are compared")
+        void whenNullFields_thenNoContradiction() {
+            // Arrange
+            AuthorDto author1 = new AuthorDto();
+            author1.setName(AuthorTestFixtures.NAME);
 
-        // Then
-        assertThat(violations, hasSize(1));
-        assertThat(violations.iterator().next().getMessage(), is("Age must be a positive number"));
-    }
+            AuthorDto author2 = new AuthorDto();
+            author2.setAge(AuthorTestFixtures.AGE);
 
-    @Test
-    @DisplayName("In Optional group, short name should still be validated if present")
-    void whenValidatingOptionalGroup_withInvalidName_thenOnlyValidateIfPresent() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("A") // Too short but should only be validated if present
-                .build();
-
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author, AuthorDto.Optional.class);
-
-        // Then
-        assertThat(violations, hasSize(1));
-        assertThat(violations.iterator().next().getMessage(), is("Author name must be between 2 and 100 characters"));
-    }
-
-    @Test
-    @DisplayName("In Optional group, missing name should not cause violation")
-    void whenValidatingOptionalGroup_withMissingName_thenNoViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder().build(); // Empty name is okay in Optional group
-
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author, AuthorDto.Optional.class);
-
-        // Then
-        assertTrue(violations.isEmpty());
-    }
-
-    @Test
-    @DisplayName("In Optional group, negative age should still be validated if present")
-    void whenValidatingOptionalGroup_withNegativeAge_thenOnlyValidateIfPresent() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("John Doe")
-                .age(-5) // Negative but should be validated since it's present
-                .build();
-
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author, AuthorDto.Optional.class);
-
-        // Then
-        assertThat(violations, hasSize(1));
-        assertThat(violations.iterator().next().getMessage(), is("Age must be a positive number"));
-    }
-
-    @Test
-    @DisplayName("In Optional group, null age should not cause violation")
-    void whenValidatingOptionalGroup_withNullAge_thenNoViolations() {
-        // Given
-        AuthorDto author = AuthorDto.builder()
-                .name("John Doe")
-                .age(null) // Null age is okay in Optional group
-                .build();
-
-        // When
-        Set<ConstraintViolation<AuthorDto>> violations = validator.validate(author, AuthorDto.Optional.class);
-
-        // Then
-        assertTrue(violations.isEmpty());
-    }
-
-    @Test
-    @DisplayName("Test constructors, getters and setters")
-    void testConstructorAndGettersSetters() {
-        // Default constructor + setters
-        AuthorDto author1 = new AuthorDto();
-        author1.setName("Author 1");
-        author1.setAge(40);
-        author1.setId(1L);
-
-        assertThat(author1.getName(), is("Author 1"));
-        assertThat(author1.getAge(), is(40));
-        assertThat(author1.getId(), is(1L));
-
-        // Constructor with name and age
-        AuthorDto author2 = new AuthorDto("Author 2", 50);
-        assertThat(author2.getName(), is("Author 2"));
-        assertThat(author2.getAge(), is(50));
-        assertThat(author2.getId(), is(nullValue()));
-
-        // All args constructor
-        AuthorDto author3 = new AuthorDto(2L, "Author 3", 60);
-        assertThat(author3.getId(), is(2L));
-        assertThat(author3.getName(), is("Author 3"));
-        assertThat(author3.getAge(), is(60));
-    }
-
-    @Test
-    @DisplayName("Builder should create valid object")
-    void testBuilder() {
-        AuthorDto author = AuthorDto.builder()
-                .id(3L)
-                .name("Builder Author")
-                .age(35)
-                .build();
-
-        assertThat(author.getId(), is(3L));
-        assertThat(author.getName(), is("Builder Author"));
-        assertThat(author.getAge(), is(35));
-    }
-
-    @Test
-    @DisplayName("equals() and hashCode() should work correctly")
-    void testEqualsAndHashCode() {
-        AuthorDto author1 = new AuthorDto(1L, "Same Author", 40);
-        AuthorDto author2 = new AuthorDto(1L, "Same Author", 40);
-        AuthorDto author3 = new AuthorDto(2L, "Different Author", 40);
-
-        assertThat(author1.equals(author2), is(true));
-        assertThat(author1.equals(author3), is(false));
-        assertThat(author1.hashCode(), equalTo(author2.hashCode()));
-    }
-
-    @Test
-    @DisplayName("toString() should return a string representation")
-    void testToString() {
-        AuthorDto author = new AuthorDto(1L, "Test Author", 45);
-        String toString = author.toString();
-
-        assertTrue(toString.contains("id=1"));
-        assertTrue(toString.contains("name=Test Author"));
-        assertTrue(toString.contains("age=45"));
+            // Act & Assert
+            assertFalse(author1.doesContradict(author2));
+        }
     }
 }

@@ -23,7 +23,6 @@ public class AuthorServiceImpl implements com.asim.books.author.service.AuthorSe
         this.authorMapper = authorMapper;
     }
 
-    @Override
     public AuthorDto addAuthor(AuthorDto authorDto) {
         Author author = authorMapper.toEntity(authorDto);
 
@@ -35,14 +34,12 @@ public class AuthorServiceImpl implements com.asim.books.author.service.AuthorSe
         return authorMapper.toDto(author);
     }
 
-    @Override
     public AuthorDto getAuthor(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
         return authorMapper.toDto(author);
     }
 
-    @Override
     public AuthorDto updateAuthor(Long id, AuthorDto authorDto) {
         Author existingAuthor = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
@@ -61,7 +58,6 @@ public class AuthorServiceImpl implements com.asim.books.author.service.AuthorSe
         return authorMapper.toDto(existingAuthor);
     }
 
-    @Override
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Author", id);
@@ -70,11 +66,13 @@ public class AuthorServiceImpl implements com.asim.books.author.service.AuthorSe
         authorRepository.deleteById(id);
     }
 
-    @Override
     public Page<AuthorDto> getAuthors(Pageable pageable, String name) {
-        // Create specifications based on filters
+        // Create specifications based on filters'
+        // easier to extend than the query methods
         Specification<Author> spec = Specification.where(null);
 
+        //sql equivalent: where name like %name%
+        //query method equivalent: findByNameContainingIgnoreCase
         if (name != null && !name.isEmpty()) {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
@@ -84,12 +82,10 @@ public class AuthorServiceImpl implements com.asim.books.author.service.AuthorSe
         return authorsPage.map(authorMapper::toDto);
     }
 
-    @Override
     public boolean authorExists(Long id) {
         return authorRepository.existsById(id);
     }
 
-    @Override
     public boolean findAuthorAndMatch(AuthorDto authorDto) {
         Long id = authorDto.getId();
         if (id == null) throw new NoIdIsProvidedException("Author");

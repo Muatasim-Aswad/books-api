@@ -15,10 +15,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {})
 @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
 public @interface FullName {
-    // Allow overriding validation groups per usage
     Class<?>[] groups() default {};
 
-    // Optional: allow overriding message if needed
     String message() default "Name must be between 2 and 100 characters";
 
     Class<? extends Payload>[] payload() default {};

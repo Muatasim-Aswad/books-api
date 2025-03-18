@@ -17,7 +17,6 @@ import java.lang.annotation.*;
 @Min(value = 0, message = "Age must be a positive number")
 @Max(value = 150, message = "Age must be less than 150")
 public @interface Age {
-    // Allow overriding validation groups per usage
     Class<?>[] groups() default {};
 
     String message() default "Age must be between 0 and 150";

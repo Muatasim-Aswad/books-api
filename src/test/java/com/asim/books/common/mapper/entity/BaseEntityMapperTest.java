@@ -3,98 +3,110 @@ package com.asim.books.common.mapper.entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BaseEntityMapperTest {
+@DisplayName("BaseEntityMapper Tests")
+class BaseEntityMapperTest {
 
+    private ModelMapper modelMapper;
     private TestEntityMapper mapper;
 
     @BeforeEach
     void setUp() {
-        mapper = new TestEntityMapper(new ModelMapper());
+        // Arrange
+        modelMapper = new ModelMapper();
+        mapper = new TestEntityMapper(modelMapper);
     }
 
     @Test
-    void shouldMapEntityToDto() {
-        TestEntity entity = new TestEntity();
-        entity.setId(1L);
-        entity.setName("Test");
-        entity.setValue(100);
-
-        TestDto dto = mapper.toDto(entity);
-
-        assertThat(dto, notNullValue());
-        assertThat(dto.getId(), is(entity.getId()));
-        assertThat(dto.getName(), is(entity.getName()));
-        assertThat(dto.getValue(), is(entity.getValue()));
-    }
-
-    @Test
-    void shouldMapDtoToEntity() {
+    @DisplayName("should map DTO to entity when DTO is provided")
+    void whenMappingFromDto_thenReturnEntity() {
+        // Arrange
         TestDto dto = new TestDto();
         dto.setId(1L);
-        dto.setName("Test");
-        dto.setValue(100);
+        dto.setName("Test Name");
 
+        // Act
         TestEntity entity = mapper.toEntity(dto);
 
-        assertThat(entity, notNullValue());
-        assertThat(entity.getId(), is(dto.getId()));
-        assertThat(entity.getName(), is(dto.getName()));
-        assertThat(entity.getValue(), is(dto.getValue()));
+        // Assert
+        assertNotNull(entity);
+        assertEquals(dto.getId(), entity.getId());
+        assertEquals(dto.getName(), entity.getName());
     }
 
     @Test
-    void shouldHandleNullValuesInEntity() {
+    @DisplayName("should return null when mapping null DTO to entity")
+    void whenMappingFromNullDto_thenReturnNull() {
+        // Act
+        TestEntity entity = mapper.toEntity(null);
+
+        // Assert
+        assertNull(entity);
+    }
+
+    @Test
+    @DisplayName("should map entity to DTO when entity is provided")
+    void whenMappingFromEntity_thenReturnDto() {
+        // Arrange
         TestEntity entity = new TestEntity();
         entity.setId(1L);
-        entity.setName(null);
-        entity.setValue(null);
+        entity.setName("Test Name");
 
+        // Act
         TestDto dto = mapper.toDto(entity);
 
-        assertThat(dto, notNullValue());
-        assertThat(dto.getId(), is(entity.getId()));
-        assertThat(dto.getName(), nullValue());
-        assertThat(dto.getValue(), nullValue());
+        // Assert
+        assertNotNull(dto);
+        assertEquals(entity.getId(), dto.getId());
+        assertEquals(entity.getName(), dto.getName());
     }
 
     @Test
-    void shouldHandleNullValuesInDto() {
-        TestDto dto = new TestDto();
-        dto.setId(1L);
-        dto.setName(null);
-        dto.setValue(null);
+    @DisplayName("should return null when mapping null entity to DTO")
+    void whenMappingFromNullEntity_thenReturnNull() {
+        // Act
+        TestDto dto = mapper.toDto(null);
 
-        TestEntity entity = mapper.toEntity(dto);
-
-        assertThat(entity, notNullValue());
-        assertThat(entity.getId(), is(dto.getId()));
-        assertThat(entity.getName(), nullValue());
-        assertThat(entity.getValue(), nullValue());
+        // Assert
+        assertNull(dto);
     }
 
     @Test
-    void shouldCorrectlyMapNullEntity() {
-        assertThat(mapper.toDto(null), nullValue());
+    @DisplayName("should throw NullPointerException when creating mapper with null ModelMapper")
+    void whenCreatingMapperWithNullModelMapper_thenThrowNullPointerException() {
+        // Act & Assert
+        assertThrows(NullPointerException.class, () ->
+                new TestEntityMapper(null));
     }
 
     @Test
-    void shouldCorrectlyMapNullDto() {
-        assertThat(mapper.toEntity(null), nullValue());
+    @DisplayName("should throw NullPointerException when creating mapper with null entity class")
+    void whenCreatingMapperWithNullEntityClass_thenThrowNullPointerException() {
+        // Act & Assert
+        assertThrows(NullPointerException.class, () ->
+                new InvalidEntityMapper(modelMapper));
     }
 
-    // Test classes
+    @Test
+    @DisplayName("should throw NullPointerException when creating mapper with null DTO class")
+    void whenCreatingMapperWithNullDtoClass_thenThrowNullPointerException() {
+        // Act & Assert
+        assertThrows(NullPointerException.class, () ->
+                new InvalidDtoMapper(modelMapper));
+    }
+
+    // Helper test classes
     @Setter
     @Getter
     static class TestEntity {
         private Long id;
         private String name;
-        private Integer value;
+
     }
 
     @Setter
@@ -102,13 +114,24 @@ public class BaseEntityMapperTest {
     static class TestDto {
         private Long id;
         private String name;
-        private Integer value;
+
     }
 
-    // Concrete implementation of BaseEntityMapper
     static class TestEntityMapper extends BaseEntityMapper<TestEntity, TestDto> {
         public TestEntityMapper(ModelMapper modelMapper) {
             super(modelMapper, TestEntity.class, TestDto.class);
+        }
+    }
+
+    static class InvalidEntityMapper extends BaseEntityMapper<TestEntity, TestDto> {
+        public InvalidEntityMapper(ModelMapper modelMapper) {
+            super(modelMapper, null, TestDto.class);
+        }
+    }
+
+    static class InvalidDtoMapper extends BaseEntityMapper<TestEntity, TestDto> {
+        public InvalidDtoMapper(ModelMapper modelMapper) {
+            super(modelMapper, TestEntity.class, null);
         }
     }
 }

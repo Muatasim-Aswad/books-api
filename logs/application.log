@@ -1,0 +1,119 @@
+2025-03-18T23:22:27.547+01:00  INFO 51978 --- [books] [main] com.asim.books.BooksApplication          : Starting BooksApplication using Java 23.0.2 with PID 51978 (/Users/hackyourfuture/Desktop/books/target/classes started by hackyourfuture in /Users/hackyourfuture/Desktop/books)
+2025-03-18T23:22:27.548+01:00 DEBUG 51978 --- [books] [main] com.asim.books.BooksApplication          : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-03-18T23:22:27.549+01:00  INFO 51978 --- [books] [main] com.asim.books.BooksApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-03-18T23:22:27.603+01:00  INFO 51978 --- [books] [main] .s.b.d.c.l.DockerComposeLifecycleManager : Using Docker Compose file /Users/hackyourfuture/Desktop/books/compose.yaml
+2025-03-18T23:22:28.345+01:00  INFO 51978 --- [books] [OutputReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container books-postgres-1  Created
+2025-03-18T23:22:28.365+01:00  INFO 51978 --- [books] [OutputReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container books-postgres-1  Starting
+2025-03-18T23:22:28.523+01:00  INFO 51978 --- [books] [OutputReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container books-postgres-1  Started
+2025-03-18T23:22:28.524+01:00  INFO 51978 --- [books] [OutputReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container books-postgres-1  Waiting
+2025-03-18T23:22:29.031+01:00  INFO 51978 --- [books] [OutputReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container books-postgres-1  Healthy
+2025-03-18T23:22:30.104+01:00  INFO 51978 --- [books] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-18T23:22:30.173+01:00  INFO 51978 --- [books] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60 ms. Found 2 JPA repository interfaces.
+2025-03-18T23:22:30.607+01:00  INFO 51978 --- [books] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-03-18T23:22:30.619+01:00  INFO 51978 --- [books] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-18T23:22:30.619+01:00  INFO 51978 --- [books] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-18T23:22:30.665+01:00  INFO 51978 --- [books] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-03-18T23:22:30.665+01:00  INFO 51978 --- [books] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1208 ms
+2025-03-18T23:22:30.804+01:00  INFO 51978 --- [books] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-18T23:22:30.850+01:00  INFO 51978 --- [books] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-03-18T23:22:30.881+01:00  INFO 51978 --- [books] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-18T23:22:31.120+01:00  INFO 51978 --- [books] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-18T23:22:31.148+01:00  INFO 51978 --- [books] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-18T23:22:31.282+01:00  INFO 51978 --- [books] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@92fd091
+2025-03-18T23:22:31.283+01:00  INFO 51978 --- [books] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-18T23:22:31.351+01:00  INFO 51978 --- [books] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-03-18T23:22:32.168+01:00  INFO 51978 --- [books] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-18T23:22:32.210+01:00  INFO 51978 --- [books] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-18T23:22:32.635+01:00  WARN 51978 --- [books] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-18T23:22:33.011+01:00  INFO 51978 --- [books] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-03-18T23:22:33.020+01:00  INFO 51978 --- [books] [main] com.asim.books.BooksApplication          : Started BooksApplication in 5.818 seconds (process running for 11.438)
+2025-03-18T23:24:12.884+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-03-18T23:24:12.884+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-03-18T23:24:12.886+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-03-18T23:24:12.906+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [782cf630-8b11-4612-b45a-357ab61637ed] Request: GET /swagger-ui/index.html - Content-Type: null
+2025-03-18T23:24:12.920+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [782cf630-8b11-4612-b45a-357ab61637ed] Response: 304 /swagger-ui/index.html - 14 ms - Content-Type: null
+2025-03-18T23:24:12.936+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [a4d6ee24-1931-4cca-a792-dc538ffda977] Request: GET /swagger-ui/swagger-initializer.js - Content-Type: null
+2025-03-18T23:24:12.957+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [a4d6ee24-1931-4cca-a792-dc538ffda977] Response: 200 /swagger-ui/swagger-initializer.js - 21 ms - Content-Type: text/javascript
+2025-03-18T23:24:13.054+01:00  INFO 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [c6166e0e-69f0-4cf8-8947-699a102cf7ee] Request: GET /api-docs/swagger-config - Content-Type: null
+2025-03-18T23:24:13.077+01:00  INFO 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [c6166e0e-69f0-4cf8-8947-699a102cf7ee] Response: 200 /api-docs/swagger-config - 23 ms - Content-Type: application/json
+2025-03-18T23:24:13.098+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [087e9d96-dd24-4674-b1a2-0f8f37651e17] Request: GET /api-docs - Content-Type: null
+2025-03-18T23:24:13.454+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 344 ms
+2025-03-18T23:24:13.472+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [087e9d96-dd24-4674-b1a2-0f8f37651e17] Response: 200 /api-docs - 374 ms - Content-Type: application/json
+2025-03-18T23:24:23.442+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [946652c9-f1f7-4946-98fe-2cbf3f7847a1] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:24:23.496+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [946652c9-f1f7-4946-98fe-2cbf3f7847a1] Response: 400 /authors - 54 ms - Content-Type: application/json
+2025-03-18T23:25:18.160+01:00  INFO 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [40c9ffac-4e39-4688-ac1f-1a1e74b5f6d9] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:25:18.346+01:00  INFO 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [40c9ffac-4e39-4688-ac1f-1a1e74b5f6d9] Response: 201 /authors - 186 ms - Content-Type: application/json
+2025-03-18T23:25:32.944+01:00  INFO 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [179a042c-4ee2-452b-a5ea-c44946af9930] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:25:32.955+01:00  INFO 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [179a042c-4ee2-452b-a5ea-c44946af9930] Response: 201 /authors - 11 ms - Content-Type: application/json
+2025-03-18T23:25:43.795+01:00  INFO 51978 --- [books] [http-nio-8080-exec-9] c.a.b.c.l.RequestLoggingInterceptor      : [a175f126-e257-4299-9fdb-3672293d5eff] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:25:43.806+01:00  INFO 51978 --- [books] [http-nio-8080-exec-9] c.a.b.c.l.RequestLoggingInterceptor      : [a175f126-e257-4299-9fdb-3672293d5eff] Response: 201 /authors - 11 ms - Content-Type: application/json
+2025-03-18T23:25:52.633+01:00  INFO 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [739acbe8-ee91-47ac-8d23-fc81fa41deb6] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:25:52.645+01:00  INFO 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [739acbe8-ee91-47ac-8d23-fc81fa41deb6] Response: 201 /authors - 12 ms - Content-Type: application/json
+2025-03-18T23:26:08.168+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [a6ea6bce-321f-4a53-8f81-84a8ba07a37f] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:26:08.179+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [a6ea6bce-321f-4a53-8f81-84a8ba07a37f] Response: 201 /authors - 11 ms - Content-Type: application/json
+2025-03-18T23:26:25.444+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [7ceef2cd-7c27-40fb-8c37-6e36299a5bff] Request: POST /authors - Content-Type: application/json
+2025-03-18T23:26:25.455+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [7ceef2cd-7c27-40fb-8c37-6e36299a5bff] Response: 201 /authors - 11 ms - Content-Type: application/json
+2025-03-18T23:26:49.651+01:00  INFO 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [638a509f-0fa3-43e6-b27d-18d3dd78258f] Request: GET /authors/1 - Content-Type: null
+2025-03-18T23:26:49.679+01:00  INFO 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [638a509f-0fa3-43e6-b27d-18d3dd78258f] Response: 200 /authors/1 - 28 ms - Content-Type: application/json
+2025-03-18T23:27:07.201+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [72efc81b-6bf8-4283-b800-3ce1570e9f13] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:27:07.206+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [72efc81b-6bf8-4283-b800-3ce1570e9f13] Response: 400 /authors/1 - 5 ms - Content-Type: application/json
+2025-03-18T23:27:25.221+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [cc131024-bdcd-472b-b976-28249969a8fa] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:27:25.226+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [cc131024-bdcd-472b-b976-28249969a8fa] Response: 400 /authors/1 - 5 ms - Content-Type: application/json
+2025-03-18T23:27:31.340+01:00  INFO 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [503d291f-20b2-4d56-8f02-c9efc98bd888] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:27:31.343+01:00  INFO 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [503d291f-20b2-4d56-8f02-c9efc98bd888] Response: 400 /authors/1 - 3 ms - Content-Type: application/json
+2025-03-18T23:27:31.669+01:00  INFO 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [5d2cab58-7871-4a79-9985-ef30a07b7aba] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:27:31.671+01:00  INFO 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [5d2cab58-7871-4a79-9985-ef30a07b7aba] Response: 400 /authors/1 - 2 ms - Content-Type: application/json
+2025-03-18T23:27:37.954+01:00  INFO 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [3f9188a4-4a8e-48e7-af8f-8b5d9980cd53] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:27:37.957+01:00  INFO 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [3f9188a4-4a8e-48e7-af8f-8b5d9980cd53] Response: 400 /authors/1 - 3 ms - Content-Type: application/json
+2025-03-18T23:27:53.110+01:00  INFO 51978 --- [books] [http-nio-8080-exec-9] c.a.b.c.l.RequestLoggingInterceptor      : [58fa3520-1b63-40fc-b316-111aa5ddf9df] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:27:53.128+01:00  INFO 51978 --- [books] [http-nio-8080-exec-9] c.a.b.c.l.RequestLoggingInterceptor      : [58fa3520-1b63-40fc-b316-111aa5ddf9df] Response: 200 /authors/1 - 18 ms - Content-Type: application/json
+2025-03-18T23:28:18.514+01:00  INFO 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [c9f433c1-a2da-4a20-847b-349a344955a3] Request: PATCH /authors/1 - Content-Type: application/json
+2025-03-18T23:28:18.523+01:00  INFO 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [c9f433c1-a2da-4a20-847b-349a344955a3] Response: 200 /authors/1 - 9 ms - Content-Type: application/json
+2025-03-18T23:28:34.973+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [a6397637-ba0e-444c-b240-e1843534fae1] Request: GET /authors/5 - Content-Type: null
+2025-03-18T23:28:34.980+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [a6397637-ba0e-444c-b240-e1843534fae1] Response: 200 /authors/5 - 7 ms - Content-Type: application/json
+2025-03-18T23:29:03.205+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [6fd1e0b1-4505-45dc-94d6-4b90d8eb9feb] Request: GET /authors - Content-Type: null
+2025-03-18T23:29:03.206+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [6fd1e0b1-4505-45dc-94d6-4b90d8eb9feb] Request parameters: page=0, size=2, sort=name,asc
+2025-03-18T23:29:03.235+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [6fd1e0b1-4505-45dc-94d6-4b90d8eb9feb] Response: 200 /authors - 30 ms - Content-Type: application/json
+2025-03-18T23:29:40.391+01:00  INFO 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [faaf3a4a-081c-475a-a4d1-ad9bb75b706b] Request: GET /authors - Content-Type: null
+2025-03-18T23:29:40.391+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [faaf3a4a-081c-475a-a4d1-ad9bb75b706b] Request parameters: page=2, size=2, sort=name,asc
+2025-03-18T23:29:40.401+01:00  INFO 51978 --- [books] [http-nio-8080-exec-3] c.a.b.c.l.RequestLoggingInterceptor      : [faaf3a4a-081c-475a-a4d1-ad9bb75b706b] Response: 200 /authors - 10 ms - Content-Type: application/json
+2025-03-18T23:29:53.535+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [c9bf55ba-1b00-4a71-98bf-3ada8eca50eb] Request: GET /authors - Content-Type: null
+2025-03-18T23:29:53.536+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [c9bf55ba-1b00-4a71-98bf-3ada8eca50eb] Request parameters: page=1, size=2, sort=name,asc
+2025-03-18T23:29:53.545+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [c9bf55ba-1b00-4a71-98bf-3ada8eca50eb] Response: 200 /authors - 10 ms - Content-Type: application/json
+2025-03-18T23:30:07.305+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [6c21a695-4f70-4491-92f2-59b84e47e5f9] Request: GET /authors - Content-Type: null
+2025-03-18T23:30:07.306+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [6c21a695-4f70-4491-92f2-59b84e47e5f9] Request parameters: page=0, size=2, sort=name,asc
+2025-03-18T23:30:07.315+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [6c21a695-4f70-4491-92f2-59b84e47e5f9] Response: 200 /authors - 10 ms - Content-Type: application/json
+2025-03-18T23:30:44.331+01:00  INFO 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [483dd48e-b2b9-4958-8466-38565f30b7c0] Request: GET /authors - Content-Type: null
+2025-03-18T23:30:44.332+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [483dd48e-b2b9-4958-8466-38565f30b7c0] Request parameters: page=3, size=2, sort=name,asc
+2025-03-18T23:30:44.339+01:00  INFO 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [483dd48e-b2b9-4958-8466-38565f30b7c0] Response: 200 /authors - 8 ms - Content-Type: application/json
+2025-03-18T23:30:54.911+01:00  INFO 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [996a88c9-7368-4944-9cc3-ee76293351dd] Request: GET /authors - Content-Type: null
+2025-03-18T23:30:54.911+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [996a88c9-7368-4944-9cc3-ee76293351dd] Request parameters: page=2, size=2, sort=name,asc
+2025-03-18T23:30:54.920+01:00  INFO 51978 --- [books] [http-nio-8080-exec-7] c.a.b.c.l.RequestLoggingInterceptor      : [996a88c9-7368-4944-9cc3-ee76293351dd] Response: 200 /authors - 9 ms - Content-Type: application/json
+2025-03-18T23:31:41.644+01:00  INFO 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [1c7f3e32-ffa5-4118-bd24-654518b7d234] Request: GET /authors - Content-Type: null
+2025-03-18T23:31:41.645+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [1c7f3e32-ffa5-4118-bd24-654518b7d234] Request parameters: page=0, size=2, sort=id,asc
+2025-03-18T23:31:41.668+01:00  INFO 51978 --- [books] [http-nio-8080-exec-8] c.a.b.c.l.RequestLoggingInterceptor      : [1c7f3e32-ffa5-4118-bd24-654518b7d234] Response: 200 /authors - 24 ms - Content-Type: application/json
+2025-03-18T23:32:42.086+01:00  INFO 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [745cdc96-fc82-4a39-8a89-122f59ad78c0] Request: GET /authors - Content-Type: null
+2025-03-18T23:32:42.087+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [745cdc96-fc82-4a39-8a89-122f59ad78c0] Request parameters: page=0, size=2, sort=id,asc, name=as
+2025-03-18T23:32:42.104+01:00  INFO 51978 --- [books] [http-nio-8080-exec-10] c.a.b.c.l.RequestLoggingInterceptor      : [745cdc96-fc82-4a39-8a89-122f59ad78c0] Response: 200 /authors - 18 ms - Content-Type: application/json
+2025-03-18T23:33:07.010+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [3215f1aa-030b-40fd-8770-65d266e290ba] Request: GET /authors - Content-Type: null
+2025-03-18T23:33:07.010+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [3215f1aa-030b-40fd-8770-65d266e290ba] Request parameters: page=1, size=2, sort=id,asc, name=as
+2025-03-18T23:33:07.020+01:00  INFO 51978 --- [books] [http-nio-8080-exec-1] c.a.b.c.l.RequestLoggingInterceptor      : [3215f1aa-030b-40fd-8770-65d266e290ba] Response: 200 /authors - 10 ms - Content-Type: application/json
+2025-03-18T23:33:38.746+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [06ec203a-3735-4818-b55e-15fa58632b8e] Request: GET /authors - Content-Type: null
+2025-03-18T23:33:38.746+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [06ec203a-3735-4818-b55e-15fa58632b8e] Request parameters: page=0, size=2, sort=id,asc, name=as
+2025-03-18T23:33:38.760+01:00  INFO 51978 --- [books] [http-nio-8080-exec-2] c.a.b.c.l.RequestLoggingInterceptor      : [06ec203a-3735-4818-b55e-15fa58632b8e] Response: 200 /authors - 14 ms - Content-Type: application/json
+2025-03-18T23:34:43.443+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [87a143f1-e90a-40cc-b630-de9658a2a038] Request: GET /authors - Content-Type: null
+2025-03-18T23:34:43.444+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [87a143f1-e90a-40cc-b630-de9658a2a038] Request parameters: page=0, sort=id,asc,name,desc
+2025-03-18T23:34:43.453+01:00  INFO 51978 --- [books] [http-nio-8080-exec-4] c.a.b.c.l.RequestLoggingInterceptor      : [87a143f1-e90a-40cc-b630-de9658a2a038] Response: 200 /authors - 10 ms - Content-Type: application/json
+2025-03-18T23:35:11.285+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [017ff987-fb5b-4624-93b4-3250df0844cf] Request: GET /authors - Content-Type: null
+2025-03-18T23:35:11.286+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [017ff987-fb5b-4624-93b4-3250df0844cf] Request parameters: page=0, sort=name,desc,id,asc
+2025-03-18T23:35:11.294+01:00  INFO 51978 --- [books] [http-nio-8080-exec-5] c.a.b.c.l.RequestLoggingInterceptor      : [017ff987-fb5b-4624-93b4-3250df0844cf] Response: 200 /authors - 9 ms - Content-Type: application/json
+2025-03-18T23:35:42.577+01:00  INFO 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [a7d677f9-746b-4a68-9d1c-66e8b8caa53a] Request: GET /authors - Content-Type: null
+2025-03-18T23:35:42.577+01:00 DEBUG 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [a7d677f9-746b-4a68-9d1c-66e8b8caa53a] Request parameters: page=0, sort=age,desc,id,asc
+2025-03-18T23:35:42.601+01:00  INFO 51978 --- [books] [http-nio-8080-exec-6] c.a.b.c.l.RequestLoggingInterceptor      : [a7d677f9-746b-4a68-9d1c-66e8b8caa53a] Response: 200 /authors - 24 ms - Content-Type: application/json

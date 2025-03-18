@@ -15,7 +15,6 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 
-
 @Entity
 @Table(name = "authors")
 public class Author {

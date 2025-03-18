@@ -1,12 +1,10 @@
 package com.asim.books.author.controller.integration;
 
 import com.asim.books.author.model.dto.AuthorDto;
+import com.asim.books.test.util.AuthorTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,120 +18,117 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @BeforeEach
     void setup() throws Exception {
         // Create an author to update later
-        AuthorDto author = new AuthorDto("Original Name", 30);
-        String authorJson = objectMapper.writeValueAsString(author);
-
-        MvcResult result = mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .post(BASE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(authorJson)
-                )
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        AuthorDto createdAuthor = objectMapper.readValue(
-                result.getResponse().getContentAsString(), AuthorDto.class);
+        AuthorDto createdAuthor = createAndReturnAuthor(AuthorTestFixtures.getOneDto());
         authorId = createdAuthor.getId();
     }
 
     @Test
     @DisplayName("should update author name successfully")
     void testUpdateAuthor_UpdateName() throws Exception {
+        // Arrange
         AuthorDto updateDto = new AuthorDto();
-        updateDto.setName("Updated Name");
+        updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .patch(BASE_URL + "/{id}", authorId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateDto))
-                )
+        // Act & Assert
+        updateAuthor(authorId, updateDto)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
-                .andExpect(jsonPath("$.name", is("Updated Name")))
-                .andExpect(jsonPath("$.age", is(30)));
+                .andExpect(jsonPath("$.name", is(AuthorTestFixtures.UPDATED_NAME)))
+                .andExpect(jsonPath("$.age", is(AuthorTestFixtures.AGE)));
     }
 
     @Test
     @DisplayName("should update author age successfully")
     void testUpdateAuthor_UpdateAge() throws Exception {
+        // Arrange
         AuthorDto updateDto = new AuthorDto();
-        updateDto.setAge(45);
+        updateDto.setAge(AuthorTestFixtures.UPDATED_AGE);
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .patch(BASE_URL + "/{id}", authorId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateDto))
-                )
+        // Act & Assert
+        updateAuthor(authorId, updateDto)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
-                .andExpect(jsonPath("$.name", is("Original Name")))
-                .andExpect(jsonPath("$.age", is(45)));
+                .andExpect(jsonPath("$.name", is(AuthorTestFixtures.NAME)))
+                .andExpect(jsonPath("$.age", is(AuthorTestFixtures.UPDATED_AGE)));
     }
 
     @Test
     @DisplayName("should update both author name and age successfully")
     void testUpdateAuthor_UpdateBothFields() throws Exception {
+        // Arrange
         AuthorDto updateDto = new AuthorDto();
-        updateDto.setName("Completely New Name");
-        updateDto.setAge(55);
+        updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
+        updateDto.setAge(AuthorTestFixtures.UPDATED_AGE);
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .patch(BASE_URL + "/{id}", authorId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateDto))
-                )
+        // Act & Assert
+        updateAuthor(authorId, updateDto)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(authorId.intValue())))
-                .andExpect(jsonPath("$.name", is("Completely New Name")))
-                .andExpect(jsonPath("$.age", is(55)));
+                .andExpect(jsonPath("$.name", is(AuthorTestFixtures.UPDATED_NAME)))
+                .andExpect(jsonPath("$.age", is(AuthorTestFixtures.UPDATED_AGE)));
     }
 
     @Test
-    @DisplayName("should return 400 when name is empty")
-    void testUpdateAuthor_InvalidAge() throws Exception {
+    @DisplayName("should return 400 when update data is invalid")
+    void testUpdateAuthor_InvalidData() throws Exception {
+        // Arrange
         AuthorDto updateDto = new AuthorDto();
-        updateDto.setAge(-10);
+        updateDto.setAge(AuthorTestFixtures.NEGATIVE_AGE);
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .patch(BASE_URL + "/{id}", authorId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateDto))
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("should return 400 when name is empty")
-    void testUpdateAuthor_InvalidNameLength() throws Exception {
-        AuthorDto updateDto = new AuthorDto();
-        updateDto.setName("A"); // Too short
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .patch(BASE_URL + "/{id}", authorId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateDto))
-                )
+        // Act & Assert
+        updateAuthor(authorId, updateDto)
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("should return 404 when author not found")
     void testUpdateAuthor_NotFound() throws Exception {
+        // Arrange
         AuthorDto updateDto = new AuthorDto();
-        updateDto.setName("Valid Name");
+        updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
+        Long nonExistingId = AuthorTestFixtures.NON_EXISTING_ID;
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .patch(BASE_URL + "/{id}", 9999L)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateDto))
-                )
+        // Act & Assert
+        updateAuthor(nonExistingId, updateDto)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("should return 400 when ID is invalid")
+    void testUpdateAuthor_InvalidId() throws Exception {
+        // Arrange
+        AuthorDto updateDto = new AuthorDto();
+        updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
+        String invalidId = AuthorTestFixtures.STRING_ID;
+
+        // Act & Assert
+        updateAuthorWithStringId(invalidId, updateDto)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("should return 400 when ID is negative")
+    void testUpdateAuthor_NegativeId() throws Exception {
+        // Arrange
+        AuthorDto updateDto = new AuthorDto();
+        updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
+        Long negativeId = AuthorTestFixtures.NEGATIVE_ID;
+
+        // Act & Assert
+        updateAuthor(negativeId, updateDto)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("should return 400 when ID is zero")
+    void testUpdateAuthor_ZeroId() throws Exception {
+        // Arrange
+        AuthorDto updateDto = new AuthorDto();
+        updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
+        Long zeroId = AuthorTestFixtures.ZERO_ID;
+
+        // Act & Assert
+        updateAuthor(zeroId, updateDto)
+                .andExpect(status().isBadRequest());
     }
 }

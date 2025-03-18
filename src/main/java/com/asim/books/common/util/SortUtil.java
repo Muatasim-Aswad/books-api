@@ -1,11 +1,13 @@
 package com.asim.books.common.util;
 
 import com.asim.books.common.exception.custom.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class SortUtil {
     /**
      * Creates a Sort object from a string array
@@ -14,18 +16,23 @@ public class SortUtil {
      * @return Sort object
      */
     public static Sort createObject(String[] sort) {
+        if (sort == null || sort.length == 0) {
+            return Sort.unsorted();
+        }
+
+        if (sort.length % 2 != 0)
+            throw new BadRequestException("Sort query parameter", "The number of elements should be even representing pairs of field and direction. Example: '..?sort=field1,asc,field2,desc' or '..?sort=field1&sort=desc'");
+
         List<Sort.Order> orders = new ArrayList<>();
 
-        // sort=["field,direction", "field,direction"]
-        for (String sortOrder : sort) {
-            if (!sortOrder.contains(","))
-                throw new BadRequestException("Sort query parameter", "It should be: ?sort=field,direction");
+        for (int i = 0; i < sort.length; i += 2) {
+            String field = sort[i];
+            String direction = sort[i + 1];
 
-            String[] parts = sortOrder.split(",");
-            org.springframework.data.domain.Sort.Direction direction = parts.length > 1 && parts[1].equalsIgnoreCase("desc") ?
-                    org.springframework.data.domain.Sort.Direction.DESC : org.springframework.data.domain.Sort.Direction.ASC;
+            Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ?
+                    Sort.Direction.DESC : Sort.Direction.ASC;
 
-            orders.add(new org.springframework.data.domain.Sort.Order(direction, parts[0]));
+            orders.add(new Sort.Order(sortDirection, field));
         }
 
 
