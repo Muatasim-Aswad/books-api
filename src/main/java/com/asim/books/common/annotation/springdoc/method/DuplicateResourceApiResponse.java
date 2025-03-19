@@ -1,6 +1,6 @@
 package com.asim.books.common.annotation.springdoc.method;
 
-import com.asim.books.common.exception.ErrorResponse;
+import com.asim.books.infrastructure.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
