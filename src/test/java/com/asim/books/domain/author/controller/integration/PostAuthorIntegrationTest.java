@@ -5,6 +5,7 @@ import com.asim.books.test.util.AuthorTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -90,7 +91,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Act & Assert
         createAuthor(author)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.schemaViolations.name").value("Name must be between 2 and 100 characters"));
+                .andExpect(jsonPath("$.schemaViolations.AuthorDto.name").value(containsString("size")));
     }
 
     @Test
@@ -102,7 +103,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Act & Assert
         createAuthor(authorJson)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.schemaViolations.age").value("Age cannot be null"));
+                .andExpect(jsonPath("$.schemaViolations.AuthorDto.age").value(containsString("null")));
     }
 
     @Test

@@ -1,18 +1,55 @@
 package com.asim.books.domain.book.service;
 
-import com.asim.books.domain.book.model.dto.BookDto;
+import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.IllegalAttemptToModify;
-
-import java.util.List;
+import com.asim.books.common.exception.ResourceNotFoundException;
+import com.asim.books.domain.book.model.dto.BookDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-    BookDto addBook(BookDto book) throws IllegalAttemptToModify;
+    /**
+     * Adds book
+     *
+     * @param book BookDto
+     * @return BookDto
+     * @throws DuplicateResourceException if book already exists
+     * @throws IllegalAttemptToModify     if attempted to modify an existing author details
+     */
+    BookDto addBook(BookDto book) throws DuplicateResourceException, IllegalAttemptToModify;
 
-    BookDto getBook(Long id);
+    /**
+     * Gets book by ID
+     *
+     * @param id Book ID
+     * @return BookDto
+     * @throws ResourceNotFoundException if book not found
+     */
+    BookDto getBook(Long id) throws ResourceNotFoundException;
 
-    BookDto updateBook(Long id, BookDto book);
+    /**
+     * Updates book
+     *
+     * @param id   Book ID
+     * @param book BookDto
+     * @return BookDto
+     * @throws IllegalAttemptToModify if attempted to modify an existing author details
+     */
+    BookDto updateBook(Long id, BookDto book) throws ResourceNotFoundException, IllegalAttemptToModify;
 
-    void deleteBook(Long id);
+    /**
+     * Deletes book
+     *
+     * @param id Book ID
+     */
+    void deleteBook(Long id) throws ResourceNotFoundException;
 
-    List<BookDto> getBooks();
+    /**
+     * Gets all books with pagination, sorting and filtering
+     *
+     * @param pageable Pagination and sorting information
+     * @param author   Optional name filter
+     * @return Page of BookDto
+     */
+    Page<BookDto> getBooks(Pageable pageable, String title, String author);
 }

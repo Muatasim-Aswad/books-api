@@ -9,9 +9,9 @@ import java.util.Map;
 public class ErrorResponse {
     private int status;
     private String message;
-    private Map<String, String> schemaViolations;
+    private Map<String, Map<String, String>> schemaViolations;
 
-    public ErrorResponse(int value, Map<String, String> errors) {
+    public ErrorResponse(int value, Map<String, Map<String, String>> errors) {
         this.status = value;
         this.schemaViolations = errors;
     }

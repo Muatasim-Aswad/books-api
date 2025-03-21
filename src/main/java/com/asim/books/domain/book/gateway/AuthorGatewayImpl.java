@@ -7,9 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthorGatewayImpl implements AuthorGateway {
-    //**only as types** Author & AuthorDto are directly referenced in Book & BookDto respectively
-    //This direct referencing happened due to the tight coupling between Book and Author entities in Hibernate
-    //If possible, this coupling should be removed
+    //**only as types** Author & AuthorDto are directly referenced in book
 
     private final AuthorFacade authorFacade;
 
@@ -28,5 +26,15 @@ public class AuthorGatewayImpl implements AuthorGateway {
 
     public boolean findAuthorAndMatch(AuthorDto authorDto) {
         return authorFacade.findAuthorAndMatch(authorDto);
+    }
+
+    @Override
+    public void validateAuthor(AuthorDto authorDto) {
+        authorFacade.validateAuthor(authorDto);
+    }
+
+    @Override
+    public void validateAuthorRequired(AuthorDto authorDto) {
+        authorFacade.validateAuthorRequired(authorDto);
     }
 }

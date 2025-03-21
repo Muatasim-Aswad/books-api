@@ -67,12 +67,11 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     public Page<AuthorDto> getAuthors(Pageable pageable, String name) {
-        // Create specifications based on filters'
-        // easier to extend than the query methods
+        //easier to extend than the query methods
         Specification<Author> spec = Specification.where(null);
 
-        //sql equivalent: where name like %name%
-        //query method equivalent: findByNameContainingIgnoreCase
+        //where name like %name%
+        //findByNameContainingIgnoreCase
         if (name != null && !name.isEmpty()) {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));

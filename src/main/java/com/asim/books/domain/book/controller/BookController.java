@@ -1,49 +1,63 @@
 package com.asim.books.domain.book.controller;
 
+import com.asim.books.common.util.SortUtils;
 import com.asim.books.domain.book.model.dto.BookDto;
 import com.asim.books.domain.book.service.BookService;
-import com.asim.books.common.exception.IllegalAttemptToModify;
-import com.asim.books.common.exception.ResourceNotFoundException;
-import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/books")
-public class BookController {
+public class BookController implements BookApi {
     private final BookService bookService;
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
+
     @PostMapping
-    public ResponseEntity<BookDto> createBook(@Valid @RequestBody BookDto book) throws IllegalAttemptToModify {
-        BookDto addedBook = bookService.addBook(book);
-        return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookDto addBook(@RequestBody BookDto book) {
+
+        return bookService.addBook(book);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDto> getBook(@PathVariable Long id) throws ResourceNotFoundException {
-        return ResponseEntity.ok(bookService.getBook(id));
+    public BookDto getBook(@PathVariable Long id) {
+
+        return bookService.getBook(id);
     }
 
-    @GetMapping
-    public ResponseEntity<List<BookDto>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getBooks());
-    }
+    @PatchMapping("/{id}")
+    public BookDto updateBook(@PathVariable Long id, @RequestBody BookDto book) {
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BookDto> updateBook(@PathVariable Long id, @Valid @RequestBody BookDto book) throws ResourceNotFoundException {
-        return ResponseEntity.ok(bookService.updateBook(id, book));
+        return bookService.updateBook(id, book);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) throws ResourceNotFoundException {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBook(@PathVariable Long id) {
+
         bookService.deleteBook(id);
-        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public Page<BookDto> getBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String[] sort,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author) {
+
+        Sort sortObj = SortUtils.createObject(sort, BookDto.class);
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+
+        return bookService.getBooks(pageable, title, author);
+    }
+
 }

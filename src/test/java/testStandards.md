@@ -19,7 +19,7 @@
 
 ## General Guidelines
 
-- Avoid extensive integration tests when unit tests are possible
+- Avoid extensive integration tests where unit tests are possible and sufficient
     - Example: if a controller method uses `@Validated`, one validation case should be sufficient to test the
       integration, all other validation cases should be tested in the model itself.
 - Avoid, where possible, asserting the non-functional and easily changeable parts, target the crucial and case-relevant

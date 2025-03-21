@@ -16,12 +16,12 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "books")
+@Table(name = "books",
+        indexes = {
+                @Index(name = "idx_book_title", columnList = "title")
+        }
+)
 public class Book {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_seq")
-    private Long id;
 
     @Column(unique = true, nullable = false)
     private String isbn;
@@ -32,6 +32,11 @@ public class Book {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private Author author;
+
+    //auto-generated fields
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_seq")
+    private Long id;
 
     @Version
     private Integer version;

@@ -7,6 +7,7 @@ import com.asim.books.common.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -34,10 +35,18 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+
+            String errorCode = error.getCode();
+            if (errorCode != null) errorCode = errorCode.toLowerCase();
+
+            errors.put(fieldName, errorMessage + " (" + errorCode + " violation)");
         });
 
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
+        String objClassName = ex.getTarget().getClass().getSimpleName();
+        Map<String, Map<String, String>> schema = new HashMap<>();
+        schema.put(objClassName, errors);
+
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), schema);
     }
 
     //in case of a parameter validation error
@@ -45,13 +54,28 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationExceptions(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getConstraintViolations().forEach((error) -> {
-            String fieldName = error.getPropertyPath().toString();
-            String errorMessage = error.getMessage();
-            errors.put(fieldName, errorMessage);
-        });
+        String className = null;
 
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
+        for (var violation : ex.getConstraintViolations()) {
+            // Extract field name from the property path
+            String fieldName = violation.getPropertyPath().toString();
+            fieldName = fieldName.substring(fieldName.indexOf(".") + 1);
+
+            String errorMessage = violation.getMessage();
+            String errorCode = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
+            errors.put(fieldName, errorMessage + " (" + errorCode + " violation)");
+
+            // Get the class name from the root bean class
+            if (className == null) {
+                className = violation.getRootBeanClass().getSimpleName();
+            }
+        }
+
+        Map<String, Map<String, String>> wholeError = new HashMap<>();
+        // Use the extracted class name instead of hardcoding "parameter"
+        wholeError.put(className != null ? className : "parameter", errors);
+
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), wholeError);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -64,12 +88,21 @@ public class GlobalExceptionHandler {
     }
 
     // in attempt to create a resource that already exists
-    @ExceptionHandler(DuplicateResourceException.class)
+    @ExceptionHandler({DuplicateResourceException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDuplicateResource(DuplicateResourceException ex) {
+    public ErrorResponse handleDuplicateResource(Exception ex) {
         return new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                ex.getMessage()
+                "Resource already exists"
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Data integrity violation: " + ex.getMessage()
         );
     }
 

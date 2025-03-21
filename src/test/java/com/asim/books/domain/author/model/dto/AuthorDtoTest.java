@@ -22,9 +22,9 @@ class AuthorDtoTest {
     // Test data providers
     static Stream<Arguments> invalidNameProvider() {
         return Stream.of(
-                Arguments.of(AuthorTestFixtures.NULL_NAME, "cannot be empty", "Null name"),
-                Arguments.of(AuthorTestFixtures.EMPTY_NAME, "cannot be empty", "Empty name"),
-                Arguments.of(AuthorTestFixtures.BLANK_NAME, "cannot be empty", "Blank name"),
+                Arguments.of(AuthorTestFixtures.NULL_NAME, "cannot be empty or blank", "Null name"),
+                Arguments.of(AuthorTestFixtures.EMPTY_NAME, "cannot be empty or blank", "Empty name"),
+                Arguments.of(AuthorTestFixtures.BLANK_NAME, "cannot be empty or blank", "Blank name"),
                 Arguments.of(AuthorTestFixtures.TOO_SHORT_NAME, "between 2 and 100", "Too short name"),
                 Arguments.of(AuthorTestFixtures.TOO_LONG_NAME, "between 2 and 100", "Too long name")
         );
@@ -32,7 +32,7 @@ class AuthorDtoTest {
 
     static Stream<Arguments> invalidAgeProvider() {
         return Stream.of(
-                Arguments.of(AuthorTestFixtures.NULL_AGE, "Age cannot be null", "Null age"),
+                Arguments.of(AuthorTestFixtures.NULL_AGE, "cannot be null", "Null age"),
                 Arguments.of(AuthorTestFixtures.NEGATIVE_AGE, "positive number", "Negative age"),
                 Arguments.of(AuthorTestFixtures.TOO_HIGH_AGE, "less than 150", "Age too high")
         );
@@ -48,7 +48,7 @@ class AuthorDtoTest {
             AuthorDto author = AuthorTestFixtures.getOneDto();
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
 
             // Assert
             assertTrue(violations.isEmpty());
@@ -62,7 +62,7 @@ class AuthorDtoTest {
             AuthorDto author = AuthorTestFixtures.createDto(name, AuthorTestFixtures.AGE);
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
 
             // Assert
             assertFalse(violations.isEmpty());
@@ -77,7 +77,7 @@ class AuthorDtoTest {
             AuthorDto author = AuthorTestFixtures.createDto(AuthorTestFixtures.NAME, age);
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
 
             // Assert
             assertFalse(violations.isEmpty());
@@ -110,7 +110,7 @@ class AuthorDtoTest {
         }
 
         @Test
-        @DisplayName("should not enforce the notNull on age when Optional group is used")
+        @DisplayName("should not enforce the notNull on age when Required group is not used")
         void whenOptionalGroup_thenNoNotNullAgeConstraint() {
             // Arrange
             AuthorDto author = AuthorDto.builder()
@@ -118,14 +118,14 @@ class AuthorDtoTest {
                     .build();
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Optional.class);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
 
             // Assert
             assertTrue(violations.isEmpty());
         }
 
         @Test
-        @DisplayName("should not enforce the notNull on name when Optional group is used")
+        @DisplayName("should not enforce the notNull on name when Required group is not used")
         void whenOptionalGroup_thenNoNotNullNameConstraint() {
             // Arrange
             AuthorDto author = AuthorDto.builder()
@@ -133,7 +133,7 @@ class AuthorDtoTest {
                     .build();
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Optional.class);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
 
             // Assert
             assertTrue(violations.isEmpty());
@@ -141,8 +141,8 @@ class AuthorDtoTest {
     }
 
     @Nested
-    @DisplayName("Method Tests")
-    class BusinessLogicTests {
+    @DisplayName("Does Contradict Tests")
+    class DoesContradictTests {
         @Test
         @DisplayName("should contradict when author is totally null")
         void whenCompareWithNull_thenNoContradiction() {

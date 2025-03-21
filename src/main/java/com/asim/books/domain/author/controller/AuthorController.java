@@ -22,23 +22,27 @@ public class AuthorController implements AuthorApi {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDto addAuthor(@RequestBody AuthorDto author) {
+
         return authorService.addAuthor(author);
     }
 
     @GetMapping("/{id}")
     public AuthorDto getAuthor(@PathVariable Long id) {
+
         return authorService.getAuthor(id);
     }
 
     @PatchMapping("/{id}")
     public AuthorDto updateAuthor(@PathVariable Long id,
                                   @RequestBody AuthorDto author) {
+
         return authorService.updateAuthor(id, author);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAuthor(@PathVariable Long id) {
+
         authorService.deleteAuthor(id);
     }
 

@@ -1,6 +1,7 @@
 package com.asim.books.domain.author.facade;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
+import com.asim.books.domain.author.model.dto.AuthorDtoValidator;
 import com.asim.books.domain.author.service.AuthorService;
 
 /**
@@ -23,4 +24,14 @@ public interface AuthorFacade {
      * @see AuthorService#findAuthorAndMatch(AuthorDto)
      */
     boolean findAuthorAndMatch(AuthorDto authorDto);
+
+    /**
+     * @see AuthorDtoValidator#validate(AuthorDto)
+     */
+    void validateAuthor(AuthorDto authorDto);
+
+    /**
+     * @see AuthorDtoValidator#validateRequired(AuthorDto)
+     */
+    void validateAuthorRequired(AuthorDto authorDto);
 }

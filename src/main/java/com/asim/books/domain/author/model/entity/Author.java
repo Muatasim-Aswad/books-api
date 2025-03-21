@@ -16,14 +16,21 @@ import java.time.ZonedDateTime;
 @Builder
 
 @Entity
-@Table(name = "authors")
+@Table(
+        name = "authors",
+        indexes = {
+                @Index(name = "idx_author_name", columnList = "name")
+        })
 public class Author {
+
+    @Column(nullable = false)
+    private String name;
+    private Integer age;
+
+    //auto-generated fields
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_id_seq")
     private Long id;
-
-    private String name;
-    private Integer age;
 
     @Version
     private Integer version;

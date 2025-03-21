@@ -1,11 +1,16 @@
 package com.asim.books.domain.author.controller;
 
 import com.asim.books.common.annotation.springdoc.method.*;
-import com.asim.books.common.annotation.springdoc.param.*;
+import com.asim.books.common.annotation.springdoc.param.IdParam;
+import com.asim.books.common.annotation.springdoc.param.PageNumberQuery;
+import com.asim.books.common.annotation.springdoc.param.PageSizeQuery;
+import com.asim.books.common.annotation.springdoc.param.SortQuery;
 import com.asim.books.common.annotation.validation.ValidID;
+import com.asim.books.common.annotation.validation.domain.FullName;
 import com.asim.books.domain.author.controller.annotation.springdoc.method.AuthorCreatedApiResponse;
 import com.asim.books.domain.author.controller.annotation.springdoc.method.AuthorRetrievedApiResponse;
 import com.asim.books.domain.author.controller.annotation.springdoc.method.AuthorUpdatedApiResponse;
+import com.asim.books.domain.author.controller.annotation.springdoc.param.AuthorNameQuery;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -21,14 +26,15 @@ import org.springframework.validation.annotation.Validated;
  */
 @Tag(name = "Authors", description = "Author management API endpoints")
 @InternalServerErrorApiResponse
+@ValidationFailureApiResponse
 @Validated
 public interface AuthorApi {
 
     @Operation(summary = "Create a new author")
     @AuthorCreatedApiResponse
-    @ValidationFailureApiResponse
     @DuplicateResourceApiResponse
-    AuthorDto addAuthor(@Valid @RequestBody(description = "Author details, excluding ID", required = true) AuthorDto author);
+    AuthorDto addAuthor(@Validated(AuthorDto.Required.class) @RequestBody(description = "Author details, excluding auto-generated fields", required = true)
+                        AuthorDto author);
 
 
     @Operation(summary = "Get an author")
@@ -39,10 +45,9 @@ public interface AuthorApi {
 
     @Operation(summary = "Update an author")
     @AuthorUpdatedApiResponse
-    @ValidationFailureApiResponse
     @ResourceNotFoundApiResponse
     AuthorDto updateAuthor(@ValidID @IdParam Long id,
-                           @Validated(AuthorDto.Optional.class) @RequestBody(description = "Author details that should be updated", required = true)
+                           @Valid @RequestBody(description = "Author details that should be updated", required = true)
                            AuthorDto author);
 
 
@@ -58,5 +63,5 @@ public interface AuthorApi {
             @PageNumberQuery int page,
             @PageSizeQuery int size,
             @SortQuery String[] sort,
-            @NameQuery String name);
+            @FullName @AuthorNameQuery String name);
 }
