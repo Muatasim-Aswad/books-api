@@ -1,7 +1,7 @@
 package com.asim.books.domain.author.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
-import com.asim.books.test.util.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;

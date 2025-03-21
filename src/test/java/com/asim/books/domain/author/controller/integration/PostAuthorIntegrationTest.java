@@ -1,7 +1,7 @@
 package com.asim.books.domain.author.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
-import com.asim.books.test.util.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -91,7 +91,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Act & Assert
         createAuthor(author)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.schemaViolations.AuthorDto.name").value(containsString("size")));
+                .andExpect(jsonPath("$.schemaViolations.author.name").value(containsString("size")));
     }
 
     @Test
@@ -103,7 +103,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Act & Assert
         createAuthor(authorJson)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.schemaViolations.AuthorDto.age").value(containsString("null")));
+                .andExpect(jsonPath("$.schemaViolations.author.age").value(containsString("null")));
     }
 
     @Test

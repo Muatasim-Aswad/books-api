@@ -2,7 +2,7 @@ package com.asim.books.domain.author.controller;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.service.AuthorService;
-import com.asim.books.test.util.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

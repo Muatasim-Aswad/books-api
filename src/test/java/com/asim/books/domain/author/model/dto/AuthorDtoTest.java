@@ -1,7 +1,7 @@
 package com.asim.books.domain.author.model.dto;
 
-import com.asim.books.test.util.AuthorTestFixtures;
 import com.asim.books.test.util.ValidationTestHelper;
+import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,19 +22,19 @@ class AuthorDtoTest {
     // Test data providers
     static Stream<Arguments> invalidNameProvider() {
         return Stream.of(
-                Arguments.of(AuthorTestFixtures.NULL_NAME, "cannot be empty or blank", "Null name"),
-                Arguments.of(AuthorTestFixtures.EMPTY_NAME, "cannot be empty or blank", "Empty name"),
-                Arguments.of(AuthorTestFixtures.BLANK_NAME, "cannot be empty or blank", "Blank name"),
-                Arguments.of(AuthorTestFixtures.TOO_SHORT_NAME, "between 2 and 100", "Too short name"),
-                Arguments.of(AuthorTestFixtures.TOO_LONG_NAME, "between 2 and 100", "Too long name")
+                Arguments.of(AuthorTestFixtures.NULL_NAME, "cannot be empty or blank"),
+                Arguments.of(AuthorTestFixtures.EMPTY_NAME, "cannot be empty or blank"),
+                Arguments.of(AuthorTestFixtures.BLANK_NAME, "cannot be empty or blank"),
+                Arguments.of(AuthorTestFixtures.TOO_SHORT_NAME, "between 2 and 100"),
+                Arguments.of(AuthorTestFixtures.TOO_LONG_NAME, "between 2 and 100")
         );
     }
 
     static Stream<Arguments> invalidAgeProvider() {
         return Stream.of(
-                Arguments.of(AuthorTestFixtures.NULL_AGE, "cannot be null", "Null age"),
-                Arguments.of(AuthorTestFixtures.NEGATIVE_AGE, "positive number", "Negative age"),
-                Arguments.of(AuthorTestFixtures.TOO_HIGH_AGE, "less than 150", "Age too high")
+                Arguments.of(AuthorTestFixtures.NULL_AGE, "cannot be null"),
+                Arguments.of(AuthorTestFixtures.NEGATIVE_AGE, "positive number"),
+                Arguments.of(AuthorTestFixtures.TOO_HIGH_AGE, "less than 150")
         );
     }
 
@@ -57,7 +57,7 @@ class AuthorDtoTest {
         @ParameterizedTest(name = "{2}")
         @MethodSource("com.asim.books.domain.author.model.dto.AuthorDtoTest#invalidNameProvider")
         @DisplayName("should fail validation when name is invalid")
-        void whenInvalidName_thenValidationFails(String name, String expectedMessage, String testCase) {
+        void whenInvalidName_thenValidationFails(String name, String expectedMessage) {
             // Arrange
             AuthorDto author = AuthorTestFixtures.createDto(name, AuthorTestFixtures.AGE);
 
@@ -72,7 +72,7 @@ class AuthorDtoTest {
         @ParameterizedTest(name = "{2}")
         @MethodSource("com.asim.books.domain.author.model.dto.AuthorDtoTest#invalidAgeProvider")
         @DisplayName("should fail validation when age is invalid")
-        void whenInvalidAge_thenValidationFails(Integer age, String expectedMessage, String testCase) {
+        void whenInvalidAge_thenValidationFails(Integer age, String expectedMessage) {
             // Arrange
             AuthorDto author = AuthorTestFixtures.createDto(AuthorTestFixtures.NAME, age);
 

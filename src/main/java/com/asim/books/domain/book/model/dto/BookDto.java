@@ -6,6 +6,7 @@ import com.asim.books.common.annotation.validation.RequiredString;
 import com.asim.books.common.annotation.validation.domain.BookTitle;
 import com.asim.books.common.annotation.validation.domain.Isbn;
 import com.asim.books.domain.author.model.dto.AuthorDto;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class BookDto {
     @BookTitle
     private String title;
 
+    @NotNull
     private AuthorDto author;
 
     // Read only fields

@@ -27,55 +27,101 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //in case of schema validation errors
+    /**
+     * Helper method to format validation error messages consistently
+     *
+     * @param errorMessage   the explanation of the error
+     * @param constraintName e.g. "NotNull", "Size", etc.
+     */
+    private String formatErrorMessage(String errorMessage, String constraintName) {
+        if (constraintName != null) constraintName = constraintName.toLowerCase();
+        return errorMessage + " (" + constraintName + " violation)";
+    }
+
+    /**
+     * ** UserDto -> user
+     * ** not a ..Dto -> "parameter"
+     */
+    private String normalizeClassName(String className) {
+        boolean isDto = className != null && className.toLowerCase().contains("dto");
+
+        if (!isDto) return "parameter";
+        else {
+            className = className.substring(0, className.length() - 3); //remove dto part
+            className = className.substring(0, 1).toLowerCase() + className.substring(1); //lowercase first letter
+        }
+
+        return className;
+    }
+
+    // Helper method to process field errors and organize them into nested structure
+    private void processFieldError(Map<String, Object> finalErrors, String fieldName, String message, String className) {
+        // Handle nested fields (e.g., "author.name")
+        if (fieldName.contains(".")) {
+            String[] parts = fieldName.split("\\.", 2);
+            String parent = parts[0];
+            String child = parts[1];
+
+            // Create or retrieve parent object
+            @SuppressWarnings("unchecked")
+            Map<String, Object> parentMap = (Map<String, Object>) finalErrors.computeIfAbsent(
+                    parent, k -> new HashMap<String, Object>()
+            );
+
+            // Add the child field to parent map
+            parentMap.put(child, message);
+        } else {
+            // For non-nested fields, group them under the class name
+            @SuppressWarnings("unchecked")
+            Map<String, Object> classMap = (Map<String, Object>) finalErrors.computeIfAbsent(
+                    className, k -> new HashMap<String, Object>()
+            );
+
+            classMap.put(fieldName, message);
+        }
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, Object> finalErrors = new HashMap<>();
+
+        // Get the class name from the target
+        final String className = normalizeClassName(ex.getBindingResult().getObjectName());
+
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-
-            String errorCode = error.getCode();
-            if (errorCode != null) errorCode = errorCode.toLowerCase();
-
-            errors.put(fieldName, errorMessage + " (" + errorCode + " violation)");
+            if (error instanceof FieldError fieldError) {
+                String message = formatErrorMessage(error.getDefaultMessage(), error.getCode());
+                processFieldError(finalErrors, fieldError.getField(), message, className);
+            }
         });
 
-        String objClassName = ex.getTarget().getClass().getSimpleName();
-        Map<String, Map<String, String>> schema = new HashMap<>();
-        schema.put(objClassName, errors);
-
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), schema);
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), finalErrors);
     }
 
-    //in case of a parameter validation error
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationExceptions(ConstraintViolationException ex) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, Object> finalErrors = new HashMap<>();
         String className = null;
 
         for (var violation : ex.getConstraintViolations()) {
             // Extract field name from the property path
-            String fieldName = violation.getPropertyPath().toString();
-            fieldName = fieldName.substring(fieldName.indexOf(".") + 1);
+            String fullPath = violation.getPropertyPath().toString();
+            String fieldName = fullPath.substring(fullPath.indexOf(".") + 1);
 
-            String errorMessage = violation.getMessage();
-            String errorCode = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
-            errors.put(fieldName, errorMessage + " (" + errorCode + " violation)");
-
-            // Get the class name from the root bean class
+            // Get the class name from the root bean class if not already set
             if (className == null) {
-                className = violation.getRootBeanClass().getSimpleName();
+                className = normalizeClassName(violation.getRootBeanClass().getSimpleName());
             }
+
+            String errorCode = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
+            String message = formatErrorMessage(violation.getMessage(), errorCode);
+
+            processFieldError(finalErrors, fieldName, message, className);
         }
 
-        Map<String, Map<String, String>> wholeError = new HashMap<>();
-        // Use the extracted class name instead of hardcoding "parameter"
-        wholeError.put(className != null ? className : "parameter", errors);
-
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), wholeError);
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), finalErrors);
     }
 
     @ExceptionHandler(BadRequestException.class)

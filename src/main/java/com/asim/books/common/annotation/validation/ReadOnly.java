@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = {})
-@Null(message = "This field is read-only")
+@Null(message = "This field is read-only and cannot be set")
 public @interface ReadOnly {
     Class<?>[] groups() default {};
 

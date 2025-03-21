@@ -1,4 +1,4 @@
-package com.asim.books.test.util;
+package com.asim.books.test.util.fixtures;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;

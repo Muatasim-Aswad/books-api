@@ -8,7 +8,7 @@ import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.repository.AuthorRepository;
 import com.asim.books.domain.author.service.AuthorServiceImpl;
-import com.asim.books.test.util.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
