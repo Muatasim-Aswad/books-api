@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -23,11 +24,13 @@ public class AuthorServiceImpl implements AuthorService {
         this.authorMapper = authorMapper;
     }
 
+    @Transactional
     public AuthorDto addAuthor(AuthorDto authorDto) {
         Author author = authorMapper.toEntity(authorDto);
 
-        if (authorRepository.existsByName(author.getName()) && authorRepository.existsByAge(author.getAge())) {
-            throw new DuplicateResourceException("Author", "name", author.getName());
+        //or Add Constraint uk_author_name_age UNIQUE (name, age)
+        if (authorRepository.existsByNameAndAge(authorDto.getName(), authorDto.getAge())) {
+            throw new DuplicateResourceException("Author", "name & age", author.getName() + "," + author.getAge());
         }
 
         author = authorRepository.save(author);
@@ -40,6 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.toDto(author);
     }
 
+    @Transactional
     public AuthorDto updateAuthor(Long id, AuthorDto authorDto) {
         Author existingAuthor = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));

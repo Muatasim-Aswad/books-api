@@ -2,6 +2,7 @@ package com.asim.books.domain.author.model.dto;
 
 import com.asim.books.test.util.ValidationTestHelper;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,9 +23,9 @@ class AuthorDtoTest {
     // Test data providers
     static Stream<Arguments> invalidNameProvider() {
         return Stream.of(
-                Arguments.of(AuthorTestFixtures.NULL_NAME, "cannot be empty or blank"),
-                Arguments.of(AuthorTestFixtures.EMPTY_NAME, "cannot be empty or blank"),
-                Arguments.of(AuthorTestFixtures.BLANK_NAME, "cannot be empty or blank"),
+                Arguments.of(CommonTestFixtures.NULL_STRING, "cannot be empty or blank"),
+                Arguments.of(CommonTestFixtures.EMPTY_STRING, "cannot be empty or blank"),
+                Arguments.of(CommonTestFixtures.BLANK_STRING, "cannot be empty or blank"),
                 Arguments.of(AuthorTestFixtures.TOO_SHORT_NAME, "between 2 and 100"),
                 Arguments.of(AuthorTestFixtures.TOO_LONG_NAME, "between 2 and 100")
         );
@@ -32,8 +33,8 @@ class AuthorDtoTest {
 
     static Stream<Arguments> invalidAgeProvider() {
         return Stream.of(
-                Arguments.of(AuthorTestFixtures.NULL_AGE, "cannot be null"),
-                Arguments.of(AuthorTestFixtures.NEGATIVE_AGE, "positive number"),
+                Arguments.of(CommonTestFixtures.INTEGER_NULL, "cannot be null"),
+                Arguments.of(CommonTestFixtures.INTEGER_BOUNDARY_NEGATIVE, "positive number"),
                 Arguments.of(AuthorTestFixtures.TOO_HIGH_AGE, "less than 150")
         );
     }

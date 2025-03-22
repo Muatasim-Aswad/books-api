@@ -2,6 +2,7 @@ package com.asim.books.domain.author.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,7 +34,7 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 404 when author not found")
     void testDeleteAuthor_NotFound() throws Exception {
         // Arrange
-        Long nonExistingId = AuthorTestFixtures.NON_EXISTING_ID;
+        Long nonExistingId = CommonTestFixtures.NON_EXISTING_ID;
 
         // Act & Assert
         deleteAuthor(nonExistingId)
@@ -44,7 +45,7 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when ID is invalid")
     void testDeleteAuthor_InvalidId() throws Exception {
         // Arrange
-        String invalidId = AuthorTestFixtures.STRING_ID;
+        String invalidId = CommonTestFixtures.STRING_ID;
 
         // Act & Assert
         deleteAuthorWithStringId(invalidId)
@@ -55,7 +56,7 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when ID is negative")
     void testDeleteAuthor_NegativeId() throws Exception {
         // Arrange
-        Long negativeId = AuthorTestFixtures.NEGATIVE_ID;
+        Long negativeId = CommonTestFixtures.NEGATIVE_ID;
 
         // Act & Assert
         deleteAuthor(negativeId)
@@ -66,7 +67,7 @@ class DeleteAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when ID is zero")
     void testDeleteAuthor_ZeroId() throws Exception {
         // Arrange
-        Long zeroId = AuthorTestFixtures.ZERO_ID;
+        Long zeroId = CommonTestFixtures.ZERO_ID;
 
         // Act & Assert
         deleteAuthor(zeroId)

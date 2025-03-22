@@ -2,6 +2,7 @@ package com.asim.books.domain.author.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Update Author Integration Tests")
-class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
+class PatchAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
 
     private Long authorId;
 
@@ -73,7 +74,7 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     void testUpdateAuthor_InvalidData() throws Exception {
         // Arrange
         AuthorDto updateDto = new AuthorDto();
-        updateDto.setAge(AuthorTestFixtures.NEGATIVE_AGE);
+        updateDto.setAge(CommonTestFixtures.INTEGER_BOUNDARY_NEGATIVE);
 
         // Act & Assert
         updateAuthor(authorId, updateDto)
@@ -86,7 +87,7 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Arrange
         AuthorDto updateDto = new AuthorDto();
         updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
-        Long nonExistingId = AuthorTestFixtures.NON_EXISTING_ID;
+        Long nonExistingId = CommonTestFixtures.NON_EXISTING_ID;
 
         // Act & Assert
         updateAuthor(nonExistingId, updateDto)
@@ -99,7 +100,7 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Arrange
         AuthorDto updateDto = new AuthorDto();
         updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
-        String invalidId = AuthorTestFixtures.STRING_ID;
+        String invalidId = CommonTestFixtures.STRING_ID;
 
         // Act & Assert
         updateAuthorWithStringId(invalidId, updateDto)
@@ -112,7 +113,7 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Arrange
         AuthorDto updateDto = new AuthorDto();
         updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
-        Long negativeId = AuthorTestFixtures.NEGATIVE_ID;
+        Long negativeId = CommonTestFixtures.NEGATIVE_ID;
 
         // Act & Assert
         updateAuthor(negativeId, updateDto)
@@ -125,7 +126,7 @@ class UpdateAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Arrange
         AuthorDto updateDto = new AuthorDto();
         updateDto.setName(AuthorTestFixtures.UPDATED_NAME);
-        Long zeroId = AuthorTestFixtures.ZERO_ID;
+        Long zeroId = CommonTestFixtures.ZERO_ID;
 
         // Act & Assert
         updateAuthor(zeroId, updateDto)

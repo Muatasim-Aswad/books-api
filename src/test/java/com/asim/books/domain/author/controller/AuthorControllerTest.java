@@ -3,6 +3,7 @@ package com.asim.books.domain.author.controller;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.service.AuthorService;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -67,17 +68,17 @@ class AuthorControllerTest {
     void whenGetAuthor_thenReturnAuthor() {
         // Arrange
         AuthorDto expectedAuthor = AuthorTestFixtures.getOneDtoWithId();
-        when(authorService.getAuthor(AuthorTestFixtures.ID)).thenReturn(expectedAuthor);
+        when(authorService.getAuthor(CommonTestFixtures.VALID_ID)).thenReturn(expectedAuthor);
 
         // Act
-        AuthorDto result = authorController.getAuthor(AuthorTestFixtures.ID);
+        AuthorDto result = authorController.getAuthor(CommonTestFixtures.VALID_ID);
 
         // Assert
         assertNotNull(result);
         assertEquals(expectedAuthor.getId(), result.getId());
         assertEquals(expectedAuthor.getName(), result.getName());
         assertEquals(expectedAuthor.getAge(), result.getAge());
-        verify(authorService).getAuthor(AuthorTestFixtures.ID);
+        verify(authorService).getAuthor(CommonTestFixtures.VALID_ID);
     }
 
     @Test
@@ -90,35 +91,35 @@ class AuthorControllerTest {
                 .build();
 
         AuthorDto updatedAuthor = AuthorDto.builder()
-                .id(AuthorTestFixtures.ID)
+                .id(CommonTestFixtures.VALID_ID)
                 .name(AuthorTestFixtures.UPDATED_NAME)
                 .age(AuthorTestFixtures.UPDATED_AGE)
                 .build();
 
-        when(authorService.updateAuthor(eq(AuthorTestFixtures.ID), any(AuthorDto.class))).thenReturn(updatedAuthor);
+        when(authorService.updateAuthor(eq(CommonTestFixtures.VALID_ID), any(AuthorDto.class))).thenReturn(updatedAuthor);
 
         // Act
-        AuthorDto result = authorController.updateAuthor(AuthorTestFixtures.ID, updateDto);
+        AuthorDto result = authorController.updateAuthor(CommonTestFixtures.VALID_ID, updateDto);
 
         // Assert
         assertNotNull(result);
-        assertEquals(AuthorTestFixtures.ID, result.getId());
+        assertEquals(CommonTestFixtures.VALID_ID, result.getId());
         assertEquals(AuthorTestFixtures.UPDATED_NAME, result.getName());
         assertEquals(AuthorTestFixtures.UPDATED_AGE, result.getAge());
-        verify(authorService).updateAuthor(eq(AuthorTestFixtures.ID), any(AuthorDto.class));
+        verify(authorService).updateAuthor(eq(CommonTestFixtures.VALID_ID), any(AuthorDto.class));
     }
 
     @Test
     @DisplayName("should delete author when valid ID provided")
     void whenDeleteAuthor_thenCallService() {
         // Arrange
-        doNothing().when(authorService).deleteAuthor(AuthorTestFixtures.ID);
+        doNothing().when(authorService).deleteAuthor(CommonTestFixtures.VALID_ID);
 
         // Act
-        authorController.deleteAuthor(AuthorTestFixtures.ID);
+        authorController.deleteAuthor(CommonTestFixtures.VALID_ID);
 
         // Assert
-        verify(authorService).deleteAuthor(AuthorTestFixtures.ID);
+        verify(authorService).deleteAuthor(CommonTestFixtures.VALID_ID);
     }
 
     @Test

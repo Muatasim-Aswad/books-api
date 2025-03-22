@@ -2,6 +2,7 @@ package com.asim.books.domain.author.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     void testCreateAuthor_EmptyName() throws Exception {
         // Arrange
         AuthorDto author = AuthorDto.builder()
-                .name(AuthorTestFixtures.EMPTY_NAME)
+                .name(CommonTestFixtures.EMPTY_STRING)
                 .age(AuthorTestFixtures.AGE)
                 .build();
 
@@ -48,7 +49,7 @@ class PostAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
         // Arrange
         AuthorDto author = AuthorDto.builder()
                 .name(AuthorTestFixtures.NAME)
-                .age(AuthorTestFixtures.NEGATIVE_AGE)
+                .age(CommonTestFixtures.INTEGER_BOUNDARY_NEGATIVE)
                 .build();
 
 

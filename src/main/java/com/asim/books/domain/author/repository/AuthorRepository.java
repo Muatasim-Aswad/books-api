@@ -10,4 +10,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long>, JpaSpecif
     boolean existsByAge(Integer age);
 
     boolean existsByName(String name);
+
+    boolean existsByNameAndAge(String name, Integer age);
 }

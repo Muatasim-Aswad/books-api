@@ -1,9 +1,9 @@
 package com.asim.books.domain.author.service;
 
-import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.NoIdIsProvidedException;
 import com.asim.books.common.exception.ResourceNotFoundException;
+import com.asim.books.domain.author.model.dto.AuthorDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -64,7 +64,7 @@ public interface AuthorService {
      * The matching is done by comparing only non-null fields.
      *
      * @param authorDto AuthorDto
-     * @return true if found and matches, false otherwise
+     * @return true if found and matches, false if found but does not match
      * @throws ResourceNotFoundException if author not found
      * @throws NoIdIsProvidedException   if author ID is not provided
      */

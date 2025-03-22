@@ -14,8 +14,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Book service provides the external functionality of:
+ * - Creating a new author. (in create book)
+ * reason: especially for a new db it's highly likely that the author creation is part of the book creation process.
+ * pros: the user don't need multiple requests to perform this coupled operation.
+ * cons: introduces a dependency between the book and author services, complicating the book service.
+ */
 @Service
 @Validated
 public class BookServiceImpl implements BookService {
@@ -31,6 +39,11 @@ public class BookServiceImpl implements BookService {
         this.authorGateway = authorGateway;
     }
 
+    /**
+     * Can create or assign an existing author to a book.
+     * {@inheritDoc}
+     */
+    @Transactional
     @Override
     public BookDto addBook(BookDto bookDto) {
 
@@ -51,6 +64,11 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
+    /**
+     * Can reassign to an existing author.
+     * {@inheritDoc}
+     */
+    @Transactional
     @Override
     public BookDto updateBook(Long id, BookDto update) {
 
@@ -61,24 +79,20 @@ public class BookServiceImpl implements BookService {
         if (update.getTitle() != null) book.setTitle(update.getTitle());
 
         if (update.getAuthor() != null) {
-            AuthorDto updateAuthor = update.getAuthor();
-            //validate author
-            validateAuthor(updateAuthor);
+            AuthorDto author = update.getAuthor();
 
-            if (updateAuthor.getId() != null) {
-                //change the author to a different author
-                Long authorId = updateAuthor.getId();
-                book.setAuthor(
-                        Author.builder()
-                                .id(authorId).build());
-            } else {
-                //create a new author and assign it to the book
-                Author newAuthor = Author.builder()
-                        .name(updateAuthor.getName())
-                        .age(updateAuthor.getAge())
-                        .build();
-                book.setAuthor(newAuthor);
-            }
+            //handles any id related problems
+            boolean isAuthorExistAndMatch = authorGateway.findAuthorAndMatch(author);
+
+            if (!isAuthorExistAndMatch)
+                throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through /books.");
+
+            book.setAuthor(
+                    Author.builder()
+                            .id(author.getId())
+                            .build()
+            );
+
         }
 
 
@@ -129,7 +143,7 @@ public class BookServiceImpl implements BookService {
      *
      * @param author the author to validate
      */
-    public void validateAuthor(@Validated(AuthorDto.Required.class) AuthorDto author) {
+    public void validateAuthor(AuthorDto author) {
         try {
             boolean isAuthorExistAndMatch = authorGateway.findAuthorAndMatch(author);
 

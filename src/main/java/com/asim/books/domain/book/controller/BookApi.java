@@ -32,7 +32,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public interface BookApi {
 
-    @Operation(summary = "Create a new book")
+    @Operation(summary = "Create a new book", description = "Creates a book. Author can be created, or selected from existing authors by ID.")
     @BookCreatedApiResponse
     @DuplicateResourceApiResponse
     @ForbiddenOperationApiResponse

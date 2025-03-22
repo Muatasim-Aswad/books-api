@@ -23,7 +23,6 @@ public class BookController implements BookApi {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto addBook(@RequestBody BookDto book) {
-
         return bookService.addBook(book);
     }
 
@@ -35,14 +34,12 @@ public class BookController implements BookApi {
 
     @PatchMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id, @RequestBody BookDto book) {
-
         return bookService.updateBook(id, book);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
-
         bookService.deleteBook(id);
     }
 

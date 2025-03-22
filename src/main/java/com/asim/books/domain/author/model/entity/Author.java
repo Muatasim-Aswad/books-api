@@ -20,6 +20,9 @@ import java.time.ZonedDateTime;
         name = "authors",
         indexes = {
                 @Index(name = "idx_author_name", columnList = "name")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_author_name_age", columnNames = {"name", "age"})
         })
 public class Author {
 

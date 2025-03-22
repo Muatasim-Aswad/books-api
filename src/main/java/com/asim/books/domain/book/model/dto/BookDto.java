@@ -26,16 +26,16 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 public class BookDto {
-    @RequiredString(groups = {AuthorDto.Required.class})
+    @RequiredString(groups = {Required.class})
     @Isbn
     private String isbn;
 
-    @RequiredString(groups = {AuthorDto.Required.class})
+    @RequiredString(groups = {Required.class})
     @BookTitle
     private String title;
 
-    @NotNull
-    private AuthorDto author;
+    @NotNull(groups = {Required.class})
+    private AuthorDto author; //validation is in the service layer
 
     // Read only fields
     @ReadOnlyId

@@ -2,6 +2,7 @@ package com.asim.books.domain.book.service;
 
 import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.IllegalAttemptToModify;
+import com.asim.books.common.exception.NoIdIsProvidedException;
 import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.domain.book.model.dto.BookDto;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,7 @@ public interface BookService {
      * @return BookDto
      * @throws IllegalAttemptToModify if attempted to modify an existing author details
      */
-    BookDto updateBook(Long id, BookDto book) throws ResourceNotFoundException, IllegalAttemptToModify;
+    BookDto updateBook(Long id, BookDto book) throws ResourceNotFoundException, IllegalAttemptToModify, NoIdIsProvidedException;
 
     /**
      * Deletes book

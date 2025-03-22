@@ -2,6 +2,7 @@ package com.asim.books.domain.author.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
+import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 404 when author not found")
     void testGetAuthor_NotFound() throws Exception {
         // Arrange
-        Long nonExistingId = AuthorTestFixtures.NON_EXISTING_ID;
+        Long nonExistingId = CommonTestFixtures.NON_EXISTING_ID;
 
         // Act & Assert
         getAuthor(nonExistingId)
@@ -49,7 +50,7 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when ID is invalid string")
     void testGetAuthor_InvalidId() throws Exception {
         // Arrange
-        String invalidId = AuthorTestFixtures.STRING_ID;
+        String invalidId = CommonTestFixtures.STRING_ID;
 
         // Act & Assert
         getAuthorWithStringId(invalidId)
@@ -60,7 +61,7 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when ID is negative")
     void testGetAuthor_NegativeId() throws Exception {
         // Arrange
-        Long negativeId = AuthorTestFixtures.NEGATIVE_ID;
+        Long negativeId = CommonTestFixtures.NEGATIVE_ID;
 
         // Act & Assert
         getAuthor(negativeId)
@@ -71,7 +72,7 @@ class GetAuthorIntegrationTest extends BaseAuthorControllerIntegrationTest {
     @DisplayName("should return 400 when ID is zero")
     void testGetAuthor_ZeroId() throws Exception {
         // Arrange
-        Long zeroId = AuthorTestFixtures.ZERO_ID;
+        Long zeroId = CommonTestFixtures.ZERO_ID;
 
         // Act & Assert
         getAuthor(zeroId)
