@@ -33,7 +33,6 @@ public class BookServiceImpl implements BookService {
     private final EntityMapper<Book, BookDto> bookMapper;
     private final AuthorGateway authorGateway;
     private final EntityManager entityManager;
-    private final AuthorMapper authorMapper;
 
     public BookServiceImpl(BookRepository bookRepository,
                            EntityMapper<Book, BookDto> bookMapper,
@@ -42,7 +41,6 @@ public class BookServiceImpl implements BookService {
         this.bookMapper = bookMapper;
         this.authorGateway = authorGateway;
         this.entityManager = entityManager;
-        this.authorMapper = authorMapper;
     }
 
     /**
