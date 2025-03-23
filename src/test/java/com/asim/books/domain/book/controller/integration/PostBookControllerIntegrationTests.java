@@ -1,5 +1,6 @@
 package com.asim.books.domain.book.controller.integration;
 
+import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.book.model.dto.BookDto;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import com.asim.books.test.util.fixtures.BookTestFixtures;
@@ -38,25 +39,13 @@ class PostBookControllerIntegrationTests extends BaseBookControllerIntegrationTe
     void whenCreateBookWithExistingAuthor_thenReturnCreatedBook() throws Exception {
         // Arrange
         // First create an author through a book
-        BookDto firstBook = BookTestFixtures.getOneDto();
-        String responseJson = createBook(firstBook)
+        BookDto book = createBookDtoWithExistingAuthor();
+        AuthorDto existingAuthor = book.getAuthor(); //assert it's exactly assigned to the new book in the db
+
+        createBook(book)
                 .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        BookDto createdBook = objectMapper.readValue(responseJson, BookDto.class);
-        Long authorId = createdBook.getAuthor().getId();
-
-        // Now create a second book with the same author ID
-        BookDto secondBook = BookTestFixtures.getOneDto();
-        secondBook.getAuthor().setId(authorId);
-
-        // Act & Assert
-        createBook(secondBook)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.author.id", is(authorId.intValue())))
-                .andExpect(jsonPath("$.author.name", is(secondBook.getAuthor().getName())));
+                .andExpect(jsonPath("$.author.id", is(existingAuthor.getId().intValue())))
+                .andExpect(jsonPath("$.author.version", is(existingAuthor.getVersion())));
     }
 
     @Test
@@ -140,6 +129,6 @@ class PostBookControllerIntegrationTests extends BaseBookControllerIntegrationTe
 
         // Act & Assert
         createBook(bookDto)
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

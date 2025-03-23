@@ -23,7 +23,15 @@ public final class ContradictionUtils {
      * @return true if values contradict, false otherwise
      */
     public static <T> boolean contradicts(T value1, T value2) {
-        return value1 != null && value2 != null && !value1.equals(value2);
+        if (value1 == null || value2 == null) return false;
+
+        if (value1 instanceof java.time.ZonedDateTime && value2 instanceof java.time.ZonedDateTime) {
+            // Compare instants (epoch time) rather than formatted representations
+            return !((java.time.ZonedDateTime) value1).toInstant()
+                    .equals(((java.time.ZonedDateTime) value2).toInstant());
+        }
+
+        return !value1.equals(value2);
     }
 
     /**

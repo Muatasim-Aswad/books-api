@@ -2,6 +2,7 @@ package com.asim.books.domain.book.controller.integration;
 
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.book.model.dto.BookDto;
+import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import com.asim.books.test.util.fixtures.BookTestFixtures;
 import com.asim.books.test.util.fixtures.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
@@ -71,8 +72,8 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
     }
 
     @Test
-    @DisplayName("should update existing book with new author")
-    void whenUpdateBookWithNewAuthor_thenReturnUpdatedBookWithNewAuthor() throws Exception {
+    @DisplayName("should not update existing book with new author")
+    void whenUpdateBookWithNewAuthor_thenReturnFailure() throws Exception {
         // Arrange
         Long bookId = extractBookIdFromResponse(createValidBook());
         BookDto updateDto = BookTestFixtures.getOneDto();
@@ -81,10 +82,7 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
 
         // Act & Assert
         updateBook(bookId, updateDto)
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.author.name", is("New Author Name")))
-                .andExpect(jsonPath("$.author.age", is(40)));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -92,28 +90,24 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
     void whenUpdateBookWithExistingAuthor_thenReturnUpdatedBook() throws Exception {
         // Arrange
         // First create a book with an author
-        String firstBookResponse = createValidBook()
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        BookDto createdBook = createValidBookAndReturn();
 
-        // Create a second book
-        Long secondBookId = extractBookIdFromResponse(createValidBook());
+        // create a new author
+        AuthorDto authorDto = AuthorTestFixtures.getOneDto();
+        authorDto.setName("new Author");
+        authorDto.setAge(40);
+        AuthorDto createdAuthor = createAuthorAndReturn(authorDto);
 
-        // Extract the author from the first book
-        BookDto firstCreatedBook = objectMapper.readValue(firstBookResponse, BookDto.class);
-        Long authorId = firstCreatedBook.getAuthor().getId();
 
         // Prepare update payload with the first book's author
         BookDto updateDto = new BookDto();
-        updateDto.setAuthor(firstCreatedBook.getAuthor());
+        updateDto.setAuthor(createdAuthor);
 
         // Act & Assert
-        updateBook(secondBookId, updateDto)
+        updateBook(createdBook.getId(), updateDto)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(secondBookId.intValue())))
-                .andExpect(jsonPath("$.author.id", is(authorId.intValue())));
+                .andExpect(jsonPath("$.id", is(createdBook.getId().intValue())))
+                .andExpect(jsonPath("$.author.id", is(createdAuthor.getId().intValue())));
     }
 
     @Test
@@ -141,12 +135,12 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
 
         // Act & Assert
         updateBook(bookId, updateBookDto)
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
 
     @Test
-    @DisplayName("should fail when update with empty json is provided")
-    void whenUpdateWithEmptyJson_thenUpdateFails() throws Exception {
+    @DisplayName("should not make changes when update with empty json is provided")
+    void whenUpdateWithEmptyJson_thenNoChange() throws Exception {
         // Arrange
         Long bookId = extractBookIdFromResponse(createValidBook());
         String emptyJson = "{}";
@@ -158,7 +152,9 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(emptyJson)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.version", is(0)));
     }
 
     @Test

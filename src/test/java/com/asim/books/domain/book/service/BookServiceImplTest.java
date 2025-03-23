@@ -12,6 +12,7 @@ import com.asim.books.domain.book.model.entity.Book;
 import com.asim.books.domain.book.repository.BookRepository;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import com.asim.books.test.util.fixtures.BookTestFixtures;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -47,6 +48,9 @@ class BookServiceImplTest {
     @Mock
     private AuthorGateway authorGateway;
 
+    @Mock
+    private EntityManager entityManager;
+
     @InjectMocks
     private BookServiceImpl bookService;
 
@@ -69,10 +73,11 @@ class BookServiceImplTest {
         @DisplayName("should add a book successfully when valid data is provided")
         void whenAddBookWithValidData_thenBookIsCreated() {
             // Arrange
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(true);
+            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(authorDto);
             when(bookMapper.toEntity(bookDto)).thenReturn(book);
             when(bookRepository.save(book)).thenReturn(book);
             when(bookMapper.toDto(book)).thenReturn(bookDto);
+            doNothing().when(entityManager).flush();
 
             // Act
             BookDto result = bookService.addBook(bookDto);
@@ -90,7 +95,7 @@ class BookServiceImplTest {
         @DisplayName("should throw IllegalAttemptToModify when adding book with non-matching existing author")
         void whenAddBookWithNonMatchingExistingAuthor_thenThrowIllegalAttemptToModify() {
             // Arrange
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(false);
+            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(null);
 
             // Act & Assert
             assertThrows(IllegalAttemptToModify.class, () -> bookService.addBook(bookDto));
@@ -109,6 +114,7 @@ class BookServiceImplTest {
             when(bookMapper.toEntity(bookDto)).thenReturn(book);
             when(bookRepository.save(book)).thenReturn(book);
             when(bookMapper.toDto(book)).thenReturn(bookDto);
+            doNothing().when(entityManager).flush();
 
             // Act
             BookDto result = bookService.addBook(bookDto);
@@ -181,9 +187,10 @@ class BookServiceImplTest {
                     .build();
 
             when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(true);
+            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(authorDto);
             when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
             when(bookMapper.toDto(updatedBook)).thenReturn(updateDto);
+            doNothing().when(entityManager).flush();
 
             // Act
             BookDto result = bookService.updateBook(id, updateDto);
@@ -217,7 +224,7 @@ class BookServiceImplTest {
             // Arrange
             Long id = 1L;
             when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(false);
+            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(null);
 
             // Act & Assert
             assertThrows(IllegalAttemptToModify.class, () -> bookService.updateBook(id, bookDto));

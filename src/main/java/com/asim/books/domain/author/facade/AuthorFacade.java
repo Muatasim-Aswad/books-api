@@ -23,7 +23,7 @@ public interface AuthorFacade {
     /**
      * @see AuthorService#findAuthorAndMatch(AuthorDto)
      */
-    boolean findAuthorAndMatch(AuthorDto authorDto);
+    AuthorDto findAuthorAndMatch(AuthorDto authorDto);
 
     /**
      * @see AuthorDtoValidator#validate(AuthorDto)

@@ -99,7 +99,7 @@ class AuthorDtoTest {
                     .build();
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
 
             // Assert
             assertFalse(violations.isEmpty());

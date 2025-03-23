@@ -273,7 +273,7 @@ class BookDtoTest {
             }
 
             // Act
-            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto);
+            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.Required.class);
 
             // Assert
             assertThat(violations).isNotEmpty();

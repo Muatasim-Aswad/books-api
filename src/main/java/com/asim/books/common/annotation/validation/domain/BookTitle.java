@@ -19,7 +19,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {})
 @TrimmedString
 @SecureSqlString
-@Pattern(regexp = "^[a-zA-Z0-9\\s.,:;!?&'\"-()]+$", message = "Book title can contain letters, numbers, spaces, and common punctuation marks (.,:;!?&'\"-()).")
+@Pattern(regexp = "^[a-zA-Z0-9\\s.,:;!?&'\"--()]+$", message = "Book title can contain letters, numbers, spaces, and common punctuation marks (.,:;!?&'\"-()).")
 @Size(min = 1, max = 255, message = "Book title must be between 1 and 255 characters")
 public @interface BookTitle {
     Class<?>[] groups() default {};

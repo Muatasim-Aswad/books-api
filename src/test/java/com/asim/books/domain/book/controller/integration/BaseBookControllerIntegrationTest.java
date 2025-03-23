@@ -48,6 +48,24 @@ abstract class BaseBookControllerIntegrationTest extends BaseControllerIntegrati
     }
 
     /**
+     * Creates a standard valid book through the API and returns the created book.
+     *
+     * @return the created book
+     * @throws Exception if an error occurs during the request
+     */
+    protected BookDto createValidBookAndReturn() throws Exception {
+        String responseJson = createValidBook()
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return objectMapper.readValue(responseJson, BookDto.class);
+    }
+
+    ;
+
+    /**
      * Retrieves a book by ID through the API.
      *
      * @param id the book ID to retrieve
@@ -70,6 +88,8 @@ abstract class BaseBookControllerIntegrationTest extends BaseControllerIntegrati
      * @throws Exception if an error occurs during the request
      */
     protected ResultActions updateBook(Long id, BookDto bookDto) throws Exception {
+        if (bookDto.getVersion() == null) bookDto.setVersion(0);
+
         return mockMvc.perform(
                 patch(BOOKS_ID_API, id)
                         .contentType(MediaType.APPLICATION_JSON)

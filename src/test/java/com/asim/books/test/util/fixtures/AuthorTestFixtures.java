@@ -6,9 +6,9 @@ import com.asim.books.domain.author.model.entity.Author;
 public final class AuthorTestFixtures {
     // Multiple authors
     public static final String[] NAMES = {
-            "Name One", "Name Two", "Three", "Four"
+            "Name One", "Name Two", "Three", "Four", "Five", "Six"
     };
-    public static final Integer[] AGES = {30, 45, 45, 60};
+    public static final Integer[] AGES = {30, 45, 45, 60, 75, 90};
 
     // Single author
     public static final String NAME = "Original Name";
@@ -41,7 +41,10 @@ public final class AuthorTestFixtures {
                 .id(id)
                 .version(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE)
                 .createdBy(CommonTestFixtures.SMALL_NUMBER)
+                .updatedBy(CommonTestFixtures.SMALL_NUMBER)
                 .createdAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
+                .updatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
+                .version(0)
                 .build();
     }
 

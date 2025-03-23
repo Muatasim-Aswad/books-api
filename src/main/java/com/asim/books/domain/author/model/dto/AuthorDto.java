@@ -34,7 +34,7 @@ public class AuthorDto implements ContradictionCheckable<AuthorDto> {
     @RequiredNumber(groups = {Required.class})
     private Integer age;
 
-    //Read only fields
+    //Auto generated fields
     @ReadOnlyId
     private Long id;
 
@@ -46,7 +46,8 @@ public class AuthorDto implements ContradictionCheckable<AuthorDto> {
     private Long createdBy;
     @ReadOnly
     private Long updatedBy;
-    @ReadOnly
+
+    @ReadOnly(groups = {Required.class})
     private Integer version;
 
     /**

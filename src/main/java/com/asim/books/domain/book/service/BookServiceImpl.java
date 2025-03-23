@@ -6,10 +6,12 @@ import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.common.mapper.entity.EntityMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
+import com.asim.books.domain.author.model.mapper.AuthorMapper;
 import com.asim.books.domain.book.gateway.AuthorGateway;
 import com.asim.books.domain.book.model.dto.BookDto;
 import com.asim.books.domain.book.model.entity.Book;
 import com.asim.books.domain.book.repository.BookRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,13 +32,17 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final EntityMapper<Book, BookDto> bookMapper;
     private final AuthorGateway authorGateway;
+    private final EntityManager entityManager;
+    private final AuthorMapper authorMapper;
 
     public BookServiceImpl(BookRepository bookRepository,
                            EntityMapper<Book, BookDto> bookMapper,
-                           AuthorGateway authorGateway) {
+                           AuthorGateway authorGateway, EntityManager entityManager, AuthorMapper authorMapper) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
         this.authorGateway = authorGateway;
+        this.entityManager = entityManager;
+        this.authorMapper = authorMapper;
     }
 
     /**
@@ -47,11 +53,21 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto addBook(BookDto bookDto) {
 
-        validateAuthor(bookDto.getAuthor());
+        AuthorDto author = validateAuthor(bookDto.getAuthor());
+        bookDto.setAuthor(author);
 
         Book book = bookMapper.toEntity(bookDto);
+
+        if (author.getId() != null) {
+            //Fix: InvalidDataAccessApiUsageException: detached entity passed to persist
+            //Due to cascade.persist, an existing entity is passed to persist.
+            Author authorRef = entityManager.getReference(Author.class, author.getId());
+            book.setAuthor(authorRef);
+        }
+
         book = bookRepository.save(book);
 
+        entityManager.flush();
         return bookMapper.toDto(book);
     }
 
@@ -81,22 +97,22 @@ public class BookServiceImpl implements BookService {
         if (update.getAuthor() != null) {
             AuthorDto author = update.getAuthor();
 
-            //handles any id related problems
-            boolean isAuthorExistAndMatch = authorGateway.findAuthorAndMatch(author);
+            //throws if does not exist
+            AuthorDto existingAndMatchingAuthor = authorGateway.findAuthorAndMatch(author);
 
-            if (!isAuthorExistAndMatch)
+            if (existingAndMatchingAuthor == null)
                 throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through /books.");
 
-            book.setAuthor(
-                    Author.builder()
-                            .id(author.getId())
-                            .build()
-            );
+            Author authorRef = entityManager.getReference(Author.class, author.getId());
+
+            book.setAuthor(authorRef);
 
         }
 
 
         book = bookRepository.save(book);
+
+        entityManager.flush();
         return bookMapper.toDto(book);
     }
 
@@ -143,16 +159,20 @@ public class BookServiceImpl implements BookService {
      *
      * @param author the author to validate
      */
-    public void validateAuthor(AuthorDto author) {
+    public AuthorDto validateAuthor(AuthorDto author) {
         try {
-            boolean isAuthorExistAndMatch = authorGateway.findAuthorAndMatch(author);
+            AuthorDto existingAndMatchingAuthor = authorGateway.findAuthorAndMatch(author);
 
-            if (!isAuthorExistAndMatch)
+            if (existingAndMatchingAuthor == null)
                 throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through /books.");
+
+            return existingAndMatchingAuthor;
 
         } catch (NoIdIsProvidedException ex) {
             //the author is considered new
             authorGateway.validateAuthorRequired(author);
+
+            return author;
         }
     }
 }

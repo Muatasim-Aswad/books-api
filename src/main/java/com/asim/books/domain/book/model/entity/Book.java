@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.ZonedDateTime;
 
@@ -21,6 +24,7 @@ import java.time.ZonedDateTime;
                 @Index(name = "idx_book_title", columnList = "title")
         }
 )
+@EntityListeners(AuditingEntityListener.class)
 public class Book {
 
     @Column(unique = true, nullable = false)
@@ -36,6 +40,7 @@ public class Book {
     //auto-generated fields
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_seq")
+    @SequenceGenerator(name = "book_id_seq", sequenceName = "book_id_seq", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @Version
@@ -49,9 +54,11 @@ public class Book {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
+    @CreatedBy
     @Column(name = "created_by")
     private Long createdBy;
 
+    @LastModifiedBy
     @Column(name = "updated_by")
     private Long updatedBy;
 }

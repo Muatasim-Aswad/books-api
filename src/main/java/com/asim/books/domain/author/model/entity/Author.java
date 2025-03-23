@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.ZonedDateTime;
 
@@ -24,6 +27,7 @@ import java.time.ZonedDateTime;
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_author_name_age", columnNames = {"name", "age"})
         })
+@EntityListeners(AuditingEntityListener.class)
 public class Author {
 
     @Column(nullable = false)
@@ -33,6 +37,7 @@ public class Author {
     //auto-generated fields
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_id_seq")
+    @SequenceGenerator(name = "author_id_seq", sequenceName = "author_id_seq", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @Version
@@ -46,9 +51,11 @@ public class Author {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
+    @CreatedBy
     @Column(name = "created_by")
     private Long createdBy;
 
+    @LastModifiedBy
     @Column(name = "updated_by")
     private Long updatedBy;
 }

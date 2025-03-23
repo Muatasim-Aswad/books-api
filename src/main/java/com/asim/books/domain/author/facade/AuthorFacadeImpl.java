@@ -26,7 +26,7 @@ public class AuthorFacadeImpl implements AuthorFacade {
     }
 
     @Override
-    public boolean findAuthorAndMatch(AuthorDto authorDto) {
+    public AuthorDto findAuthorAndMatch(AuthorDto authorDto) {
         return authorService.findAuthorAndMatch(authorDto);
     }
 

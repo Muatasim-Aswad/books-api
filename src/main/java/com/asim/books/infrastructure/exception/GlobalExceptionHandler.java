@@ -1,9 +1,6 @@
 package com.asim.books.infrastructure.exception;
 
-import com.asim.books.common.exception.BadRequestException;
-import com.asim.books.common.exception.DuplicateResourceException;
-import com.asim.books.common.exception.IllegalAttemptToModify;
-import com.asim.books.common.exception.ResourceNotFoundException;
+import com.asim.books.common.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -143,9 +140,16 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler({DataIntegrityViolationException.class, OptimisticLockException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+    public ErrorResponse handleDataIntegrityViolation(Exception ex) {
+        if (ex.getMessage().contains("duplicate") || ex.getMessage().contains("unique")) {
+            return new ErrorResponse(
+                    HttpStatus.CONFLICT.value(),
+                    "Resource already exists"
+            );
+        }
+
         return new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 "Data integrity violation: " + ex.getMessage()
@@ -182,12 +186,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // NoIdIsProvidedException
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NoIdIsProvidedException.class)
+    public ErrorResponse handleNoIdIsProvidedException(NoIdIsProvidedException ex) {
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+        );
+    }
+
     // Handles non-existing/undefined resources and paths
     @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class, ResourceNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNoHandlerFound(Exception ex) {
-        log.error(ex.getMessage(), ex);
-
         return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()

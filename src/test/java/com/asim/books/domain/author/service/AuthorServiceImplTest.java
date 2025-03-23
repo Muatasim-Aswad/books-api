@@ -2,6 +2,7 @@ package com.asim.books.domain.author.service;
 
 import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.NoIdIsProvidedException;
+import com.asim.books.common.exception.OptimisticLockException;
 import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.common.mapper.entity.EntityMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
@@ -9,6 +10,7 @@ import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.repository.AuthorRepository;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
 import com.asim.books.test.util.fixtures.CommonTestFixtures;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,6 +41,9 @@ class AuthorServiceImplTest {
     private AuthorRepository authorRepository;
     @Mock
     private EntityMapper<Author, AuthorDto> authorMapper;
+    @Mock
+    private EntityManager entityManager;
+
     @InjectMocks
     private AuthorServiceImpl authorService;
     private Author author;
@@ -62,6 +67,7 @@ class AuthorServiceImplTest {
             when(authorMapper.toDto(any(Author.class))).thenReturn(authorDto);
             when(authorRepository.existsByNameAndAge(anyString(), anyInt())).thenReturn(false);
             when(authorRepository.save(any(Author.class))).thenReturn(author);
+            doNothing().when(entityManager).flush();
 
             // Act
             AuthorDto result = authorService.addAuthor(authorDto);
@@ -136,6 +142,7 @@ class AuthorServiceImplTest {
             when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(author));
             when(authorRepository.save(any(Author.class))).thenReturn(updatedAuthor);
             when(authorMapper.toDto(updatedAuthor)).thenReturn(updatedDto);
+            doNothing().when(entityManager).flush();
 
             // Act
             AuthorDto result = authorService.updateAuthor(AUTHOR_ID, updateDto);
@@ -177,6 +184,7 @@ class AuthorServiceImplTest {
             when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(originalAuthor));
             when(authorRepository.save(any(Author.class))).thenReturn(updatedAuthor);
             when(authorMapper.toDto(updatedAuthor)).thenReturn(updatedDto);
+            doNothing().when(entityManager).flush();
 
             // Act
             AuthorDto result = authorService.updateAuthor(AUTHOR_ID, updateDto);
@@ -308,18 +316,51 @@ class AuthorServiceImplTest {
         }
 
         @Test
+        @DisplayName("should throw exception when no version is provided for matching")
+        void whenFindAuthorWithNoVersion_thenThrowException() {
+            // Arrange
+            AuthorDto dto = new AuthorDto();
+            dto.setId(AUTHOR_ID);
+
+            when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(author));
+            when(authorMapper.toDto(author)).thenReturn(authorDto);
+
+            // Act & Assert
+            assertThrows(OptimisticLockException.class, () -> authorService.findAuthorAndMatch(dto));
+        }
+
+        @Test
+        @DisplayName("should throw exception when author version contradicts")
+        void whenAuthorVersionContradicts_thenThrowException() {
+            // Arrange
+            AuthorDto dto = new AuthorDto();
+            dto.setId(AUTHOR_ID);
+            dto.setVersion(0);
+
+            AuthorDto dbAuthor = AuthorTestFixtures.getOneDtoWithId();
+            dbAuthor.setVersion(1);
+
+            when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(author));
+            when(authorMapper.toDto(author)).thenReturn(dbAuthor);
+
+            // Act & Assert
+            assertThrows(OptimisticLockException.class, () -> authorService.findAuthorAndMatch(dto));
+        }
+
+        @Test
         @DisplayName("should return true when author matches")
         void whenAuthorMatches_thenReturnTrue() {
             // Arrange
             authorDto.setId(AUTHOR_ID);
+            authorDto.setVersion(0);
             when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(author));
             when(authorMapper.toDto(author)).thenReturn(authorDto);
 
             // Act
-            boolean matches = authorService.findAuthorAndMatch(authorDto);
+            AuthorDto matches = authorService.findAuthorAndMatch(authorDto);
 
             // Assert
-            assertTrue(matches);
+            assertNotNull(matches);
         }
 
         @Test
@@ -328,16 +369,19 @@ class AuthorServiceImplTest {
             // Arrange
             AuthorDto inputDto = new AuthorDto();
             inputDto.setId(AUTHOR_ID);
+            inputDto.setVersion(0);
             inputDto.setName("Different Name");
+
+            authorDto.setVersion(0);
 
             when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(author));
             when(authorMapper.toDto(author)).thenReturn(authorDto);
 
             // Act
-            boolean matches = authorService.findAuthorAndMatch(inputDto);
+            AuthorDto matches = authorService.findAuthorAndMatch(inputDto);
 
             // Assert
-            assertFalse(matches);
+            assertNull(matches);
         }
     }
 }

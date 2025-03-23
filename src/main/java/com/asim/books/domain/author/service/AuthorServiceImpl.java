@@ -2,11 +2,13 @@ package com.asim.books.domain.author.service;
 
 import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.NoIdIsProvidedException;
+import com.asim.books.common.exception.OptimisticLockException;
 import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.common.mapper.entity.EntityMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.repository.AuthorRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,10 +20,12 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final EntityMapper<Author, AuthorDto> authorMapper;
+    private final EntityManager entityManager;
 
-    public AuthorServiceImpl(AuthorRepository authorRepository, EntityMapper<Author, AuthorDto> authorMapper) {
+    public AuthorServiceImpl(AuthorRepository authorRepository, EntityMapper<Author, AuthorDto> authorMapper, EntityManager entityManager) {
         this.authorRepository = authorRepository;
         this.authorMapper = authorMapper;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -34,6 +38,8 @@ public class AuthorServiceImpl implements AuthorService {
         }
 
         author = authorRepository.save(author);
+
+        entityManager.flush();
         return authorMapper.toDto(author);
     }
 
@@ -59,6 +65,8 @@ public class AuthorServiceImpl implements AuthorService {
 
         // Save the updated entity
         existingAuthor = authorRepository.save(existingAuthor);
+
+        entityManager.flush();
         return authorMapper.toDto(existingAuthor);
     }
 
@@ -89,11 +97,22 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.existsById(id);
     }
 
-    public boolean findAuthorAndMatch(AuthorDto authorDto) {
-        Long id = authorDto.getId();
+    public AuthorDto findAuthorAndMatch(AuthorDto providedAuthor) {
+        Long id = providedAuthor.getId();
         if (id == null) throw new NoIdIsProvidedException("Author");
 
-        AuthorDto author = getAuthor(id);
-        return !author.doesContradict(authorDto);
+        AuthorDto dbAuthor = getAuthor(id);
+
+        Integer dbVersion = dbAuthor.getVersion();
+        Integer providedVersion = providedAuthor.getVersion();
+
+        if (providedVersion == null)
+            throw new OptimisticLockException("Provided author does not have a version number!");
+
+        if (!dbVersion.equals(providedVersion))
+            throw new OptimisticLockException("Author has been modified by another user. Current version: "
+                    + dbAuthor.getVersion() + ", provided version: " + providedAuthor.getVersion());
+
+        return dbAuthor.doesContradict(providedAuthor) ? null : dbAuthor;
     }
 }

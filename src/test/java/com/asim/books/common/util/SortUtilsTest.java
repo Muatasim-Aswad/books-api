@@ -201,8 +201,8 @@ class SortUtilsTest {
 
             // Assert
             assertThat(fieldNames).isNotNull();
-            assertThat(fieldNames).hasSize(5);
-            assertThat(fieldNames).contains("id", "title", "value", "active", "simpleClass");
+            assertThat(fieldNames).hasSize(7);
+            assertThat(fieldNames).contains("simpleClass.count", "id", "title", "value", "active", "simpleClass");
         }
 
         static class SimpleClass {

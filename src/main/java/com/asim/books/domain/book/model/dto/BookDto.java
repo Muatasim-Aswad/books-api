@@ -37,7 +37,7 @@ public class BookDto {
     @NotNull(groups = {Required.class})
     private AuthorDto author; //validation is in the service layer
 
-    // Read only fields
+    // Auto generated fields
     @ReadOnlyId
     private Long id;
 
@@ -49,7 +49,8 @@ public class BookDto {
     private Long createdBy;
     @ReadOnly
     private Long updatedBy;
-    @ReadOnly
+
+    @ReadOnly(groups = {Required.class})
     private Integer version;
 
     /**
