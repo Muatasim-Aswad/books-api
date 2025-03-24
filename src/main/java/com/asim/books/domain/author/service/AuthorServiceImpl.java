@@ -9,26 +9,29 @@ import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.repository.AuthorRepository;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final EntityMapper<Author, AuthorDto> authorMapper;
     private final EntityManager entityManager;
 
-    public AuthorServiceImpl(AuthorRepository authorRepository, EntityMapper<Author, AuthorDto> authorMapper, EntityManager entityManager) {
-        this.authorRepository = authorRepository;
-        this.authorMapper = authorMapper;
-        this.entityManager = entityManager;
-    }
 
     @Transactional
+    @CachePut(value = "authors", key = "#result.id")
     public AuthorDto addAuthor(AuthorDto authorDto) {
         Author author = authorMapper.toEntity(authorDto);
 
@@ -43,6 +46,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.toDto(author);
     }
 
+    @Cacheable(value = "authors", key = "#id")
     public AuthorDto getAuthor(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
@@ -50,6 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Transactional
+    @CachePut(value = "authors", key = "#id")
     public AuthorDto updateAuthor(Long id, AuthorDto authorDto) {
         Author existingAuthor = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
@@ -70,6 +75,8 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.toDto(existingAuthor);
     }
 
+    @Transactional
+    @CacheEvict(value = "authors", key = "#id")
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Author", id);

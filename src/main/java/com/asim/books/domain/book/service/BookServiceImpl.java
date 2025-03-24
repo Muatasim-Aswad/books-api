@@ -12,6 +12,9 @@ import com.asim.books.domain.book.model.dto.BookDto;
 import com.asim.books.domain.book.model.entity.Book;
 import com.asim.books.domain.book.repository.BookRepository;
 import jakarta.persistence.EntityManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -49,6 +52,7 @@ public class BookServiceImpl implements BookService {
      */
     @Transactional
     @Override
+    @CachePut(value = "books", key = "#result.id")
     public BookDto addBook(BookDto bookDto) {
 
         AuthorDto author = validateAuthor(bookDto.getAuthor());
@@ -70,6 +74,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Cacheable(value = "books", key = "#id")
     public BookDto getBook(Long id) {
 
         Book book = bookRepository.findById(id)
@@ -84,6 +89,7 @@ public class BookServiceImpl implements BookService {
      */
     @Transactional
     @Override
+    @CachePut(value = "books", key = "#id")
     public BookDto updateBook(Long id, BookDto update) {
 
         Book book = bookRepository.findById(id)
@@ -115,6 +121,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @CacheEvict(value = "books", key = "#id")
     public void deleteBook(Long id) {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book", id);

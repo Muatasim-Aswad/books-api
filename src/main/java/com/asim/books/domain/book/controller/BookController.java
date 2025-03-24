@@ -3,6 +3,7 @@ package com.asim.books.domain.book.controller;
 import com.asim.books.common.util.SortUtils;
 import com.asim.books.domain.book.model.dto.BookDto;
 import com.asim.books.domain.book.service.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books")
+@RequiredArgsConstructor
 public class BookController implements BookApi {
     private final BookService bookService;
-
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    private final SortUtils sortUtils;
 
 
     @PostMapping
@@ -51,7 +50,7 @@ public class BookController implements BookApi {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author) {
 
-        Sort sortObj = SortUtils.createObject(sort, BookDto.class);
+        Sort sortObj = sortUtils.createObject(sort, BookDto.class);
         Pageable pageable = PageRequest.of(page, size, sortObj);
 
         return bookService.getBooks(pageable, title, author);

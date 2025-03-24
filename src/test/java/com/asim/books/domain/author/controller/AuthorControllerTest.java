@@ -1,5 +1,6 @@
 package com.asim.books.domain.author.controller;
 
+import com.asim.books.common.util.SortUtils;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.service.AuthorService;
 import com.asim.books.test.util.fixtures.AuthorTestFixtures;
@@ -31,6 +32,9 @@ class AuthorControllerTest {
 
     @Mock
     private AuthorService authorService;
+
+    @Mock
+    private SortUtils sortUtils;
 
     @InjectMocks
     private AuthorController authorController;
@@ -126,15 +130,20 @@ class AuthorControllerTest {
     @DisplayName("should retrieve all authors with pagination when requested")
     void whenGetAuthors_thenReturnPagedAuthors() {
         // Arrange
+        String[] sortParams = {"name", "asc"};
+        Sort mockSort = Sort.by(Sort.Direction.ASC, "name");
         Page<AuthorDto> authorPage = new PageImpl<>(authorDTOs);
+
+        when(sortUtils.createObject(eq(sortParams), eq(AuthorDto.class))).thenReturn(mockSort);
         when(authorService.getAuthors(any(), eq(null))).thenReturn(authorPage);
 
         // Act
-        Page<AuthorDto> result = authorController.getAuthors(0, 10, new String[]{"name", "asc"}, null);
+        Page<AuthorDto> result = authorController.getAuthors(0, 10, sortParams, null);
 
         // Assert
         assertNotNull(result);
         assertEquals(authorDTOs.size(), result.getContent().size());
+        verify(sortUtils).createObject(eq(sortParams), eq(AuthorDto.class));
         verify(authorService).getAuthors(any(), eq(null));
     }
 
@@ -142,20 +151,24 @@ class AuthorControllerTest {
     @DisplayName("should filter authors by name when name parameter provided")
     void whenGetAuthorsWithNameFilter_thenReturnFilteredAuthors() {
         // Arrange
+        String[] sortParams = {"name", "asc"};
+        Sort mockSort = Sort.by(Sort.Direction.ASC, "name");
         String nameFilter = "Name";
         List<AuthorDto> filteredAuthors = authorDTOs.stream()
                 .filter(a -> a.getName().contains(nameFilter))
                 .toList();
         Page<AuthorDto> filteredPage = new PageImpl<>(filteredAuthors);
 
+        when(sortUtils.createObject(eq(sortParams), eq(AuthorDto.class))).thenReturn(mockSort);
         when(authorService.getAuthors(any(), eq(nameFilter))).thenReturn(filteredPage);
 
         // Act
-        Page<AuthorDto> result = authorController.getAuthors(0, 10, new String[]{"name", "asc"}, nameFilter);
+        Page<AuthorDto> result = authorController.getAuthors(0, 10, sortParams, nameFilter);
 
         // Assert
         assertNotNull(result);
         assertEquals(filteredAuthors.size(), result.getContent().size());
+        verify(sortUtils).createObject(eq(sortParams), eq(AuthorDto.class));
         verify(authorService).getAuthors(any(), eq(nameFilter));
     }
 
@@ -179,13 +192,17 @@ class AuthorControllerTest {
     @DisplayName("should use unsorted when no sort parameter provided")
     void whenGetAuthorsWithNoSort_thenUseUnsorted() {
         // Arrange
+        Sort unsortedSort = Sort.unsorted();
         Page<AuthorDto> authorPage = new PageImpl<>(authorDTOs);
+
+        when(sortUtils.createObject(eq(null), eq(AuthorDto.class))).thenReturn(unsortedSort);
         when(authorService.getAuthors(any(), eq(null))).thenReturn(authorPage);
 
         // Act
         authorController.getAuthors(0, 10, null, null);
 
         // Assert
+        verify(sortUtils).createObject(eq(null), eq(AuthorDto.class));
         verify(authorService).getAuthors(argThat(pageable ->
                 pageable.getSort().isUnsorted()), eq(null));
     }

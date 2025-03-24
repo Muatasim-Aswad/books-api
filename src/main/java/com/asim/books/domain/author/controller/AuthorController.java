@@ -3,6 +3,7 @@ package com.asim.books.domain.author.controller;
 import com.asim.books.common.util.SortUtils;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.service.AuthorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authors")
+@RequiredArgsConstructor
 public class AuthorController implements AuthorApi {
     private final AuthorService authorService;
-
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
-    }
+    private final SortUtils sortUtils;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -53,7 +52,7 @@ public class AuthorController implements AuthorApi {
             @RequestParam(required = false) String[] sort,
             @RequestParam(required = false) String name) {
 
-        Sort sortObj = SortUtils.createObject(sort, AuthorDto.class);
+        Sort sortObj = sortUtils.createObject(sort, AuthorDto.class);
         Pageable pageable = PageRequest.of(page, size, sortObj);
 
         return authorService.getAuthors(pageable, name);

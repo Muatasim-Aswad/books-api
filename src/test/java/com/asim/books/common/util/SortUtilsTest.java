@@ -1,16 +1,32 @@
 package com.asim.books.common.util;
 
 import com.asim.books.common.exception.BadRequestException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Sort Utility Tests")
+@ExtendWith(MockitoExtension.class)
 class SortUtilsTest {
+
+    @Mock
+    private ReflectionUtils reflectionUtils;
+
+    @InjectMocks
+    private SortUtils sortUtils;
 
     @Nested
     @DisplayName("Basic Sorting Tests")
@@ -22,7 +38,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "asc"};
 
             // Act
-            Sort result = SortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, null);
 
             // Assert
             assertThat(result).isNotNull();
@@ -38,7 +54,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "desc"};
 
             // Act
-            Sort result = SortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, null);
 
             // Assert
             assertThat(result).isNotNull();
@@ -54,7 +70,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "asc", "age", "desc"};
 
             // Act
-            Sort result = SortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, null);
 
             // Assert
             assertThat(result).isNotNull();
@@ -72,7 +88,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "invalid"};
 
             // Act & Assert
-            assertThrows(BadRequestException.class, () -> SortUtils.createObject(sortParams, null));
+            assertThrows(BadRequestException.class, () -> sortUtils.createObject(sortParams, null));
         }
 
         @Test
@@ -82,7 +98,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "asc", "age"};
 
             // Act & Assert
-            assertThrows(BadRequestException.class, () -> SortUtils.createObject(sortParams, null));
+            assertThrows(BadRequestException.class, () -> sortUtils.createObject(sortParams, null));
         }
 
         @Test
@@ -92,7 +108,7 @@ class SortUtilsTest {
             String[] sortParams = {};
 
             // Act
-            Sort result = SortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, null);
 
             // Assert
             assertThat(result).isNotNull();
@@ -103,7 +119,7 @@ class SortUtilsTest {
         @DisplayName("should return unsorted when sort parameters are null")
         void whenNullSortParameters_thenReturnUnsorted() {
             // Act
-            Sort result = SortUtils.createObject(null, null);
+            Sort result = sortUtils.createObject(null, null);
 
             // Assert
             assertThat(result).isNotNull();
@@ -117,7 +133,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "DESC", "age", "ASC"};
 
             // Act
-            Sort result = SortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, null);
 
             // Assert
             assertThat(result).isNotNull();
@@ -131,6 +147,16 @@ class SortUtilsTest {
     @DisplayName("Field Validation Tests")
     class FieldValidationTests {
 
+        @BeforeEach
+        void setUp() {
+            Set<String> validFields = new HashSet<>();
+            validFields.add("name");
+            validFields.add("age");
+            validFields.add("id");
+
+            when(reflectionUtils.getFieldNames(TestClass.class)).thenReturn(validFields);
+        }
+
         @Test
         @DisplayName("should not throw exception when sorting by valid fields")
         void whenSortingByValidFields_thenNoException() {
@@ -138,7 +164,7 @@ class SortUtilsTest {
             String[] sortParams = {"name", "asc", "age", "desc"};
 
             // Act
-            Sort result = SortUtils.createObject(sortParams, TestClass.class);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -155,7 +181,7 @@ class SortUtilsTest {
 
             // Act & Assert
             assertThrows(BadRequestException.class, () ->
-                    SortUtils.createObject(sortParams, TestClass.class));
+                    sortUtils.createObject(sortParams, TestClass.class));
         }
 
         @Test
@@ -166,7 +192,7 @@ class SortUtilsTest {
 
             // Act & Assert
             assertThrows(BadRequestException.class, () ->
-                    SortUtils.createObject(sortParams, TestClass.class));
+                    sortUtils.createObject(sortParams, TestClass.class));
         }
 
         // Test class for field validation
@@ -178,76 +204,25 @@ class SortUtilsTest {
     }
 
     @Nested
-    @DisplayName("Field Name Extraction Tests")
-    class FieldNameExtractionTests {
+    @DisplayName("Format Handling Tests")
+    class FormatHandlingTests {
 
         @Test
-        @DisplayName("should extract all field names from simple class")
-        void whenSimpleClass_thenExtractAllFieldNames() {
-            // Act
-            var fieldNames = SortUtils.getFieldNames(SimpleClass.class);
-
-            // Assert
-            assertThat(fieldNames).isNotNull();
-            assertThat(fieldNames).hasSize(2);
-            assertThat(fieldNames).contains("name", "count");
-        }
-
-        @Test
-        @DisplayName("should extract all field names from complex class")
-        void whenComplexClass_thenExtractAllFieldNames() {
-            // Act
-            var fieldNames = SortUtils.getFieldNames(ComplexClass.class);
-
-            // Assert
-            assertThat(fieldNames).isNotNull();
-            assertThat(fieldNames).hasSize(7);
-            assertThat(fieldNames).contains("simpleClass.count", "id", "title", "value", "active", "simpleClass");
-        }
-
-        static class SimpleClass {
-            private String name;
-            private Integer count;
-        }
-
-        static class ComplexClass {
-            public Boolean active;
-            protected String title;
-            private Long id;
-            private Integer value;
-            private SimpleClass simpleClass;
-        }
-    }
-
-    @Nested
-    @DisplayName("Mixed Class and No Class Tests")
-    class MixedClassNoClassTests {
-
-        @Test
-        @DisplayName("should accept valid fields when class provided and invalid fields when no class provided")
-        void whenClassProvidedOrNot_thenBehaveDifferently() {
+        @DisplayName("should handle comma-separated format correctly")
+        void whenCommaSeparatedFormat_thenParseCorrectly() {
             // Arrange
-            String[] validForTestEntity = {"id", "asc"};
-            String[] invalidForTestEntity = {"nonExistingField", "desc"};
+            String[] sortParams = {"name,asc", "age,desc"};
 
-            // Act & Assert - With class validation
-            Sort validResult = SortUtils.createObject(validForTestEntity, TestEntity.class);
-            assertThat(validResult.toList()).hasSize(1);
-            assertThat(validResult.toList().getFirst().getProperty()).isEqualTo("id");
+            // Act
+            Sort result = sortUtils.createObject(sortParams, null);
 
-            // Should throw exception for invalid field when class is provided
-            assertThrows(BadRequestException.class, () ->
-                    SortUtils.createObject(invalidForTestEntity, TestEntity.class));
-
-            // Should accept any field name when no class is provided
-            Sort noClassResult = SortUtils.createObject(invalidForTestEntity, null);
-            assertThat(noClassResult.toList()).hasSize(1);
-            assertThat(noClassResult.toList().getFirst().getProperty()).isEqualTo("nonExistingField");
-        }
-
-        static class TestEntity {
-            private Long id;
-            private String name;
+            // Assert
+            assertThat(result).isNotNull();
+            assertThat(result.toList()).hasSize(2);
+            assertThat(result.toList().get(0).getProperty()).isEqualTo("name");
+            assertThat(result.toList().get(0).getDirection()).isEqualTo(Sort.Direction.ASC);
+            assertThat(result.toList().get(1).getProperty()).isEqualTo("age");
+            assertThat(result.toList().get(1).getDirection()).isEqualTo(Sort.Direction.DESC);
         }
     }
 }

@@ -94,6 +94,20 @@ public final class BookTestFixtures {
         return bookDto;
     }
 
+    //get one dto with all fields
+    public static BookDto getOneDtoWithAllFields() {
+        BookDto bookDto = createDto(ISBN, TITLE, AuthorTestFixtures.getOneDtoWithAllFields());
+
+        bookDto.setId(CommonTestFixtures.POSITIVE_NUMBER);
+        bookDto.setVersion(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE);
+        bookDto.setCreatedBy(CommonTestFixtures.SMALL_NUMBER);
+        bookDto.setCreatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
+        bookDto.setUpdatedBy(CommonTestFixtures.SMALL_NUMBER);
+        bookDto.setUpdatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
+
+        return bookDto;
+    }
+
     public static BookDto[] getManyDTOs() {
         int length = Math.min(VALID_ISBNS.length, VALID_TITLES.length);
         BookDto[] bookDTOs = new BookDto[length];
