@@ -1,18 +1,14 @@
 package com.asim.books.common.util;
 
 import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
 /**
- * Utility class for comparing objects while ignoring null values.
+ * Utility static interface for checking contradictions between values.
  */
-public final class ContradictionUtils {
-
-    private ContradictionUtils() {
-        // Prevent instantiation
-    }
-
+public interface ContradictionUtils {
     /**
      * Checks if two values contradict each other.
      * A contradiction exists if both values are non-null and not equal.
@@ -22,13 +18,13 @@ public final class ContradictionUtils {
      * @param value2 Second value to compare
      * @return true if values contradict, false otherwise
      */
-    public static <T> boolean contradicts(T value1, T value2) {
+    static <T> boolean contradicts(T value1, T value2) {
         if (value1 == null || value2 == null) return false;
 
-        if (value1 instanceof java.time.ZonedDateTime && value2 instanceof java.time.ZonedDateTime) {
+        if (value1 instanceof ZonedDateTime && value2 instanceof ZonedDateTime) {
             // Compare instants (epoch time) rather than formatted representations
-            return !((java.time.ZonedDateTime) value1).toInstant()
-                    .equals(((java.time.ZonedDateTime) value2).toInstant());
+            return !((ZonedDateTime) value1).toInstant()
+                    .equals(((ZonedDateTime) value2).toInstant());
         }
 
         return !value1.equals(value2);
@@ -43,7 +39,7 @@ public final class ContradictionUtils {
      * @param <T>  The type of objects being compared
      * @return true if there are contradictions, false otherwise
      */
-    public static <T> boolean doesContradict(T obj1, T obj2) {
+    static <T> boolean doesContradict(T obj1, T obj2) {
         if (obj1 == null || obj2 == null) {
             return obj1 != obj2; // They contradict if one is null and the other isn't
         }

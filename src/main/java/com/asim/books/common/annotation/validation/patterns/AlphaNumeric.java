@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import java.lang.annotation.*;
 
 /**
- * Common validation for alphanumeric strings.
+ * Pattern validation for alphanumeric strings.
  * Allows whitespace.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})

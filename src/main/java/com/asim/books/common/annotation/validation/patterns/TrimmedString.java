@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import java.lang.annotation.*;
 
 /**
- * Common validation for trimmed strings.
- * No leading or trailing spaces allowed.
+ * Pattern validation for trimmed strings.
+ * No leading or trailing whitespace allowed.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

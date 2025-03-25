@@ -27,31 +27,34 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final EntityMapper<Author, AuthorDto> authorMapper;
+
     private final EntityManager entityManager;
 
 
     @Transactional
     @CachePut(value = "authors", key = "#result.id")
     public AuthorDto addAuthor(AuthorDto authorDto) {
-        Author author = authorMapper.toEntity(authorDto);
-
-        //or Add Constraint uk_author_name_age UNIQUE (name, age)
+        //Check if already exists.
         if (authorRepository.existsByNameAndAge(authorDto.getName(), authorDto.getAge())) {
-            throw new DuplicateResourceException("Author", "name & age", author.getName() + "," + author.getAge());
+            throw new DuplicateResourceException("Author", "name & age", authorDto.getName() + "," + authorDto.getAge());
         }
 
+        Author author = authorMapper.toEntity(authorDto);
         author = authorRepository.save(author);
 
-        entityManager.flush();
+        entityManager.flush(); //flush to get the fields by the db
         return authorMapper.toDto(author);
     }
+
 
     @Cacheable(value = "authors", key = "#id")
     public AuthorDto getAuthor(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
+
         return authorMapper.toDto(author);
     }
+
 
     @Transactional
     @CachePut(value = "authors", key = "#id")
@@ -104,22 +107,23 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.existsById(id);
     }
 
-    public AuthorDto findAuthorAndMatch(AuthorDto providedAuthor) {
+    public AuthorDto findMatchingAuthor(AuthorDto providedAuthor) {
+        // Check if ID is provided & get the author from the database
         Long id = providedAuthor.getId();
         if (id == null) throw new NoIdIsProvidedException("Author");
-
         AuthorDto dbAuthor = getAuthor(id);
 
+        // Check if versions match
         Integer dbVersion = dbAuthor.getVersion();
         Integer providedVersion = providedAuthor.getVersion();
 
         if (providedVersion == null)
             throw new OptimisticLockException("Provided author does not have a version number!");
-
         if (!dbVersion.equals(providedVersion))
             throw new OptimisticLockException("Author has been modified by another user. Current version: "
                     + dbAuthor.getVersion() + ", provided version: " + providedAuthor.getVersion());
 
+        // Check if the provided author contradicts the database author and return
         return dbAuthor.doesContradict(providedAuthor) ? null : dbAuthor;
     }
 }

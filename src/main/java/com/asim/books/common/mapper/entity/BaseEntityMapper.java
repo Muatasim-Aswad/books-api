@@ -4,6 +4,12 @@ import org.modelmapper.ModelMapper;
 
 import java.util.Objects;
 
+/**
+ * A generic base class for mapping between entities and DTOs.
+ *
+ * @param <Entity>
+ * @param <Dto>
+ */
 public abstract class BaseEntityMapper<Entity, Dto> implements EntityMapper<Entity, Dto> {
 
     protected final ModelMapper modelMapper;

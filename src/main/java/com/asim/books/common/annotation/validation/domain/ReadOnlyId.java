@@ -1,5 +1,6 @@
-package com.asim.books.common.annotation.validation;
+package com.asim.books.common.annotation.validation.domain;
 
+import com.asim.books.common.annotation.validation.ReadOnly;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.Null;
@@ -7,7 +8,8 @@ import jakarta.validation.constraints.Null;
 import java.lang.annotation.*;
 
 /**
- * This annotation is used to validate fields that are read-only.
+ * Validation for read-only ID fields.
+ * Provides a custom message compared to {@link ReadOnly}.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

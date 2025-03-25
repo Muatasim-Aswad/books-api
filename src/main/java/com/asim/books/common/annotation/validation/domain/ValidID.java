@@ -1,4 +1,4 @@
-package com.asim.books.common.annotation.validation;
+package com.asim.books.common.annotation.validation.domain;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,8 +8,9 @@ import jakarta.validation.constraints.Positive;
 import java.lang.annotation.*;
 
 /**
- * Validates that an ID parameter is valid (not null and positive).
- * Used primarily for path parameters that represent entity identifiers.
+ * Validation for valid IDs.
+ * Uses {@link NotNull} to ensure the field is not null.
+ * Uses {@link Positive} to ensure the field is positive.
  */
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

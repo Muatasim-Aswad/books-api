@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import java.lang.annotation.*;
 
 /**
- * This annotation is used to validate fields that are required of type number.
+ * Validation for required numeric fields.
+ * Uses {@link NotNull} to ensure the field is not null.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

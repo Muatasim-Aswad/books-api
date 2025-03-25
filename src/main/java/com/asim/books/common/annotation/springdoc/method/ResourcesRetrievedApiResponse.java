@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.lang.annotation.*;
 
 /**
- * Response for resources retrieved with pagination (200).
+ * Response for resources retrieved with pagination & sorting (200).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

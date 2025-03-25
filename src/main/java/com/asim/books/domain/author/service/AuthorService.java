@@ -66,9 +66,9 @@ public interface AuthorService {
      *
      * @param authorDto AuthorDto
      * @return author if found and matches, null if found but does not match
-     * @throws ResourceNotFoundException if author not found
      * @throws NoIdIsProvidedException   if author ID is not provided
+     * @throws ResourceNotFoundException if author not found
      * @throws OptimisticLockException   if version mismatch
      */
-    AuthorDto findAuthorAndMatch(AuthorDto authorDto) throws NoIdIsProvidedException, ResourceNotFoundException, OptimisticLockException;
+    AuthorDto findMatchingAuthor(AuthorDto authorDto) throws NoIdIsProvidedException, ResourceNotFoundException, OptimisticLockException;
 }

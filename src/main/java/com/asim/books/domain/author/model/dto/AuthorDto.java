@@ -1,11 +1,11 @@
 package com.asim.books.domain.author.model.dto;
 
 import com.asim.books.common.annotation.validation.ReadOnly;
-import com.asim.books.common.annotation.validation.ReadOnlyId;
 import com.asim.books.common.annotation.validation.RequiredNumber;
 import com.asim.books.common.annotation.validation.RequiredString;
 import com.asim.books.common.annotation.validation.domain.Age;
 import com.asim.books.common.annotation.validation.domain.FullName;
+import com.asim.books.common.annotation.validation.domain.ReadOnlyId;
 import com.asim.books.common.model.ContradictionCheckable;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;

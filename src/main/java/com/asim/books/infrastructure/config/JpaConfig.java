@@ -10,6 +10,7 @@ import java.util.Optional;
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorDefaultProvider")
 public class JpaConfig {
+
     @Bean
     public AuditorAware<Long> auditorDefaultProvider() {
         return () -> Optional.of(123L);

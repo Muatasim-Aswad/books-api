@@ -73,7 +73,7 @@ class BookServiceImplTest {
         @DisplayName("should add a book successfully when valid data is provided")
         void whenAddBookWithValidData_thenBookIsCreated() {
             // Arrange
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(authorDto);
+            when(authorGateway.findMatchingAuthor(any(AuthorDto.class))).thenReturn(authorDto);
             when(bookMapper.toEntity(bookDto)).thenReturn(book);
             when(bookRepository.save(book)).thenReturn(book);
             when(bookMapper.toDto(book)).thenReturn(bookDto);
@@ -85,7 +85,7 @@ class BookServiceImplTest {
             // Assert
             assertNotNull(result);
             assertEquals(bookDto, result);
-            verify(authorGateway).findAuthorAndMatch(any(AuthorDto.class));
+            verify(authorGateway).findMatchingAuthor(any(AuthorDto.class));
             verify(bookMapper).toEntity(bookDto);
             verify(bookRepository).save(book);
             verify(bookMapper).toDto(book);
@@ -95,11 +95,11 @@ class BookServiceImplTest {
         @DisplayName("should throw IllegalAttemptToModify when adding book with non-matching existing author")
         void whenAddBookWithNonMatchingExistingAuthor_thenThrowIllegalAttemptToModify() {
             // Arrange
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(null);
+            when(authorGateway.findMatchingAuthor(any(AuthorDto.class))).thenReturn(null);
 
             // Act & Assert
             assertThrows(IllegalAttemptToModify.class, () -> bookService.addBook(bookDto));
-            verify(authorGateway).findAuthorAndMatch(any(AuthorDto.class));
+            verify(authorGateway).findMatchingAuthor(any(AuthorDto.class));
             verifyNoInteractions(bookMapper);
             verifyNoInteractions(bookRepository);
         }
@@ -108,7 +108,7 @@ class BookServiceImplTest {
         @DisplayName("should validate new author when adding book with new author")
         void whenAddBookWithNewAuthor_thenValidateAuthor() {
             // Arrange
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class)))
+            when(authorGateway.findMatchingAuthor(any(AuthorDto.class)))
                     .thenThrow(new NoIdIsProvidedException("Author"));
             doNothing().when(authorGateway).validateAuthorRequired(any(AuthorDto.class));
             when(bookMapper.toEntity(bookDto)).thenReturn(book);
@@ -122,7 +122,7 @@ class BookServiceImplTest {
             // Assert
             assertNotNull(result);
             assertEquals(bookDto, result);
-            verify(authorGateway).findAuthorAndMatch(any(AuthorDto.class));
+            verify(authorGateway).findMatchingAuthor(any(AuthorDto.class));
             verify(authorGateway).validateAuthorRequired(any(AuthorDto.class));
             verify(bookMapper).toEntity(bookDto);
             verify(bookRepository).save(book);
@@ -187,7 +187,7 @@ class BookServiceImplTest {
                     .build();
 
             when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(authorDto);
+            when(authorGateway.findMatchingAuthor(any(AuthorDto.class))).thenReturn(authorDto);
             when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
             when(bookMapper.toDto(updatedBook)).thenReturn(updateDto);
             doNothing().when(entityManager).flush();
@@ -199,7 +199,7 @@ class BookServiceImplTest {
             assertNotNull(result);
             assertEquals(updateDto, result);
             verify(bookRepository).findById(id);
-            verify(authorGateway).findAuthorAndMatch(any(AuthorDto.class));
+            verify(authorGateway).findMatchingAuthor(any(AuthorDto.class));
             verify(bookRepository).save(any(Book.class));
             verify(bookMapper).toDto(any(Book.class));
         }
@@ -224,12 +224,12 @@ class BookServiceImplTest {
             // Arrange
             Long id = 1L;
             when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-            when(authorGateway.findAuthorAndMatch(any(AuthorDto.class))).thenReturn(null);
+            when(authorGateway.findMatchingAuthor(any(AuthorDto.class))).thenReturn(null);
 
             // Act & Assert
             assertThrows(IllegalAttemptToModify.class, () -> bookService.updateBook(id, bookDto));
             verify(bookRepository).findById(id);
-            verify(authorGateway).findAuthorAndMatch(any(AuthorDto.class));
+            verify(authorGateway).findMatchingAuthor(any(AuthorDto.class));
             verifyNoMoreInteractions(bookRepository);
         }
     }

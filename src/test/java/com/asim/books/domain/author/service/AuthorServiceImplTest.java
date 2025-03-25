@@ -83,7 +83,6 @@ class AuthorServiceImplTest {
         @DisplayName("should throw exception when adding duplicate author")
         void whenAddDuplicateAuthor_thenThrowException() {
             // Arrange
-            when(authorMapper.toEntity(any(AuthorDto.class))).thenReturn(author);
             when(authorRepository.existsByNameAndAge(anyString(), anyInt())).thenReturn(true);
 
             // Act & Assert
@@ -312,7 +311,7 @@ class AuthorServiceImplTest {
             AuthorDto dto = new AuthorDto();
 
             // Act & Assert
-            assertThrows(NoIdIsProvidedException.class, () -> authorService.findAuthorAndMatch(dto));
+            assertThrows(NoIdIsProvidedException.class, () -> authorService.findMatchingAuthor(dto));
         }
 
         @Test
@@ -326,7 +325,7 @@ class AuthorServiceImplTest {
             when(authorMapper.toDto(author)).thenReturn(authorDto);
 
             // Act & Assert
-            assertThrows(OptimisticLockException.class, () -> authorService.findAuthorAndMatch(dto));
+            assertThrows(OptimisticLockException.class, () -> authorService.findMatchingAuthor(dto));
         }
 
         @Test
@@ -344,7 +343,7 @@ class AuthorServiceImplTest {
             when(authorMapper.toDto(author)).thenReturn(dbAuthor);
 
             // Act & Assert
-            assertThrows(OptimisticLockException.class, () -> authorService.findAuthorAndMatch(dto));
+            assertThrows(OptimisticLockException.class, () -> authorService.findMatchingAuthor(dto));
         }
 
         @Test
@@ -357,7 +356,7 @@ class AuthorServiceImplTest {
             when(authorMapper.toDto(author)).thenReturn(authorDto);
 
             // Act
-            AuthorDto matches = authorService.findAuthorAndMatch(authorDto);
+            AuthorDto matches = authorService.findMatchingAuthor(authorDto);
 
             // Assert
             assertNotNull(matches);
@@ -378,7 +377,7 @@ class AuthorServiceImplTest {
             when(authorMapper.toDto(author)).thenReturn(authorDto);
 
             // Act
-            AuthorDto matches = authorService.findAuthorAndMatch(inputDto);
+            AuthorDto matches = authorService.findMatchingAuthor(inputDto);
 
             // Assert
             assertNull(matches);

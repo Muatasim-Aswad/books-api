@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import java.lang.annotation.*;
 
 /**
- * This annotation is used to validate fields that are required of type string.
+ * Validation for required string fields.
+ * Uses {@link NotBlank} to ensure the field is not empty or blank.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

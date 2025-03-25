@@ -19,5 +19,4 @@ public class JacksonMapperConfig {
         objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
         return objectMapper;
     }
-
 }
