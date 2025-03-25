@@ -5,6 +5,17 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.regex.Pattern;
 
+/**
+ * Validator for the {@link SecureSqlString} annotation.
+ * Checks for potential SQL injection patterns.
+ * Included patterns:
+ * - SQL comments like --, /*, *\/
+ * - Common SQL keywords in suspicious contexts like SELECT, INSERT, UPDATE, DELETE, DROP, ALTER, EXEC, WAITFOR, CAST
+ * - Typical SQL injection with quotes like ' or " or --
+ * - Multiple consecutive single quotes (potential SQL escaping) like ''
+ * - Common SQL injection equality patterns like 1=1 or x=x or 1=x or x=1
+ * - Hex encoding like 0x1234567890abcdef
+ */
 public class SecureSqlStringValidator implements ConstraintValidator<SecureSqlString, String> {
 
     // Regex to detect common SQL injection patterns rather than just special characters

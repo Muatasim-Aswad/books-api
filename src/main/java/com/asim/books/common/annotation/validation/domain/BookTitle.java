@@ -11,7 +11,10 @@ import java.lang.annotation.*;
 
 
 /**
- * Common validation for Book Titles.
+ * Validation for Book Titles.
+ * Alphanumeric characters with common punctuation marks.
+ * Size between 1 and 255 characters.
+ * Other constraints are applied by {@link TrimmedString}, {@link SecureSqlString}.
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

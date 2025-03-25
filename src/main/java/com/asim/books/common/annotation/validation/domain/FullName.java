@@ -10,8 +10,10 @@ import jakarta.validation.constraints.Size;
 import java.lang.annotation.*;
 
 /**
- * Common validation for full name.
- * Allows alphabetic characters, spaces, hyphens, apostrophes, and periods.
+ * Validation for full name.
+ * Allows alphabetic characters with commonly used special chars.
+ * Size between 2 and 100 characters.
+ * Other constraints are applied by {@link TrimmedString}, {@link SecureSqlString}.
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

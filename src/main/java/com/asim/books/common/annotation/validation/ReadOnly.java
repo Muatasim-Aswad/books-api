@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Null;
 import java.lang.annotation.*;
 
 /**
- * This annotation is used to validate fields that are read-only.
+ * Validation for read-only fields.
+ * Fields annotated with this annotation are read-only and cannot be set.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

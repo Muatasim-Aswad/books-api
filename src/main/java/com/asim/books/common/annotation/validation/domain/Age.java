@@ -8,7 +8,8 @@ import jakarta.validation.constraints.Min;
 import java.lang.annotation.*;
 
 /**
- * Common validation for age.
+ * Validation for human age.
+ * A number between 0 and 150.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

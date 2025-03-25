@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.lang.annotation.*;
 
 /**
- * Common response for validation errors (400).
+ * Response for validation errors (400).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

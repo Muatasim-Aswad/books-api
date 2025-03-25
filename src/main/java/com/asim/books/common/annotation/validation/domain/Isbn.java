@@ -9,7 +9,8 @@ import java.lang.annotation.*;
 
 
 /**
- * Common validation for ISBN.
+ * Validation for ISBN.
+ * 10 or 13 digits long numeric string.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

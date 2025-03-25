@@ -8,6 +8,10 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Utility class for reflection operations
+ * Made as a Spring component to enable caching of field names with @Cacheable.
+ */
 @Slf4j
 @Component
 public class ReflectionUtils {
@@ -26,6 +30,13 @@ public class ReflectionUtils {
         return fieldNames;
     }
 
+    /**
+     * Recursively populates a set with field names from the given class
+     *
+     * @param clazz      Class to extract field names from
+     * @param prefix     Prefix to add to the field names
+     * @param fieldNames Set to populate with field names
+     */
     private void populateFieldNames(Class<?> clazz, String prefix, Set<String> fieldNames) {
         try {
             // Get all declared fields from the class

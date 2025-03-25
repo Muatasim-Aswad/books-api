@@ -6,8 +6,8 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * Common validation for secure SQL strings.
- * No SQL injection allowed.
+ * Pattern validation for secure SQL strings.
+ * Checks for potential SQL injection patterns.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

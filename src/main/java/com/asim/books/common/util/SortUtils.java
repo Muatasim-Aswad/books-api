@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Utility class for creating Sort objects from query parameters
+ */
 @Component
 @RequiredArgsConstructor
 public final class SortUtils {

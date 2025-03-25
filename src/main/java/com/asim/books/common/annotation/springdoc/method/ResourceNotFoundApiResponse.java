@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.lang.annotation.*;
 
 /**
- * Common response for resource not found (404).
+ * Response for resource not found (404).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

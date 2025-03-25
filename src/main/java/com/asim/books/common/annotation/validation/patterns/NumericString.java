@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import java.lang.annotation.*;
 
 /**
- * Validates that a string contains only numeric characters (digits).
+ * Pattern validation for numeric strings (digits).
  * No whitespace or special characters allowed.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
