@@ -1,40 +1,43 @@
 # Books Rest API
 
-** This Readme and project is not complete. **
+**This Project is in progress.**
 
-This project serves as a demonstration of building a REST API using Spring Boot including different features.
-For the sake of this purpose, entities and business logic does not reflect a full-fledged application or a complete real
-world scenario.
+This project serves as a demonstration of building a full-fledged REST API using Spring Boot with many features.
+For the sake of this purpose, entities and business logic might not reflect a complete real world scenario.
 
-The API revolves around the following domains:
+The API revolves around the following domains (Book - Author - User). See the ERD for details.
 
-- Book
-- Author
-  where a book must have at least one author.
+## Endpoints
+
+See the documentation.
 
 ## Technologies
 
 - Java 23
 - Spring Boot 3.4.3
 - Maven 4.0.0
-- Postgres (a docker container is included for local development)
+- Postgres (a docker container is included for development)
 - H2 Database (for testing)
 - Data JPA (using Hibernate)
-- Testing (Junit5 - Hamcrest - Mockito)
+- Testing (MockMvc - Junit5 - Hamcrest - Mockito)
+- springdoc-openapi v2.8.6
 
 ## Current Features
 
-- Manages CRUD operations for Book and Author entities with their relationships
 - Input validation
-- Unit and Integration tests
 - Exception handling
+- API Documentation OpenAPI/Swagger
+- Logging & Auditing
+- Retrieval
+  - Pagination
+  - Sorting (Supports multiple and nested sorts)
+  - Search/Filter
+- CRUD operations for entities with their relationships
+- Unit & Integration Tests
 
 ## In-progress Features
 
-- API Documentation according to OpenAPI/Swagger
-- Pagination
 - Search & Filtering
-- Logging
 - Security:
     - Users entity
         - Roles & Permissions
