@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("Sort Utility Tests")
 @ExtendWith(MockitoExtension.class)
-class SortUtilsTest {
+class SortHandlerUtilsTest {
 
     @Mock
     private ReflectionUtils reflectionUtils;

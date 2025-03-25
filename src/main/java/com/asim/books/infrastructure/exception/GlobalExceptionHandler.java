@@ -35,12 +35,12 @@ public class GlobalExceptionHandler {
         Map<String, Object> finalErrors = new HashMap<>();
 
         // Get the class name from the target
-        final String className = Utils.normalizeClassName(ex.getBindingResult().getObjectName());
+        final String className = HandlerUtils.normalizeClassName(ex.getBindingResult().getObjectName());
 
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             if (error instanceof FieldError fieldError) {
-                String message = Utils.formatErrorMessage(error.getDefaultMessage(), error.getCode());
-                Utils.processFieldError(finalErrors, fieldError.getField(), message, className);
+                String message = HandlerUtils.formatErrorMessage(error.getDefaultMessage(), error.getCode());
+                HandlerUtils.processFieldError(finalErrors, fieldError.getField(), message, className);
             }
         });
 
@@ -63,13 +63,13 @@ public class GlobalExceptionHandler {
 
             // Get the class name from the root bean class if not already set
             if (className == null) {
-                className = Utils.normalizeClassName(violation.getRootBeanClass().getSimpleName());
+                className = HandlerUtils.normalizeClassName(violation.getRootBeanClass().getSimpleName());
             }
 
             String errorCode = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
-            String message = Utils.formatErrorMessage(violation.getMessage(), errorCode);
+            String message = HandlerUtils.formatErrorMessage(violation.getMessage(), errorCode);
 
-            Utils.processFieldError(finalErrors, fieldName, message, className);
+            HandlerUtils.processFieldError(finalErrors, fieldName, message, className);
         }
 
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), finalErrors);

@@ -24,8 +24,8 @@ public class AuthorGatewayImpl implements AuthorGateway {
         return authorFacade.authorExists(id);
     }
 
-    public AuthorDto findAuthorAndMatch(AuthorDto authorDto) {
-        return authorFacade.findAuthorAndMatch(authorDto);
+    public AuthorDto findMatchingAuthor(AuthorDto authorDto) {
+        return authorFacade.findMatchingAuthor(authorDto);
     }
 
     @Override

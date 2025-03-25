@@ -21,9 +21,9 @@ public interface AuthorFacade {
     boolean authorExists(Long id);
 
     /**
-     * @see AuthorService#findAuthorAndMatch(AuthorDto)
+     * @see AuthorService#findMatchingAuthor(AuthorDto)
      */
-    AuthorDto findAuthorAndMatch(AuthorDto authorDto);
+    AuthorDto findMatchingAuthor(AuthorDto authorDto);
 
     /**
      * @see AuthorDtoValidator#validate(AuthorDto)

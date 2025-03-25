@@ -102,7 +102,7 @@ public class BookServiceImpl implements BookService {
             AuthorDto author = update.getAuthor();
 
             //throws if does not exist
-            AuthorDto existingAndMatchingAuthor = authorGateway.findAuthorAndMatch(author);
+            AuthorDto existingAndMatchingAuthor = authorGateway.findMatchingAuthor(author);
 
             if (existingAndMatchingAuthor == null)
                 throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through /books.");
@@ -166,7 +166,7 @@ public class BookServiceImpl implements BookService {
      */
     public AuthorDto validateAuthor(AuthorDto author) {
         try {
-            AuthorDto existingAndMatchingAuthor = authorGateway.findAuthorAndMatch(author);
+            AuthorDto existingAndMatchingAuthor = authorGateway.findMatchingAuthor(author);
 
             if (existingAndMatchingAuthor == null)
                 throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through /books.");

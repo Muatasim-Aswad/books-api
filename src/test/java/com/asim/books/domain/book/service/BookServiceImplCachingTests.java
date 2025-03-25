@@ -195,7 +195,7 @@ class BookServiceImplCachingTests {
             when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
             when(bookMapper.toDto(firstBook)).thenReturn(firstBookDto);
             when(bookMapper.toDto(updatedBook)).thenReturn(updatedDto);
-            when(authorGateway.findAuthorAndMatch(authorDto)).thenReturn(authorDto);
+            when(authorGateway.findMatchingAuthor(authorDto)).thenReturn(authorDto);
             when(entityManager.getReference(eq(Author.class), anyLong())).thenReturn(new Author());
 
             // Act
@@ -258,7 +258,7 @@ class BookServiceImplCachingTests {
             BookDto savedBookDto = BookTestFixtures.getOneDtoWithAllFields();
             savedBookDto.setId(SECOND_BOOK_ID);
 
-            when(authorGateway.findAuthorAndMatch(authorDto)).thenReturn(authorDto);
+            when(authorGateway.findMatchingAuthor(authorDto)).thenReturn(authorDto);
             when(bookRepository.save(any(Book.class))).thenReturn(newBook);
             when(bookMapper.toDto(newBook)).thenReturn(savedBookDto);
             when(bookMapper.toEntity(newBookDto)).thenReturn(newBook);

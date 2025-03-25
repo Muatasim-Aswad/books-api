@@ -7,7 +7,7 @@ import java.util.Map;
  * Utility methods for exception handling
  * Currently only used within validation error handling
  */
-public interface Utils {
+interface HandlerUtils {
 
     /**
      * Helper method to format validation error messages consistently
@@ -23,7 +23,8 @@ public interface Utils {
 
     /**
      * ** UserDto -> user
-     * ** not a ..Dto -> "parameter"
+     * ** not *Dto -> "parameter"
+     * assumes that validated classes are suffixed with "Dto"
      */
     static String normalizeClassName(String className) {
         boolean isDto = className != null && className.toLowerCase().contains("dto");
