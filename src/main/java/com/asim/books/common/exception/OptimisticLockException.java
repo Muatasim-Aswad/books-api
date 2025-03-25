@@ -1,7 +1,7 @@
 package com.asim.books.common.exception;
 
 /**
- * Exception to be thrown when an optimistic lock fails.
+ * Exception to be thrown when an optimistic lock fails. e.g. providing an outdated version number.
  * Should result in a 409 Conflict response.
  */
 public class OptimisticLockException extends RuntimeException {

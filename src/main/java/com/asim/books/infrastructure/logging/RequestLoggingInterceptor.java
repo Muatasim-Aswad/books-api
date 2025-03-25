@@ -72,7 +72,7 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             // Get authenticated user if available
             String username = getUserName();
 
-            log.info("[{}] RESPONSE: {} {} - User: {} - {} ms - Content-Type: {}",
+            log.info("[{}] -- RESPONSE: {} {} - User: {} - {} ms - Content-Type: {}",
                     requestId,
                     response.getStatus(),
                     request.getRequestURI(),
@@ -143,7 +143,7 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
         }
 
         if (!headers.isEmpty()) {
-            log.debug("[{}] response headers: {}", requestId, headers);
+            log.debug("[{}] -- response headers: {}", requestId, headers);
         }
     }
 

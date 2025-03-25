@@ -1,7 +1,7 @@
 package com.asim.books.common.exception;
 
 /**
- * Exception to be thrown when a resource already exists.
+ * Exception to be thrown when an attempt is made to create a resource that already exists.
  * Should result in a 409 Conflict response.
  */
 public class DuplicateResourceException extends RuntimeException {

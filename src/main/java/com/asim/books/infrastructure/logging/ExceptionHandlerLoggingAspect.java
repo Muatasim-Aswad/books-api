@@ -19,19 +19,23 @@ public class ExceptionHandlerLoggingAspect {
 
     @Before("@annotation(org.springframework.web.bind.annotation.ExceptionHandler) && args(ex)")
     public void logException(Exception ex) {
+        String message = ex.getMessage();
+        String name = ex.getClass().getSimpleName();
+        String requestId = null;
+
         try {
             // Get request ID from current request
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
-            String requestId = (String) request.getAttribute("requestId");
+            requestId = (String) request.getAttribute("requestId");
 
-            log.warn("[{}] handled exception: {}",
-                    requestId != null ? requestId : "unknown",
-                    ex.getMessage()
-            );
-        } catch (Exception e) {
-            // Fallback logging
-            log.warn("Exception in handler: {}", ex.getMessage());
+        } catch (Exception _) {
         }
+
+        log.warn("[{}] -- handled exception: {}, message: {}",
+                requestId != null ? requestId : "unknown",
+                name,
+                message
+        );
     }
 }
