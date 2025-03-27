@@ -19,7 +19,7 @@ import java.time.ZonedDateTime;
  * Data transfer object for author entities.
  * The following groups are used for external input validation:
  * - Default: enforces only validation but not (required).
- * - Required: enforces existence validation in addition to the default validations.
+ * - OnCreate: enforces existence validation in addition to the default validations.
  */
 @Data
 @AllArgsConstructor
@@ -27,11 +27,11 @@ import java.time.ZonedDateTime;
 @Builder
 public class AuthorDto implements ContradictionCheckable<AuthorDto> {
     @FullName
-    @RequiredString(groups = {Required.class})
+    @RequiredString(groups = {OnCreate.class})
     private String name;
 
     @Age
-    @RequiredNumber(groups = {Required.class})
+    @RequiredNumber(groups = {OnCreate.class})
     private Integer age;
 
     //Auto generated fields
@@ -47,12 +47,12 @@ public class AuthorDto implements ContradictionCheckable<AuthorDto> {
     @ReadOnly
     private Long updatedBy;
 
-    @ReadOnly(groups = {Required.class})
+    @ReadOnly(groups = {OnCreate.class})
     private Integer version;
 
     /**
      * Validation group to enforce the existence of the field in addition to the default validations. (required)
      */
-    public interface Required extends Default {
+    public interface OnCreate extends Default {
     }
 }

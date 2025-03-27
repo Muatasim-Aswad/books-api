@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("ContradictionUtils Tests")
-class ContradictionHandlerUtilsTest {
+class ContradictionUtilsTest {
 
     @Nested
-    @DisplayName("Basic Value Contradiction Tests")
+    @DisplayName("Method: contradicts")
     class BasicContradictionTests {
 
         @Test

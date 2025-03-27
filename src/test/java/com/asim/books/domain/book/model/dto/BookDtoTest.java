@@ -100,7 +100,7 @@ class BookDtoTest {
             bookDto.setIsbn(null);
 
             // Act
-            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.Required.class);
+            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.OnCreate.class);
 
             // Assert
             assertThat(violations).isNotEmpty();
@@ -162,7 +162,7 @@ class BookDtoTest {
             bookDto.setTitle(null);
 
             // Act
-            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.Required.class);
+            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.OnCreate.class);
 
             // Assert
             assertThat(violations).isNotEmpty();
@@ -224,7 +224,7 @@ class BookDtoTest {
             bookDto.setAuthor(null);
 
             // Act
-            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.Required.class);
+            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.OnCreate.class);
 
             // Assert
             assertThat(violations).isNotEmpty();
@@ -273,7 +273,7 @@ class BookDtoTest {
             }
 
             // Act
-            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.Required.class);
+            Set<ConstraintViolation<BookDto>> violations = ValidationTestHelper.validate(bookDto, BookDto.OnCreate.class);
 
             // Assert
             assertThat(violations).isNotEmpty();

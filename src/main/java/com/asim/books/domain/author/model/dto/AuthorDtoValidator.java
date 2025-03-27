@@ -18,11 +18,11 @@ public class AuthorDtoValidator {
     }
 
     /**
-     * Validates the required group. Enforces the existence of the field in addition to the default validations. (required)
+     * Validates according to the creation group. Enforces the existence of the field in addition to the default validations. (required)
      *
      * @param author the author to validate
      */
-    @Validated(AuthorDto.Required.class)
-    public void validateRequired(@Valid AuthorDto author) {
+    @Validated(AuthorDto.OnCreate.class)
+    public void validateOnCreate(@Valid AuthorDto author) {
     }
 }

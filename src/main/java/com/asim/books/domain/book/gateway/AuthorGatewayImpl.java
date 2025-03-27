@@ -15,26 +15,13 @@ public class AuthorGatewayImpl implements AuthorGateway {
         this.authorFacade = authorFacade;
     }
 
-    public AuthorDto findAuthorById(Long id) {
-        return authorFacade.findAuthorById(id);
-    }
-
-
-    public boolean authorExists(Long id) {
-        return authorFacade.authorExists(id);
-    }
-
+    @Override
     public AuthorDto findMatchingAuthor(AuthorDto authorDto) {
         return authorFacade.findMatchingAuthor(authorDto);
     }
 
     @Override
-    public void validateAuthor(AuthorDto authorDto) {
-        authorFacade.validateAuthor(authorDto);
-    }
-
-    @Override
-    public void validateAuthorRequired(AuthorDto authorDto) {
-        authorFacade.validateAuthorRequired(authorDto);
+    public void validateAuthorToCreate(AuthorDto authorDto) {
+        authorFacade.validateAuthorToCreate(authorDto);
     }
 }

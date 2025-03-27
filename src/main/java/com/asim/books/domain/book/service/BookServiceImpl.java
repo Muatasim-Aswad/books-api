@@ -6,12 +6,12 @@ import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.common.mapper.entity.EntityMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
-import com.asim.books.domain.author.model.mapper.AuthorMapper;
 import com.asim.books.domain.book.gateway.AuthorGateway;
 import com.asim.books.domain.book.model.dto.BookDto;
 import com.asim.books.domain.book.model.entity.Book;
 import com.asim.books.domain.book.repository.BookRepository;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,27 +31,18 @@ import org.springframework.validation.annotation.Validated;
  */
 @Service
 @Validated
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final EntityMapper<Book, BookDto> bookMapper;
     private final AuthorGateway authorGateway;
     private final EntityManager entityManager;
 
-    public BookServiceImpl(BookRepository bookRepository,
-                           EntityMapper<Book, BookDto> bookMapper,
-                           AuthorGateway authorGateway, EntityManager entityManager, AuthorMapper authorMapper) {
-        this.bookRepository = bookRepository;
-        this.bookMapper = bookMapper;
-        this.authorGateway = authorGateway;
-        this.entityManager = entityManager;
-    }
-
     /**
      * Can create or assign an existing author to a book.
-     * {@inheritDoc}
      */
-    @Transactional
     @Override
+    @Transactional
     @CachePut(value = "books", key = "#result.id")
     public BookDto addBook(BookDto bookDto) {
 
@@ -85,10 +76,9 @@ public class BookServiceImpl implements BookService {
 
     /**
      * Can reassign to an existing author.
-     * {@inheritDoc}
      */
-    @Transactional
     @Override
+    @Transactional
     @CachePut(value = "books", key = "#id")
     public BookDto updateBook(Long id, BookDto update) {
 
@@ -174,8 +164,8 @@ public class BookServiceImpl implements BookService {
             return existingAndMatchingAuthor;
 
         } catch (NoIdIsProvidedException ex) {
-            //the author is considered new
-            authorGateway.validateAuthorRequired(author);
+            //the author is considered new as it has no id
+            authorGateway.validateAuthorToCreate(author);
 
             return author;
         }

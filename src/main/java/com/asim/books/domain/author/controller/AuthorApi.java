@@ -33,7 +33,7 @@ public interface AuthorApi {
     @Operation(summary = "Create a new author")
     @AuthorCreatedApiResponse
     @DuplicateResourceApiResponse
-    AuthorDto addAuthor(@Validated(AuthorDto.Required.class) @RequestBody(description = "Author details, excluding auto-generated fields", required = true)
+    AuthorDto addAuthor(@Validated(AuthorDto.OnCreate.class) @RequestBody(description = "Author details, excluding auto-generated fields", required = true)
                         AuthorDto author);
 
 

@@ -10,11 +10,49 @@ import java.util.Set;
 
 /**
  * Utility class for reflection operations
- * Made as a Spring component to enable caching of field names with @Cacheable.
+ * * Made as a Spring component to enable caching of field names with @Cacheable.
  */
 @Slf4j
 @Component
 public class ReflectionUtils {
+    /**
+     * Determines if a class is a custom class from the application
+     * rather than a Java standard library, primitive, array, or enum.
+     *
+     * @param clazz The class to check
+     * @return true if the class is a custom application class, false otherwise
+     */
+    @Cacheable("customClasses")
+    public boolean isCustomClass(Class<?> clazz) {
+        if (clazz == null || clazz.isPrimitive() || clazz.isArray() || clazz.isEnum()) {
+            return false;
+        }
+
+        Package pkg = clazz.getPackage();
+        if (pkg == null) return false;
+
+        String packageName = pkg.getName();
+
+        return packageName.startsWith("com.asim.books");
+    }
+
+
+    /**
+     * Returns an array of fields from the given class
+     * Result is cached using Spring's caching mechanism
+     *
+     * @param clazz Class to extract fields from
+     * @return Array containing the fields
+     */
+    @Cacheable("declaredFields")
+    public Field[] getDeclaredFields(Class<?> clazz) {
+        try {
+            return clazz.getDeclaredFields();
+        } catch (SecurityException e) {
+            log.error("Security exception while getting fields from class {}: {}", clazz.getName(), e.getMessage());
+            return new Field[0];
+        }
+    }
 
     /**
      * Returns a set of field names from the given class
@@ -38,29 +76,21 @@ public class ReflectionUtils {
      * @param fieldNames Set to populate with field names
      */
     private void populateFieldNames(Class<?> clazz, String prefix, Set<String> fieldNames) {
-        try {
-            // Get all declared fields from the class
-            Field[] fields = clazz.getDeclaredFields();
 
-            // Add all field names to the set
-            for (Field field : fields) {
-                String fieldName = prefix + field.getName();
-                fieldNames.add(fieldName);
+        // Get all declared fields from the class
+        Field[] fields = getDeclaredFields(clazz);
 
-                // For non-primitive, non-JDK types, recursively add nested fields
-                Class<?> fieldType = field.getType();
-                if (!fieldType.isPrimitive() &&
-                        !fieldType.isEnum() &&
-                        !fieldType.getName().startsWith("java.") &&
-                        !fieldType.getName().startsWith("javax.") &&
-                        !fieldType.isArray() &&
-                        !fieldType.equals(String.class)) {
+        // Add all field names to the set
+        for (Field field : fields) {
+            String fieldName = prefix + field.getName();
+            fieldNames.add(fieldName);
 
-                    populateFieldNames(fieldType, fieldName + ".", fieldNames);
-                }
+            // For non-primitive, non-JDK types, custom types recursively add nested fields
+            Class<?> fieldType = field.getType();
+            if (isCustomClass(fieldType)) {
+                populateFieldNames(fieldType, fieldName + ".", fieldNames);
             }
-        } catch (SecurityException e) {
-            log.error("Security exception while getting fields from class {}: {}", clazz.getName(), e.getMessage());
         }
+
     }
 }
