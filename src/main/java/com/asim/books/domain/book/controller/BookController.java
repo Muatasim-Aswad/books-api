@@ -54,5 +54,4 @@ public class BookController implements BookApi {
 
         return bookService.getBooks(pageable, title, author);
     }
-
 }

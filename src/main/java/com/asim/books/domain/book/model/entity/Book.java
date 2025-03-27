@@ -34,7 +34,7 @@ public class Book {
     private String title;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
     private Author author;
 
     //auto-generated fields

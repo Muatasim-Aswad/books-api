@@ -59,24 +59,22 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     @CachePut(value = "authors", key = "#id")
-    public AuthorDto updateAuthor(Long id, AuthorDto authorDto) {
-        Author existingAuthor = authorRepository.findById(id)
+    public AuthorDto updateAuthor(Long id, AuthorDto update) {
+        Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
 
         // Only update fields that are provided in the DTO
-        if (authorDto.getName() != null) {
-            existingAuthor.setName(authorDto.getName());
-        }
+        String name = update.getName();
+        Integer age = update.getAge();
 
-        if (authorDto.getAge() != null) {
-            existingAuthor.setAge(authorDto.getAge());
-        }
+        if (name != null) author.setName(name);
+        if (age != null) author.setAge(age);
 
         // Save the updated entity
-        existingAuthor = authorRepository.save(existingAuthor);
+        author = authorRepository.save(author);
 
         entityManager.flush();
-        return authorMapper.toDto(existingAuthor);
+        return authorMapper.toDto(author);
     }
 
     @Override

@@ -48,7 +48,7 @@ public final class SortUtils {
      * Creates a Sort object from a string array and validates fields against a class
      *
      * @param sort        String array containing property and direction pairs
-     * @param entityClass Class to validate field names against (optional)
+     * @param entityClass Class to validate field names against
      * @return Sort object
      */
     public Sort createObject(String[] sort, Class<?> entityClass) {
@@ -65,6 +65,7 @@ public final class SortUtils {
         List<Sort.Order> orders = new ArrayList<>();
         Set<String> validFields = reflectionUtils.getFieldNames(entityClass);
 
+        //populate orders with Sort.Order objects
         for (int i = 0; i < sort.length; i += 2) {
             //get and check field
             String field = sort[i];

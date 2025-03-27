@@ -124,6 +124,7 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
         BookDto createdBook = objectMapper.readValue(bookResponse, BookDto.class);
         Long bookId = createdBook.getId();
         Long authorId = createdBook.getAuthor().getId();
+        Integer authorVersion = createdBook.getAuthor().getVersion();
 
         // Try to update with same author ID but different name/age
         BookDto updateBookDto = new BookDto();
@@ -131,11 +132,13 @@ class PatchBookControllerIntegrationTests extends BaseBookControllerIntegrationT
         authorDto.setId(authorId);
         authorDto.setName("New Name");
         authorDto.setAge(40);
+        authorDto.setVersion(authorVersion);
         updateBookDto.setAuthor(authorDto);
+
 
         // Act & Assert
         updateBook(bookId, updateBookDto)
-                .andExpect(status().isConflict());
+                .andExpect(status().isForbidden());
     }
 
     @Test

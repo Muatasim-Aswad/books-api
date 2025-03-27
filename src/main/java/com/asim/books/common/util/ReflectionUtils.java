@@ -57,6 +57,7 @@ public class ReflectionUtils {
     /**
      * Returns a set of field names from the given class
      * Result is cached using Spring's caching mechanism
+     * Supports nested fields with dot notation
      *
      * @param clazz Class to extract field names from
      * @return Set containing the field names

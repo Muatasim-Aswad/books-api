@@ -85,24 +85,22 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", id));
 
-        if (update.getIsbn() != null) book.setIsbn(update.getIsbn());
-        if (update.getTitle() != null) book.setTitle(update.getTitle());
+        // Only update fields that are provided in the DTO
+        String isbn = update.getIsbn();
+        String title = update.getTitle();
+        AuthorDto author = update.getAuthor();
 
-        if (update.getAuthor() != null) {
-            AuthorDto author = update.getAuthor();
-
-            //throws if does not exist
-            AuthorDto existingAndMatchingAuthor = authorGateway.findMatchingAuthor(author);
-
-            if (existingAndMatchingAuthor == null)
-                throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through /books.");
+        if (isbn != null) book.setIsbn(isbn);
+        if (title != null) book.setTitle(title);
+        if (author != null) {
+            //if no id, or no author, or version problem exception is thrown and propagated
+            if (authorGateway.findMatchingAuthor(author) == null)
+                //The user introduces updates to the author fields
+                throw new IllegalAttemptToModify("Author", author.getId(), "An existing author cannot be modified through PATCH /books.");
 
             Author authorRef = entityManager.getReference(Author.class, author.getId());
-
             book.setAuthor(authorRef);
-
         }
-
 
         book = bookRepository.save(book);
 
@@ -124,8 +122,7 @@ public class BookServiceImpl implements BookService {
         Specification<Book> spec = Specification.where(null);
 
         //select * from book where title like %title% and author.name like %author%
-        //findByTitleContainingIgnoreCaseAndAuthorNameContainingIgnoreCase
-
+        //findAllByTitleContainingIgnoreCaseAndAuthorNameContainingIgnoreCase
         if (title != null && !title.isEmpty()) {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
