@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
@@ -20,13 +21,30 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("Sort Utility Tests")
 @ExtendWith(MockitoExtension.class)
-class SortHandlerUtilsTest {
+class SortUtilsTest {
 
     @Mock
     private ReflectionUtils reflectionUtils;
 
     @InjectMocks
     private SortUtils sortUtils;
+
+    @BeforeEach
+    void setUp() {
+        // Test class for field validation
+        Set<String> validFields = new HashSet<>();
+        validFields.add("name");
+        validFields.add("age");
+        validFields.add("id");
+
+        when(reflectionUtils.getFieldNames(TestClass.class)).thenReturn(validFields);
+    }
+
+    static class TestClass {
+        private Long id;
+        private String name;
+        private Integer age;
+    }
 
     @Nested
     @DisplayName("Basic Sorting Tests")
@@ -38,7 +56,7 @@ class SortHandlerUtilsTest {
             String[] sortParams = {"name", "asc"};
 
             // Act
-            Sort result = sortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -54,7 +72,7 @@ class SortHandlerUtilsTest {
             String[] sortParams = {"name", "desc"};
 
             // Act
-            Sort result = sortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -70,7 +88,7 @@ class SortHandlerUtilsTest {
             String[] sortParams = {"name", "asc", "age", "desc"};
 
             // Act
-            Sort result = sortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -88,27 +106,31 @@ class SortHandlerUtilsTest {
             String[] sortParams = {"name", "invalid"};
 
             // Act & Assert
-            assertThrows(BadRequestException.class, () -> sortUtils.createObject(sortParams, null));
+            assertThrows(BadRequestException.class, () -> sortUtils.createObject(sortParams, TestClass.class));
         }
 
         @Test
         @DisplayName("should throw BadRequestException when odd number of parameters is provided")
         void whenOddNumberOfParameters_thenThrowBadRequestException() {
+            Mockito.reset(reflectionUtils);
+
             // Arrange
             String[] sortParams = {"name", "asc", "age"};
 
             // Act & Assert
-            assertThrows(BadRequestException.class, () -> sortUtils.createObject(sortParams, null));
+            assertThrows(BadRequestException.class, () -> sortUtils.createObject(sortParams, TestClass.class));
         }
 
         @Test
         @DisplayName("should return unsorted when no sort parameters are provided")
         void whenNoSortParameters_thenReturnUnsorted() {
+            Mockito.reset(reflectionUtils);
+
             // Arrange
             String[] sortParams = {};
 
             // Act
-            Sort result = sortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -118,8 +140,10 @@ class SortHandlerUtilsTest {
         @Test
         @DisplayName("should return unsorted when sort parameters are null")
         void whenNullSortParameters_thenReturnUnsorted() {
+            Mockito.reset(reflectionUtils);
+
             // Act
-            Sort result = sortUtils.createObject(null, null);
+            Sort result = sortUtils.createObject(null, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -133,7 +157,7 @@ class SortHandlerUtilsTest {
             String[] sortParams = {"name", "DESC", "age", "ASC"};
 
             // Act
-            Sort result = sortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();
@@ -146,16 +170,6 @@ class SortHandlerUtilsTest {
     @Nested
     @DisplayName("Field Validation Tests")
     class FieldValidationTests {
-
-        @BeforeEach
-        void setUp() {
-            Set<String> validFields = new HashSet<>();
-            validFields.add("name");
-            validFields.add("age");
-            validFields.add("id");
-
-            when(reflectionUtils.getFieldNames(TestClass.class)).thenReturn(validFields);
-        }
 
         @Test
         @DisplayName("should not throw exception when sorting by valid fields")
@@ -194,13 +208,6 @@ class SortHandlerUtilsTest {
             assertThrows(BadRequestException.class, () ->
                     sortUtils.createObject(sortParams, TestClass.class));
         }
-
-        // Test class for field validation
-        static class TestClass {
-            private Long id;
-            private String name;
-            private Integer age;
-        }
     }
 
     @Nested
@@ -214,7 +221,7 @@ class SortHandlerUtilsTest {
             String[] sortParams = {"name,asc", "age,desc"};
 
             // Act
-            Sort result = sortUtils.createObject(sortParams, null);
+            Sort result = sortUtils.createObject(sortParams, TestClass.class);
 
             // Assert
             assertThat(result).isNotNull();

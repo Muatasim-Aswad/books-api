@@ -53,14 +53,6 @@ public interface AuthorService {
     Page<AuthorDto> getAuthors(Pageable pageable, String name);
 
     /**
-     * Checks if author exists
-     *
-     * @param id Author ID
-     * @return true if exists, false otherwise
-     */
-    boolean authorExists(Long id);
-
-    /**
      * Finds author and matches.
      * The matching is done by comparing only non-null fields.
      *

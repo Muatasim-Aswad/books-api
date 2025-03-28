@@ -36,7 +36,7 @@ public interface BookApi {
     @BookCreatedApiResponse
     @DuplicateResourceApiResponse
     @ForbiddenOperationApiResponse
-    BookDto addBook(@Validated(BookDto.Required.class)
+    BookDto addBook(@Validated(BookDto.OnCreate.class)
                     @RequestBody(description = "Book details, excluding auto-generated fields", required = true)
                     BookDto book);
 

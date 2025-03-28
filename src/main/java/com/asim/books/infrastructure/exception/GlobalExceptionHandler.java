@@ -2,6 +2,7 @@ package com.asim.books.infrastructure.exception;
 
 import com.asim.books.common.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Hidden
@@ -178,12 +180,14 @@ public class GlobalExceptionHandler {
     // This should be the last resort exception handler
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleGenericException(Exception ex) {
-        log.error("An unexpected error occurred", ex);
+    public ErrorResponse handleGenericException(Exception ex, HttpServletRequest request) {
+        //A unique error ID is generated for tracking purposes
+        String errorId = UUID.randomUUID().toString();
+        request.setAttribute("errorId", errorId);
 
         return new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An unexpected error occurred. Please try again later."
+                "An unexpected error occurred. Please contact support with error ID: " + errorId
         );
     }
 }

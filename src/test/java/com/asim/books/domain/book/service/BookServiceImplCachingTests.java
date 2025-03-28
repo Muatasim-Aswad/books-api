@@ -96,9 +96,8 @@ class BookServiceImplCachingTests {
         public BookService bookService(BookRepository bookRepository,
                                        EntityMapper<Book, BookDto> bookMapper,
                                        AuthorGateway authorGateway,
-                                       EntityManager entityManager,
-                                       AuthorMapper authorMapper) {
-            return new BookServiceImpl(bookRepository, bookMapper, authorGateway, entityManager, authorMapper);
+                                       EntityManager entityManager) {
+            return new BookServiceImpl(bookRepository, bookMapper, authorGateway, entityManager);
         }
 
         @Bean

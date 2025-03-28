@@ -31,6 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final EntityManager entityManager;
 
 
+    @Override
     @Transactional
     @CachePut(value = "authors", key = "#result.id")
     public AuthorDto addAuthor(AuthorDto authorDto) {
@@ -46,7 +47,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.toDto(author);
     }
 
-
+    @Override
     @Cacheable(value = "authors", key = "#id")
     public AuthorDto getAuthor(Long id) {
         Author author = authorRepository.findById(id)
@@ -55,29 +56,28 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.toDto(author);
     }
 
-
+    @Override
     @Transactional
     @CachePut(value = "authors", key = "#id")
-    public AuthorDto updateAuthor(Long id, AuthorDto authorDto) {
-        Author existingAuthor = authorRepository.findById(id)
+    public AuthorDto updateAuthor(Long id, AuthorDto update) {
+        Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
 
         // Only update fields that are provided in the DTO
-        if (authorDto.getName() != null) {
-            existingAuthor.setName(authorDto.getName());
-        }
+        String name = update.getName();
+        Integer age = update.getAge();
 
-        if (authorDto.getAge() != null) {
-            existingAuthor.setAge(authorDto.getAge());
-        }
+        if (name != null) author.setName(name);
+        if (age != null) author.setAge(age);
 
         // Save the updated entity
-        existingAuthor = authorRepository.save(existingAuthor);
+        author = authorRepository.save(author);
 
         entityManager.flush();
-        return authorMapper.toDto(existingAuthor);
+        return authorMapper.toDto(author);
     }
 
+    @Override
     @Transactional
     @CacheEvict(value = "authors", key = "#id")
     public void deleteAuthor(Long id) {
@@ -88,6 +88,7 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.deleteById(id);
     }
 
+    @Override
     public Page<AuthorDto> getAuthors(Pageable pageable, String name) {
         //easier to extend than the query methods
         Specification<Author> spec = Specification.where(null);
@@ -103,10 +104,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorsPage.map(authorMapper::toDto);
     }
 
-    public boolean authorExists(Long id) {
-        return authorRepository.existsById(id);
-    }
-
+    @Override
     public AuthorDto findMatchingAuthor(AuthorDto providedAuthor) {
         // Check if ID is provided & get the author from the database
         Long id = providedAuthor.getId();

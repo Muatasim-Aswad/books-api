@@ -49,7 +49,7 @@ class AuthorDtoTest {
             AuthorDto author = AuthorTestFixtures.getOneDto();
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.OnCreate.class);
 
             // Assert
             assertTrue(violations.isEmpty());
@@ -63,7 +63,7 @@ class AuthorDtoTest {
             AuthorDto author = AuthorTestFixtures.createDto(name, AuthorTestFixtures.AGE);
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.OnCreate.class);
 
             // Assert
             assertFalse(violations.isEmpty());
@@ -78,7 +78,7 @@ class AuthorDtoTest {
             AuthorDto author = AuthorTestFixtures.createDto(AuthorTestFixtures.NAME, age);
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.OnCreate.class);
 
             // Assert
             assertFalse(violations.isEmpty());
@@ -99,7 +99,7 @@ class AuthorDtoTest {
                     .build();
 
             // Act
-            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.Required.class);
+            Set<ConstraintViolation<AuthorDto>> violations = ValidationTestHelper.validate(author, AuthorDto.OnCreate.class);
 
             // Assert
             assertFalse(violations.isEmpty());

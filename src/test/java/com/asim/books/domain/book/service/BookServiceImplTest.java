@@ -110,7 +110,7 @@ class BookServiceImplTest {
             // Arrange
             when(authorGateway.findMatchingAuthor(any(AuthorDto.class)))
                     .thenThrow(new NoIdIsProvidedException("Author"));
-            doNothing().when(authorGateway).validateAuthorRequired(any(AuthorDto.class));
+            doNothing().when(authorGateway).validateAuthorToCreate(any(AuthorDto.class));
             when(bookMapper.toEntity(bookDto)).thenReturn(book);
             when(bookRepository.save(book)).thenReturn(book);
             when(bookMapper.toDto(book)).thenReturn(bookDto);
@@ -123,7 +123,7 @@ class BookServiceImplTest {
             assertNotNull(result);
             assertEquals(bookDto, result);
             verify(authorGateway).findMatchingAuthor(any(AuthorDto.class));
-            verify(authorGateway).validateAuthorRequired(any(AuthorDto.class));
+            verify(authorGateway).validateAuthorToCreate(any(AuthorDto.class));
             verify(bookMapper).toEntity(bookDto);
             verify(bookRepository).save(book);
             verify(bookMapper).toDto(book);

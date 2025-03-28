@@ -10,15 +10,6 @@ import com.asim.books.domain.author.service.AuthorService;
  * As a facade, it should not contain any business logic or adaptions.
  */
 public interface AuthorFacade {
-    /**
-     * @see AuthorService#getAuthor(Long)
-     */
-    AuthorDto findAuthorById(Long id);
-
-    /**
-     * @see AuthorService#authorExists(Long)
-     */
-    boolean authorExists(Long id);
 
     /**
      * @see AuthorService#findMatchingAuthor(AuthorDto)
@@ -26,12 +17,7 @@ public interface AuthorFacade {
     AuthorDto findMatchingAuthor(AuthorDto authorDto);
 
     /**
-     * @see AuthorDtoValidator#validate(AuthorDto)
+     * @see AuthorDtoValidator#validateOnCreate(AuthorDto)
      */
-    void validateAuthor(AuthorDto authorDto);
-
-    /**
-     * @see AuthorDtoValidator#validateRequired(AuthorDto)
-     */
-    void validateAuthorRequired(AuthorDto authorDto);
+    void validateAuthorToCreate(AuthorDto authorDto);
 }

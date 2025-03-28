@@ -27,7 +27,6 @@ public class BookController implements BookApi {
 
     @GetMapping("/{id}")
     public BookDto getBook(@PathVariable Long id) {
-
         return bookService.getBook(id);
     }
 
@@ -55,5 +54,4 @@ public class BookController implements BookApi {
 
         return bookService.getBooks(pageable, title, author);
     }
-
 }

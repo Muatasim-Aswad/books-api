@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 /**
- * Utility static interface for checking contradictions between values.
+ * Utility class for checking contradictions between values.
  */
-public interface ContradictionUtils {
+public final class ContradictionUtils {
     /**
      * Checks if two values contradict each other.
      * A contradiction exists if both values are non-null and not equal.
@@ -18,7 +18,7 @@ public interface ContradictionUtils {
      * @param value2 Second value to compare
      * @return true if values contradict, false otherwise
      */
-    static <T> boolean contradicts(T value1, T value2) {
+    public static <T> boolean contradicts(T value1, T value2) {
         if (value1 == null || value2 == null) return false;
 
         if (value1 instanceof ZonedDateTime && value2 instanceof ZonedDateTime) {
@@ -39,7 +39,7 @@ public interface ContradictionUtils {
      * @param <T>  The type of objects being compared
      * @return true if there are contradictions, false otherwise
      */
-    static <T> boolean doesContradict(T obj1, T obj2) {
+    public static <T> boolean doesContradict(T obj1, T obj2) {
         if (obj1 == null || obj2 == null) {
             return obj1 != obj2; // They contradict if one is null and the other isn't
         }

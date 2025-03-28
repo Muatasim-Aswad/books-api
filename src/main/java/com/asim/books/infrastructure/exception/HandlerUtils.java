@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Not implementable
  * Utility methods for exception handling
  * Currently only used within validation error handling
  */

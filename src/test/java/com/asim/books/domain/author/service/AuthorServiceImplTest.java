@@ -272,36 +272,6 @@ class AuthorServiceImplTest {
     }
 
     @Nested
-    @DisplayName("Author Existence Tests")
-    class AuthorExistenceTests {
-        @Test
-        @DisplayName("should check if author exists")
-        void whenAuthorExists_thenReturnTrue() {
-            // Arrange
-            when(authorRepository.existsById(AUTHOR_ID)).thenReturn(true);
-
-            // Act
-            boolean exists = authorService.authorExists(AUTHOR_ID);
-
-            // Assert
-            assertTrue(exists);
-        }
-
-        @Test
-        @DisplayName("should return false when author doesn't exist")
-        void whenAuthorDoesNotExist_thenReturnFalse() {
-            // Arrange
-            when(authorRepository.existsById(CommonTestFixtures.NON_EXISTING_ID)).thenReturn(false);
-
-            // Act
-            boolean exists = authorService.authorExists(CommonTestFixtures.NON_EXISTING_ID);
-
-            // Assert
-            assertFalse(exists);
-        }
-    }
-
-    @Nested
     @DisplayName("Find and Match Author Tests")
     class FindAndMatchAuthorTests {
         @Test

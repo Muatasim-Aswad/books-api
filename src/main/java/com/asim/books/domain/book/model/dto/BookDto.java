@@ -19,23 +19,24 @@ import java.time.ZonedDateTime;
  * Data transfer object for book entities.
  * The following groups are used for external input validation:
  * - Default: enforces only validation but not (required)
- * - Required: enforces existence validation in addition to the default validations.
+ * - OnCreate: enforces existence validation in addition to the default validations.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class BookDto {
-    @RequiredString(groups = {Required.class})
+    @RequiredString(groups = {OnCreate.class})
     @Isbn
     private String isbn;
 
-    @RequiredString(groups = {Required.class})
+    @RequiredString(groups = {OnCreate.class})
     @BookTitle
     private String title;
 
-    @NotNull(groups = {Required.class})
-    private AuthorDto author; //validation is in the service layer
+    //validation is in the service layer
+    @NotNull(groups = {OnCreate.class})
+    private AuthorDto author;
 
     // Auto generated fields
     @ReadOnlyId
@@ -50,12 +51,12 @@ public class BookDto {
     @ReadOnly
     private Long updatedBy;
 
-    @ReadOnly(groups = {Required.class})
+    @ReadOnly(groups = {OnCreate.class})
     private Integer version;
 
     /**
      * Validation group to enforce the existence of the field in addition to the default validations. (required)
      */
-    public interface Required extends Default {
+    public interface OnCreate extends Default {
     }
 }
