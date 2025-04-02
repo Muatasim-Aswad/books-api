@@ -102,7 +102,7 @@ public final class BookTestFixtures {
         bookDto.setVersion(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE);
         bookDto.setCreatedBy(CommonTestFixtures.SMALL_NUMBER);
         bookDto.setCreatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
-        bookDto.setUpdatedBy(CommonTestFixtures.SMALL_NUMBER);
+        bookDto.setLastModifiedBy(CommonTestFixtures.SMALL_NUMBER);
         bookDto.setUpdatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
 
         return bookDto;

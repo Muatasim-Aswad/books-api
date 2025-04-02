@@ -1,51 +1,100 @@
-# Books Rest API
+# Books REST API
 
-**This Project is in progress.**
+A robust Spring Boot REST API demonstration for managing books and authors. This project showcases modern Java backend
+development practices with a focus on clean architecture, comprehensive testing, and developer-friendly features.
 
-This project serves as a demonstration of building a full-fledged REST API using Spring Boot with many features.
-For the sake of this purpose, entities and business logic might not reflect a complete real world scenario.
+## 📋 Overview
 
-The API revolves around the following domains (Book - Author - User). See the ERD for details.
+This API provides complete CRUD operations for book and author resources with advanced querying capabilities, thorough
+validation, and comprehensive documentation.
 
-## Endpoints
+## 🚀 Tech Stack
 
-See the documentation.
+- **Java 23**
+- **Spring Boot 3.4.3**
+- **Maven 4.0.0**
+- **Database**
+    - PostgreSQL (containerized for development)
+    - H2 (for testing)
+- **ORM**: Spring Data JPA with Hibernate
+- **Documentation**: OpenAPI/Swagger (springdoc-openapi v2.8.5)
+- **Testing**: JUnit 5, MockMvc, Hamcrest, Mockito
+- **API Features**: Validation, Exception Handling, Logging & Auditing, Caching
 
-## Technologies
+## ✨ Features
 
-- Java 23
-- Spring Boot 3.4.3
-- Maven 4.0.0
-- Postgres (a docker container is included for development)
-- H2 Database (for testing)
-- Data JPA (using Hibernate)
-- Testing (MockMvc - Junit5 - Hamcrest - Mockito)
-- springdoc-openapi v2.8.6
+### Core Functionality
 
-## Current Features
+- Complete CRUD operations for books and authors
+- Comprehensive input validation
+- Global exception handling
+- Request/response logging and auditing
 
-- Input validation
-- Exception handling
-- API Documentation OpenAPI/Swagger
-- Logging & Auditing
-- Retrieval
-  - Pagination
-  - Sorting (Supports multiple and nested sorts)
-  - Search/Filter
-- CRUD operations for entities with their relationships
-- Unit & Integration Tests
+### Advanced Querying
 
-## In-progress Features
+- Pagination support
+- Multi-field and nested sorting
+- Flexible search and filtering
 
-- Search & Filtering
-- Security:
-    - Users entity
-        - Roles & Permissions
-            - Promote and Demote: Super Admin
-            - Delete and Update: Admin
-            - Create: User
-            - Read: All
-- Sessions
-    - JWT & OAuth2
-- Rate limiting
-- Caching
+### Developer Experience
+
+- Comprehensive API documentation with Swagger UI
+- Containerized development environment
+- Extensive test coverage (unit & integration)
+
+## 🔍 API Documentation
+
+API documentation is available via Swagger UI when the application is running:
+http://localhost:8080/swagger-ui/index.html
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- Java 23 or higher
+- Maven 4.0.0 or higher
+- Docker and Docker Compose (for development database)
+
+### Running Locally
+
+1. Clone the repository
+   ```bash
+   git clone <repository-url>
+   cd books
+    ```
+2. Build the application
+   ```bash
+   mvn clean install
+    ```
+3. Run the application while docker desktop is running
+   ```bash
+   mvn spring-boot:run
+    ```
+
+The api will be available at http://localhost:8080
+
+4. Testing the application
+   ```bash
+   mvn test
+    ```
+
+## 🔜 Roadmap
+
+### Security Implementation
+
+- **User Management**
+- **Role-Based Access Control**
+    - **Admin**: Editor + Promote/Demote User
+    - **Editor**: Contributor + Update/Delete Resources
+    - **Contributor**: Viewer + Create Resources
+    - **Viewer**: Read-Only
+- **Authentication**
+    - JWT Authentication
+    - OAuth2 Integration
+- **API Protection**
+    - Rate Limiting
+    - Request Throttling
+
+## 📄 License
+
+[License information]

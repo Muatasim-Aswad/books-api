@@ -6,7 +6,7 @@ import com.asim.books.common.annotation.validation.RequiredString;
 import com.asim.books.common.annotation.validation.domain.Age;
 import com.asim.books.common.annotation.validation.domain.FullName;
 import com.asim.books.common.annotation.validation.domain.ReadOnlyId;
-import com.asim.books.common.model.ContradictionCheckable;
+import com.asim.books.common.util.ContradictionCheckable;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +45,7 @@ public class AuthorDto implements ContradictionCheckable<AuthorDto> {
     @ReadOnly
     private Long createdBy;
     @ReadOnly
-    private Long updatedBy;
+    private Long lastModifiedBy;
 
     @ReadOnly(groups = {OnCreate.class})
     private Integer version;

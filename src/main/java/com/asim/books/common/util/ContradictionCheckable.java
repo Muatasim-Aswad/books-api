@@ -1,6 +1,4 @@
-package com.asim.books.common.model;
-
-import com.asim.books.common.util.ContradictionUtils;
+package com.asim.books.common.util;
 
 /**
  * A mixin interface that provides contradiction checking functionality.

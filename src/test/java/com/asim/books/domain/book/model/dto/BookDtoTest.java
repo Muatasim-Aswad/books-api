@@ -252,7 +252,7 @@ class BookDtoTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"createdAt", "updatedAt", "createdBy", "updatedBy", "version"})
+        @ValueSource(strings = {"createdAt", "updatedAt", "createdBy", "lastModifiedBy", "version"})
         @DisplayName("should not allow setting read-only fields")
         void whenReadOnlyFieldsSet_thenViolations(String fieldName) throws Exception {
             // Arrange
@@ -262,7 +262,7 @@ class BookDtoTest {
                         BookDto.class.getMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1),
                                         java.time.ZonedDateTime.class)
                                 .invoke(bookDto, CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
-                case "createdBy", "updatedBy" ->
+                case "createdBy", "lastModifiedBy" ->
                         BookDto.class.getMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1),
                                         Long.class)
                                 .invoke(bookDto, CommonTestFixtures.VALID_ID);

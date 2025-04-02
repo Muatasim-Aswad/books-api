@@ -41,7 +41,7 @@ public final class AuthorTestFixtures {
                 .id(id)
                 .version(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE)
                 .createdBy(CommonTestFixtures.SMALL_NUMBER)
-                .updatedBy(CommonTestFixtures.SMALL_NUMBER)
+                .lastModifiedBy(CommonTestFixtures.SMALL_NUMBER)
                 .createdAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
                 .updatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
                 .version(0)
@@ -62,7 +62,7 @@ public final class AuthorTestFixtures {
         AuthorDto authorDto = getOneDtoWithId();
         authorDto.setVersion(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE);
         authorDto.setCreatedBy(CommonTestFixtures.SMALL_NUMBER);
-        authorDto.setUpdatedBy(CommonTestFixtures.SMALL_NUMBER);
+        authorDto.setLastModifiedBy(CommonTestFixtures.SMALL_NUMBER);
         authorDto.setCreatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
         authorDto.setUpdatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
         return authorDto;

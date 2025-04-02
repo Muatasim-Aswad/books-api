@@ -1,5 +1,6 @@
 package com.asim.books.common.model;
 
+import com.asim.books.common.util.ContradictionCheckable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

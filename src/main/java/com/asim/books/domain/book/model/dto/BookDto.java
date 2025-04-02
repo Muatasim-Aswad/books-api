@@ -49,7 +49,7 @@ public class BookDto {
     @ReadOnly
     private Long createdBy;
     @ReadOnly
-    private Long updatedBy;
+    private Long lastModifiedBy;
 
     @ReadOnly(groups = {OnCreate.class})
     private Integer version;

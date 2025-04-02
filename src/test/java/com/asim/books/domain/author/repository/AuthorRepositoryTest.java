@@ -83,7 +83,7 @@ class AuthorRepositoryTest {
     void whenUpdatingAuthor_thenVersionIsIncremented() {
         // Arrange
         savedAuthor.setName("Updated Author");
-        savedAuthor.setUpdatedBy(2L);
+        savedAuthor.setLastModifiedBy(2L);
 
         // Act
         authorRepository.save(savedAuthor);
