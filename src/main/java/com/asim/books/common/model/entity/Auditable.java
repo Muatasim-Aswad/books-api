@@ -1,4 +1,4 @@
-package com.asim.books.common.model;
+package com.asim.books.common.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

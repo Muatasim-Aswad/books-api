@@ -1,4 +1,4 @@
-package com.asim.books.common.mapper.entity;
+package com.asim.books.common.model.mapper;
 
 /**
  * A generic interface for mapping between entities and DTOs.
@@ -6,7 +6,7 @@ package com.asim.books.common.mapper.entity;
  * @param <Entity> the entity type
  * @param <Dto>    the DTO type
  */
-public interface EntityMapper<Entity, Dto> {
+public interface EntityDtoMapper<Entity, Dto> {
 
     /**
      * Converts a {@code Dto} to an {@code Entity}.

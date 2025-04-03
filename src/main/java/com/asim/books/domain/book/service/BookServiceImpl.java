@@ -3,7 +3,7 @@ package com.asim.books.domain.book.service;
 import com.asim.books.common.exception.IllegalAttemptToModify;
 import com.asim.books.common.exception.NoIdIsProvidedException;
 import com.asim.books.common.exception.ResourceNotFoundException;
-import com.asim.books.common.mapper.entity.EntityMapper;
+import com.asim.books.common.model.mapper.EntityDtoMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.book.gateway.AuthorGateway;
@@ -34,7 +34,7 @@ import org.springframework.validation.annotation.Validated;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-    private final EntityMapper<Book, BookDto> bookMapper;
+    private final EntityDtoMapper<Book, BookDto> bookMapper;
     private final AuthorGateway authorGateway;
     private final EntityManager entityManager;
 

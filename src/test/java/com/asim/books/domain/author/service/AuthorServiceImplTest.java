@@ -4,7 +4,7 @@ import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.NoIdIsProvidedException;
 import com.asim.books.common.exception.OptimisticLockException;
 import com.asim.books.common.exception.ResourceNotFoundException;
-import com.asim.books.common.mapper.entity.EntityMapper;
+import com.asim.books.common.model.mapper.EntityDtoMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.repository.AuthorRepository;
@@ -40,7 +40,7 @@ class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
     @Mock
-    private EntityMapper<Author, AuthorDto> authorMapper;
+    private EntityDtoMapper<Author, AuthorDto> authorMapper;
     @Mock
     private EntityManager entityManager;
 

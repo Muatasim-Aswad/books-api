@@ -1,6 +1,6 @@
 package com.asim.books.domain.book.service;
 
-import com.asim.books.common.mapper.entity.EntityMapper;
+import com.asim.books.common.model.mapper.EntityDtoMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.model.mapper.AuthorMapper;
@@ -48,7 +48,7 @@ class BookServiceImplCachingTests {
 
     @Autowired
     @SuppressWarnings("unchecked")
-    private EntityMapper<Book, BookDto> bookMapper;
+    private EntityDtoMapper<Book, BookDto> bookMapper;
 
     @Autowired
     private AuthorGateway authorGateway;
@@ -94,7 +94,7 @@ class BookServiceImplCachingTests {
     static class CacheTestConfig {
         @Bean
         public BookService bookService(BookRepository bookRepository,
-                                       EntityMapper<Book, BookDto> bookMapper,
+                                       EntityDtoMapper<Book, BookDto> bookMapper,
                                        AuthorGateway authorGateway,
                                        EntityManager entityManager) {
             return new BookServiceImpl(bookRepository, bookMapper, authorGateway, entityManager);
@@ -112,8 +112,8 @@ class BookServiceImplCachingTests {
 
         @Bean
         @SuppressWarnings("unchecked")
-        public EntityMapper<Book, BookDto> bookMapper() {
-            return mock(EntityMapper.class);
+        public EntityDtoMapper<Book, BookDto> bookMapper() {
+            return mock(EntityDtoMapper.class);
         }
 
         @Bean

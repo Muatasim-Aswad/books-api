@@ -4,7 +4,7 @@ import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.NoIdIsProvidedException;
 import com.asim.books.common.exception.OptimisticLockException;
 import com.asim.books.common.exception.ResourceNotFoundException;
-import com.asim.books.common.mapper.entity.EntityMapper;
+import com.asim.books.common.model.mapper.EntityDtoMapper;
 import com.asim.books.domain.author.model.dto.AuthorDto;
 import com.asim.books.domain.author.model.entity.Author;
 import com.asim.books.domain.author.repository.AuthorRepository;
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
-    private final EntityMapper<Author, AuthorDto> authorMapper;
+    private final EntityDtoMapper<Author, AuthorDto> authorMapper;
 
     private final EntityManager entityManager;
 

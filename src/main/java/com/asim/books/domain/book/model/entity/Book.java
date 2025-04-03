@@ -1,6 +1,6 @@
 package com.asim.books.domain.book.model.entity;
 
-import com.asim.books.common.model.Auditable;
+import com.asim.books.common.model.entity.Auditable;
 import com.asim.books.domain.author.model.entity.Author;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

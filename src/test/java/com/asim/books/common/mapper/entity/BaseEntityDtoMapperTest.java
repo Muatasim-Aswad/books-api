@@ -1,5 +1,6 @@
 package com.asim.books.common.mapper.entity;
 
+import com.asim.books.common.model.mapper.BaseEntityDtoMapper;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,7 @@ import org.modelmapper.ModelMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("BaseEntityMapper Tests")
-class BaseEntityMapperTest {
+class BaseEntityDtoMapperTest {
 
     private ModelMapper modelMapper;
     private TestEntityMapper mapper;
@@ -117,19 +118,19 @@ class BaseEntityMapperTest {
 
     }
 
-    static class TestEntityMapper extends BaseEntityMapper<TestEntity, TestDto> {
+    static class TestEntityMapper extends BaseEntityDtoMapper<TestEntity, TestDto> {
         public TestEntityMapper(ModelMapper modelMapper) {
             super(modelMapper, TestEntity.class, TestDto.class);
         }
     }
 
-    static class InvalidEntityMapper extends BaseEntityMapper<TestEntity, TestDto> {
+    static class InvalidEntityMapper extends BaseEntityDtoMapper<TestEntity, TestDto> {
         public InvalidEntityMapper(ModelMapper modelMapper) {
             super(modelMapper, null, TestDto.class);
         }
     }
 
-    static class InvalidDtoMapper extends BaseEntityMapper<TestEntity, TestDto> {
+    static class InvalidDtoMapper extends BaseEntityDtoMapper<TestEntity, TestDto> {
         public InvalidDtoMapper(ModelMapper modelMapper) {
             super(modelMapper, TestEntity.class, null);
         }

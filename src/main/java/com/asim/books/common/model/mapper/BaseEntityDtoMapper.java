@@ -1,4 +1,4 @@
-package com.asim.books.common.mapper.entity;
+package com.asim.books.common.model.mapper;
 
 import org.modelmapper.ModelMapper;
 
@@ -10,13 +10,13 @@ import java.util.Objects;
  * @param <Entity>
  * @param <Dto>
  */
-public abstract class BaseEntityMapper<Entity, Dto> implements EntityMapper<Entity, Dto> {
+public abstract class BaseEntityDtoMapper<Entity, Dto> implements EntityDtoMapper<Entity, Dto> {
 
     protected final ModelMapper modelMapper;
     private final Class<Entity> entityClass;
     private final Class<Dto> dtoClass;
 
-    protected BaseEntityMapper(ModelMapper modelMapper, Class<Entity> entityClass, Class<Dto> dtoClass) {
+    protected BaseEntityDtoMapper(ModelMapper modelMapper, Class<Entity> entityClass, Class<Dto> dtoClass) {
         this.modelMapper = Objects.requireNonNull(modelMapper, "ModelMapper must not be null");
         this.entityClass = Objects.requireNonNull(entityClass, "Entity class must not be null");
         this.dtoClass = Objects.requireNonNull(dtoClass, "DTO class must not be null");
