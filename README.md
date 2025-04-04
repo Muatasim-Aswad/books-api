@@ -26,7 +26,7 @@ validation, and comprehensive documentation.
 - [🚀 Tech Stack](#-tech-stack)
 - [✨ Features](#-features)
 - [🔍 API Documentation](#-api-documentation)
-- [🛠️ Getting Started](#-getting-started)
+- [🛠️ Getting Started](#%EF%B8%8F-getting-started)
 - [📁 Project Structure](#-project-structure)
 - [🏗️ Design](#-design)
 - [🔜 Roadmap](#-roadmap)
