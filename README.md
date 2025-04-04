@@ -11,42 +11,28 @@
 A Spring Boot REST API demonstration for managing books and authors. This project showcases modern Java backend
 development practices with a focus on clean architecture, best practices, and including different features.
 
+---
+
 ## 📋 Overview
 
 This API provides complete CRUD operations for book and author resources with advanced querying capabilities, thorough
 validation, and comprehensive documentation.
 
-
+---
 
 ## 📑 Table of Contents
 
-- [Overview](#-overview)
-- [Tech Stack](#-tech-stack)
-- [Features](#-features)
-    - [Core Functionality](#core-functionality)
-    - [Advanced Querying](#advanced-querying)
-    - [Developer Experience](#developer-experience)
-- [API Documentation](#-api-documentation)
-- [Getting Started](#-getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Running Locally](#running-locally)
-    - [Testing the Application](#testing-the-application)
-- [Project Structure](#-project-structure)
-    - [Core Structure](#core-structure)
-    - [Domain Organization](#domain-organization)
-    - [Common Components](#common-components)
-    - [Infrastructure](#infrastructure)
-    - [Modularization](#modularization)
-- [Design](#-design)
-    - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
-    - [Principles](#principles)
-    - [Auth Management](#auth-management)
-- [Roadmap](#-roadmap)
-    - [Security Implementation](#security-implementation)
-    - [Deployment](#deployment)
-    - [Caching](#caching)
-    - [Microservices](#microservices)
-- [License](#-license)
+- [📋 Overview](#-overview)
+- [🚀 Tech Stack](#-tech-stack)
+- [✨ Features](#-features)
+- [🔍 API Documentation](#-api-documentation)
+- [🛠️ Getting Started](#-getting-started)
+- [📁 Project Structure](#-project-structure)
+- [🏗️ Design](#-design)
+- [🔜 Roadmap](#-roadmap)
+- [📄 License](#-license)
+
+---
 
 ## 🚀 Tech Stack
 
@@ -60,6 +46,8 @@ validation, and comprehensive documentation.
 - **Documentation**: OpenAPI/Swagger (springdoc-openapi v2.8.5)
 - **Testing**: JUnit 5, MockMvc, Hamcrest, Mockito
 - **API Features**: Validation, Exception Handling, Logging & Auditing, Caching
+
+---
 
 ## ✨ Features
 
@@ -82,10 +70,14 @@ validation, and comprehensive documentation.
 - Containerized development environment
 - Extensive test coverage (unit & integration)
 
+---
+
 ## 🔍 API Documentation
 
 API documentation is available via Swagger UI when the application is running on default local port:
 http://localhost:8080/swagger-ui/index.html
+
+---
 
 ## 🛠️ Getting Started
 
@@ -125,6 +117,8 @@ The API will be available at http://localhost:8080
 The project has unit, integration, web layer tests with a high degree of coverage.
 For detailed test standards and guidelines, refer to
 the [Test Standards and Guidelines](src/test/java/testStandards.md).
+
+---
 
 ## 📁 Project Structure
 
@@ -217,6 +211,8 @@ in the root directory of potential users.
 e.g. `annotations` can be in the `/common/annotation` directory, but if not foreseen to be used out of `/domain/author/controller`, it
 should be in the directory `... /controller/annotation`.
 
+---
+
 ## 🏗️ Design
 
 ### Entity Relationship Diagram (ERD)
@@ -247,6 +243,8 @@ statelessness.
   access token as requested by the client.
 - **Validation**: Access token validation is performed explicitly by the domain services.
 - **Revocation**: On a logout event, the auth service marks both tokens as invalid.
+
+---
 
 ## 🔜 Roadmap
 
@@ -289,6 +287,8 @@ statelessness.
 - Split the application into microservices:
     - domain services
     - Auth service
+
+---
 
 ## 📄 License
 
