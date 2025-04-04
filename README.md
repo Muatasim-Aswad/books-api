@@ -1,3 +1,11 @@
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
+![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![JUnit](https://img.shields.io/badge/JUnit-25A162?style=for-the-badge&logo=junit5&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
 # Books REST API
 
 A Spring Boot REST API demonstration for managing books and authors. This project showcases modern Java backend
@@ -7,6 +15,8 @@ development practices with a focus on clean architecture, best practices, and in
 
 This API provides complete CRUD operations for book and author resources with advanced querying capabilities, thorough
 validation, and comprehensive documentation.
+
+
 
 ## 📑 Table of Contents
 
@@ -74,7 +84,7 @@ validation, and comprehensive documentation.
 
 ## 🔍 API Documentation
 
-API documentation is available via Swagger UI when the application is running:
+API documentation is available via Swagger UI when the application is running on default local port:
 http://localhost:8080/swagger-ui/index.html
 
 ## 🛠️ Getting Started
@@ -202,18 +212,22 @@ infrastructure/
 
 ### Modularization
 
-A module with only one potential user should be next to it. If the module has the potential to be reused, it should be
+A module with only one possible user should be next to it. If the module has the potential to be reused, it should be
 in the root directory of potential users.
-e.g. `annotations` can be in the common directory, but if not potential to be used out of `domain/author/controller`, it
-should be in the `domain/author/annotation` directory.
+e.g. `annotations` can be in the `/common/annotation` directory, but if not foreseen to be used out of `/domain/author/controller`, it
+should be in the directory `... /controller/annotation`.
 
 ## 🏗️ Design
 
 ### Entity Relationship Diagram (ERD)
 
+For live view: [ERD](https://lucid.app/lucidchart/9c1f16ff-2505-4885-bc86-c9f241fdff4f/edit?viewport_loc=-1252%2C-1366%2C3727%2C1780%2C0_0&invitationId=inv_e1cb1f5d-6387-4fc5-a183-bd0aacc8608a)
+
+
 Below is the ERD for the Books REST API, illustrating the relationships between the entities:
 
-![ERD](path/to/your/erd/image.png)
+
+![Books ERD](https://github.com/user-attachments/assets/b12f4eb5-bc1d-4ff6-a1da-16e944e4f95b)
 
 ### Principles
 
@@ -240,24 +254,24 @@ statelessness.
 
 #### User Management
 
-    - Credentials management: auth service
-    - Profile management: domain services
+- Credentials management: auth service
+- Profile management: domain services
 
 #### Role-Based Access Control
 
-    - **Admin**: Editor + Promote/Demote User
-    - **Editor**: Contributor + Update/Delete Resources
-    - **Contributor (user)**: Viewer + Create Resources
-    - **Viewer (no registration)**: Read-Only
+- **Admin**: Editor + Promote/Demote User
+- **Editor**: Contributor + Update/Delete Resources
+- **Contributor (user)**: Viewer + Create Resources
+- **Viewer (no registration)**: Read-Only
 
 #### Authentication
 
-    - JWT Authentication
-    - OAuth2 Integration
+- JWT Authentication
+- OAuth2 Integration
 
-### API Protection
+#### API Protection
 
-    - Rate Limiting
+- Rate Limiting
 
 ### Deployment
 
