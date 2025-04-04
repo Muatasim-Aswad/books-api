@@ -28,7 +28,7 @@ validation, and comprehensive documentation.
 - [🔍 API Documentation](#-api-documentation)
 - [🛠️ Getting Started](#%EF%B8%8F-getting-started)
 - [📁 Project Structure](#-project-structure)
-- [🏗️ Design](#-design)
+- [🏗️ Design](#%EF%B8%8F-design)
 - [🔜 Roadmap](#-roadmap)
 - [📄 License](#-license)
 
