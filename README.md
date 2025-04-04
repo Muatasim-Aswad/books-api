@@ -20,16 +20,22 @@ validation, and comprehensive documentation.
 - [Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
     - [Running Locally](#running-locally)
-- [Roadmap](#-roadmap)
-    - [Security Implementation](#security-implementation)
-    - [Deployment](#deployment)
-    - [Caching](#caching)
-    - [Microservices](#microservices)
+    - [Testing the Application](#testing-the-application)
 - [Project Structure](#-project-structure)
     - [Core Structure](#core-structure)
     - [Domain Organization](#domain-organization)
     - [Common Components](#common-components)
     - [Infrastructure](#infrastructure)
+    - [Modularization](#modularization)
+- [Design](#-design)
+    - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
+    - [Principles](#principles)
+    - [Auth Management](#auth-management)
+- [Roadmap](#-roadmap)
+    - [Security Implementation](#security-implementation)
+    - [Deployment](#deployment)
+    - [Caching](#caching)
+    - [Microservices](#microservices)
 - [License](#-license)
 
 ## 🚀 Tech Stack
@@ -95,23 +101,31 @@ http://localhost:8080/swagger-ui/index.html
    mvn spring-boot:run
     ```
 
-The api will be available at http://localhost:8080
+The API will be available at http://localhost:8080
+
+### Testing the Application
 
 4. Testing the application
    ```bash
    mvn test
     ```
 
+### Test Standards
+
+The project has unit, integration, web layer tests with a high degree of coverage.
+For detailed test standards and guidelines, refer to
+the [Test Standards and Guidelines](src/test/java/testStandards.md).
+
 ## 📁 Project Structure
 
-The project follows a domain-driven design, organized by feature domains then the technical layers.
+The project is organized by feature domains (book, author, user) then the technical layers (controller - service ...).
 
 ### Core Structure
 
 ```plaintext
 src/main/java/com/asim/books/
 ├── BooksApplication.java            # Application entry point
-├── common/                          # Shared utilities and base components 
+├── common/                          # Shared utilities and base components
 ├── domain/                          # Feature domains (book, author, etc.)
 │   ├── author/                      # Author domain components
 │   └── book/                        # Book domain components
@@ -186,22 +200,63 @@ infrastructure/
     └── RequestLoggingInterceptor.java  # HTTP request/response logging
 ```
 
+### Modularization
+
+A module with only one potential user should be next to it. If the module has the potential to be reused, it should be
+in the root directory of potential users.
+e.g. `annotations` can be in the common directory, but if not potential to be used out of `domain/author/controller`, it
+should be in the `domain/author/annotation` directory.
+
+## 🏗️ Design
+
+### Entity Relationship Diagram (ERD)
+
+Below is the ERD for the Books REST API, illustrating the relationships between the entities:
+
+![ERD](path/to/your/erd/image.png)
+
+### Principles
+
+- Even within the current monolithic design, the services and domains should have minimal interactions to ensure a clear
+  separation of concerns, and maintainability.
+- The authentication service should not interact directly with the domain services, so that it has the potential to be
+  independently
+  deployed and scaled. The communication with it should be done asynchronously as possible.
+- The interactions between domain services should be managed through a well-defined API contract for loose coupling.
+
+### Auth Management
+
+Regardless of the auth strategy, the auth lifecycle should be managed using **JWT tokens** to achieve a high degree of
+statelessness.
+
+- **Issuance**: The auth service issues JWT tokens (Access, Refresh) upon successful authentication and refreshes the
+  access token as requested by the client.
+- **Validation**: Access token validation is performed explicitly by the domain services.
+- **Revocation**: On a logout event, the auth service marks both tokens as invalid.
+
 ## 🔜 Roadmap
 
 ### Security Implementation
 
-- **User Management**
+#### User Management
+
     - Credentials management: auth service
-    - Profile management: business service
-- **Role-Based Access Control**
+    - Profile management: domain services
+
+#### Role-Based Access Control
+
     - **Admin**: Editor + Promote/Demote User
     - **Editor**: Contributor + Update/Delete Resources
-    - **Contributor**: Viewer + Create Resources
-    - **Viewer**: Read-Only
-- **Authentication**
+    - **Contributor (user)**: Viewer + Create Resources
+    - **Viewer (no registration)**: Read-Only
+
+#### Authentication
+
     - JWT Authentication
     - OAuth2 Integration
-- **API Protection**
+
+### API Protection
+
     - Rate Limiting
 
 ### Deployment
@@ -218,7 +273,7 @@ infrastructure/
 ### Microservices
 
 - Split the application into microservices:
-    - Business service
+    - domain services
     - Auth service
 
 ## 📄 License
