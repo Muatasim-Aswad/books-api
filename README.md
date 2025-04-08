@@ -244,8 +244,8 @@ statelessness.
 
 - **Issuance**: The auth service issues JWT tokens (Access, Refresh) upon successful authentication and refreshes the
   access token as requested by the client.
+- **Revocation**: The auth service marks both tokens as invalid on a logout request.
 - **Validation**: Access token validation is performed explicitly by the domain services.
-- **Revocation**: On a logout event, the auth service marks both tokens as invalid.
 
 ---
 
@@ -290,6 +290,9 @@ statelessness.
 - Split the application into microservices:
     - domain services
     - Auth service
+
+### Additional
+- Versioning format of the endpoints
 
 ---
 
