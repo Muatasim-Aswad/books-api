@@ -11,6 +11,9 @@
 A Spring Boot REST API demonstration for managing books and authors. This project showcases modern Java backend
 development practices with a focus on clean architecture, best practices, and including different features.
 
+> [!NOTE]
+> This repository is not final, and some parts of it are still a work in progress.
+
 ---
 
 ## 📋 Overview
