@@ -8,7 +8,7 @@
 
 # Books REST API
 
-A Spring Boot REST API demonstration for managing books and authors. This project showcases modern Java backend
+A Spring Boot REST API demonstration for managing & accessing books and authors data. This project showcases modern Java backend
 development practices with a focus on clean architecture, best practices, and including different features.
 
 > [!NOTE]
@@ -220,32 +220,23 @@ should be in the directory `... /controller/annotation`.
 
 ### Entity Relationship Diagram (ERD)
 
-For live view: [ERD](https://lucid.app/lucidchart/9c1f16ff-2505-4885-bc86-c9f241fdff4f/edit?viewport_loc=-1252%2C-1366%2C3727%2C1780%2C0_0&invitationId=inv_e1cb1f5d-6387-4fc5-a183-bd0aacc8608a)
+For live view: [Diagrams](https://lucid.app/lucidchart/9c1f16ff-2505-4885-bc86-c9f241fdff4f/edit?viewport_loc=-1252%2C-1366%2C3727%2C1780%2C0_0&invitationId=inv_e1cb1f5d-6387-4fc5-a183-bd0aacc8608a)
 
+<img width="554" alt="system design" src="https://github.com/user-attachments/assets/665183e5-58ef-4572-a5d7-d41b6fea010c" />
 
-Below is the ERD for the Books REST API, illustrating the relationships between the entities:
-
-
-![Books ERD](https://github.com/user-attachments/assets/b12f4eb5-bc1d-4ff6-a1da-16e944e4f95b)
+<img width="708" alt="erd" src="https://github.com/user-attachments/assets/ea1e3755-6799-4bc2-ac27-4429725192cc" />
 
 ### Principles
 
-- Even within the current monolithic design, the services and domains should have minimal interactions to ensure a clear
-  separation of concerns, and maintainability.
-- The authentication service should not interact directly with the domain services, so that it has the potential to be
-  independently
-  deployed and scaled. The communication with it should be done asynchronously as possible.
-- The interactions between domain services should be managed through a well-defined API contract for loose coupling.
+Even within a monolithic design, the services and domains should have minimal interactions to ensure a maximum separation of concerns, and maintainability. The interactions between internal services should be managed through a well-defined API contract for loose coupling.
 
 ### Auth Management
 
-Regardless of the auth strategy, the auth lifecycle should be managed using **JWT tokens** to achieve a high degree of
-statelessness.
+Regardless of the auth strategy, the auth lifecycle should be managed using **JWT tokens** to achieve a high degree of statelessness.
 
-- **Issuance**: The auth service issues JWT tokens (Access, Refresh) upon successful authentication and refreshes the
-  access token as requested by the client.
-- **Revocation**: The auth service marks both tokens as invalid on a logout request.
-- **Validation**: Access token validation is performed explicitly by the domain services.
+- **Issuance**: The auth service issues JWT tokens (Access, Refresh) upon successful authentication and refreshes the access token as requested by the client.
+- **Revocation**: The auth service marks both tokens as invalid on a logout request. Communicates the invalidated access token to the business service.
+- **Validation**: Access token validation is performed explicitly by the business services.
 
 ---
 
@@ -284,16 +275,7 @@ statelessness.
 ### Caching
 
 - Use Redis for caching instead of in-memory caching
-
-### Microservices
-
-- Split the application into microservices:
-    - domain services
-    - Auth service
-
-### Additional
-- Versioning format of the endpoints
-
+      
 ---
 
 ## 📄 License
