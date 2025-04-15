@@ -60,6 +60,7 @@ validation, and comprehensive documentation.
 - Comprehensive input validation
 - Global exception handling
 - Request/response logging and auditing
+- Caching
 
 ### Advanced Querying
 
