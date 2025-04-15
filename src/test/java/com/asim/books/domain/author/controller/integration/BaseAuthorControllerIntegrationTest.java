@@ -7,7 +7,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 abstract class BaseAuthorControllerIntegrationTest extends BaseControllerIntegrationTest {
-    protected static final String BASE_URL = "/authors";
+    protected static final String BASE_URL = "/api/v1/authors";
 
     /**
      * Creates a new author via API

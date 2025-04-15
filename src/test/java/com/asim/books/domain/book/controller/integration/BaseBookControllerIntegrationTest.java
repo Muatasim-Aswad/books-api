@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 abstract class BaseBookControllerIntegrationTest extends BaseControllerIntegrationTest {
 
-    protected static final String BOOKS_API = "/books";
+    protected static final String BOOKS_API = "/api/v1/books";
     protected static final String BOOKS_ID_API = BOOKS_API + "/{id}";
 
     /**
@@ -159,7 +159,7 @@ abstract class BaseBookControllerIntegrationTest extends BaseControllerIntegrati
      */
     protected ResultActions deleteAuthor(Long id) throws Exception {
         return mockMvc.perform(
-                delete("/authors/{id}", id)
+                delete("/api/v1/authors/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
         );
     }
@@ -174,7 +174,7 @@ abstract class BaseBookControllerIntegrationTest extends BaseControllerIntegrati
      */
     protected ResultActions createAuthor(AuthorDto authorDto) throws Exception {
         return mockMvc.perform(
-                post("/authors")
+                post("/api/v1/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authorDto))
         );
