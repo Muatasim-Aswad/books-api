@@ -34,3 +34,7 @@ build/
 /application.log
 *.log
 *.log.*.gz
+
+### OS ###
+.DS_Store
+**/.DS_Store
