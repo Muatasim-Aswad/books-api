@@ -1,6 +1,6 @@
 package com.asim.books.common.annotation.validation;
 
-import com.asim.books.common.annotation.validation.domain.FullName;
+import com.asim.books.common.annotation.validation.domain.Name;
 import com.asim.books.test.util.ValidationTestHelper;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("FullName Annotation Tests")
-class FullNameTest {
+class NameTest {
 
     @Test
     @DisplayName("should pass validation when name is valid")
@@ -72,7 +72,7 @@ class FullNameTest {
     }
 
     static class TestClass {
-        @FullName
+        @Name
         private String name;
 
         public TestClass(String name) {

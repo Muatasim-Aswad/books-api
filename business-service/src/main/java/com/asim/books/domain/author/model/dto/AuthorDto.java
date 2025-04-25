@@ -4,7 +4,7 @@ import com.asim.books.common.annotation.validation.ReadOnly;
 import com.asim.books.common.annotation.validation.RequiredNumber;
 import com.asim.books.common.annotation.validation.RequiredString;
 import com.asim.books.common.annotation.validation.domain.Age;
-import com.asim.books.common.annotation.validation.domain.FullName;
+import com.asim.books.common.annotation.validation.domain.Name;
 import com.asim.books.common.annotation.validation.domain.ReadOnlyId;
 import com.asim.books.common.util.ContradictionCheckable;
 import jakarta.validation.groups.Default;
@@ -26,7 +26,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 public class AuthorDto implements ContradictionCheckable<AuthorDto> {
-    @FullName
+    @Name
     @RequiredString(groups = {OnCreate.class})
     private String name;
 

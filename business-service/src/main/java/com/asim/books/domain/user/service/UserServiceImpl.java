@@ -1,0 +1,106 @@
+package com.asim.books.domain.user.service;
+
+import com.asim.books.common.exception.DuplicateResourceException;
+import com.asim.books.common.exception.ResourceNotFoundException;
+import com.asim.books.common.exception.OptimisticLockException;
+import com.asim.books.common.model.mapper.EntityDtoMapper;
+import com.asim.books.domain.user.model.dto.UserCreateDto;
+import com.asim.books.domain.user.model.dto.UserNameUpdateDto;
+import com.asim.books.domain.user.model.dto.UserRoleUpdateDto;
+import com.asim.books.domain.user.model.dto.UserViewDto;
+import com.asim.books.domain.user.model.entity.Role;
+import com.asim.books.domain.user.model.entity.User;
+import com.asim.books.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final EntityDtoMapper<User, UserViewDto> userMapper;
+    private final EntityManager entityManager;
+
+    @Override
+    @Transactional
+    @CachePut(value = "users", key = "#result.id")
+    public UserViewDto createUser(UserCreateDto userCreateDto) {
+        // Check if user with same ID already exists
+        if (userCreateDto.getId() != null && userRepository.existsById(userCreateDto.getId())) {
+            throw new DuplicateResourceException("User", "id", userCreateDto.getId().toString());
+        }
+
+        // Check if user with same name already exists
+        if (userRepository.existsByName(userCreateDto.getName())) {
+            throw new DuplicateResourceException("User", "name", userCreateDto.getName());
+        }
+
+        // Create and save new user with default role READER
+        User user = new User();
+        user.setId(userCreateDto.getId());
+        user.setName(userCreateDto.getName());
+        user.setRole(Role.EDITOR); // Default role
+
+        user = userRepository.save(user);
+        entityManager.flush();
+        
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    @CachePut(value = "users", key = "#userId")
+    public UserViewDto updateUserName(Long userId, UserNameUpdateDto userNameUpdateDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+        
+        // Check version for optimistic locking
+        if (!user.getVersion().equals(userNameUpdateDto.getVersion())) {
+            throw new OptimisticLockException("User has been modified by another request. Current version: " 
+                    + user.getVersion() + ", provided version: " + userNameUpdateDto.getVersion());
+        }
+        
+        user.setName(userNameUpdateDto.getName());
+        user = userRepository.save(user);
+        entityManager.flush();
+        
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    @CachePut(value = "users", key = "#userId")
+    public UserViewDto updateUserRole(Long userId, UserRoleUpdateDto userRoleUpdateDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        // Check version for optimistic locking
+        if (!user.getVersion().equals(userRoleUpdateDto.getVersion())) {
+            throw new OptimisticLockException("User has been modified by another request. Current version: " 
+                    + user.getVersion() + ", provided version: " + userRoleUpdateDto.getVersion());
+        }
+
+        user.setRole(userRoleUpdateDto.getRole());
+        user = userRepository.save(user);
+        entityManager.flush();
+        
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    @Cacheable(value = "users", key = "#userId")
+    public UserViewDto getUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+                
+        return userMapper.toDto(user);
+    }
+}

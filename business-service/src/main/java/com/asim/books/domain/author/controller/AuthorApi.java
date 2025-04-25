@@ -5,7 +5,7 @@ import com.asim.books.common.annotation.springdoc.param.IdParam;
 import com.asim.books.common.annotation.springdoc.param.PageNumberQuery;
 import com.asim.books.common.annotation.springdoc.param.PageSizeQuery;
 import com.asim.books.common.annotation.springdoc.param.SortQuery;
-import com.asim.books.common.annotation.validation.domain.FullName;
+import com.asim.books.common.annotation.validation.domain.Name;
 import com.asim.books.common.annotation.validation.domain.ValidID;
 import com.asim.books.domain.author.controller.annotation.springdoc.method.AuthorCreatedApiResponse;
 import com.asim.books.domain.author.controller.annotation.springdoc.method.AuthorRetrievedApiResponse;
@@ -63,5 +63,5 @@ public interface AuthorApi {
             @PageNumberQuery int page,
             @PageSizeQuery int size,
             @SortQuery String[] sort,
-            @FullName @AuthorNameQuery String name);
+            @Name @AuthorNameQuery String name);
 }
