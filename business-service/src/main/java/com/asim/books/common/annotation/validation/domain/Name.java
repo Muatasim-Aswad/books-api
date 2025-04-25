@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
 @Pattern(regexp = ".*[a-zA-Z].*", message = "Name must contain at least one letter")
 @Pattern(regexp = "^[a-zA-Z\\s'.\\-]*$", message = "Name can only contain alphabetic characters, spaces, apostrophes, periods, and hyphens")
-public @interface FullName {
+public @interface Name {
     Class<?>[] groups() default {};
 
     String message() default "Name must be between 2 and 100 characters and can only contain alphabetic characters, spaces, apostrophes, periods, and hyphens";
