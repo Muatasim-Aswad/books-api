@@ -1,6 +1,5 @@
-package com.asim.books.domain.user.model.entity;
+package com.asim.authentication.core.model.entity;
 
-import com.asim.books.common.model.entity.TimeAuditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,12 +21,14 @@ import lombok.experimental.SuperBuilder;
 )
 public class User extends TimeAuditable {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private String password;
 }
+

@@ -1,13 +1,13 @@
-package com.asim.authservice;
+package com.asim.authentication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AuthServiceApplication {
+public class AuthenticationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthServiceApplication.class, args);
+        SpringApplication.run(AuthenticationApplication.class, args);
     }
 
 }

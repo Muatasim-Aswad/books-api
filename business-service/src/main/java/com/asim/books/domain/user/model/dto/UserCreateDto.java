@@ -2,7 +2,6 @@ package com.asim.books.domain.user.model.dto;
 
 import com.asim.books.common.annotation.validation.domain.Name;
 import com.asim.books.common.annotation.validation.domain.ValidID;
-import com.asim.books.domain.user.model.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
