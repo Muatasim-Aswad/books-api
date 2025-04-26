@@ -1,10 +1,10 @@
-package com.asim.authservice;
+package com.asim.authentication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AuthServiceApplicationTests {
+class AuthenticationApplicationTests {
 
     @Test
     void contextLoads() {
