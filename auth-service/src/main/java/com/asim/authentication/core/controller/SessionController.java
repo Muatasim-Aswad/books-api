@@ -7,25 +7,25 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/auth/users")
+@RequestMapping("/api/v1/auth/sessions")
 @RequiredArgsConstructor
-public class UserController {
+public class SessionController {
 
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserPublic register() {
-        return new UserPublic();
-    }
-
-    @PutMapping("/change-password")
+    @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public UserPublic updateUser() {
+    public UserPublic login() {
         return new UserPublic();
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/refresh")
+    @ResponseStatus(HttpStatus.OK)
+    public UserPublic refresh() {
+        return new UserPublic();
+    }
+
+    @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser() {
-        // Logic to delete user
+    public void logout() {
+        // Logic to handle user logout
     }
 }

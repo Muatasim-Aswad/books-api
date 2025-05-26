@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
+
 /**
  * DTO for sending new user profile related information.
  * Used by business microservice.
@@ -13,8 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserProfileDto {
-    private Long id;
-
+public class UserPublic {
     private String name;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
+    private Integer version;
 }

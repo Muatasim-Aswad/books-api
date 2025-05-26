@@ -1,7 +1,6 @@
-package com.asim.authentication.core.service.JwtService;
+package com.asim.authentication.core.service.SessionService;
 
 import java.util.Map;
-import java.util.Date;
 
 public interface JwtTools {
 
