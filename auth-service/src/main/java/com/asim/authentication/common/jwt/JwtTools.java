@@ -1,4 +1,4 @@
-package com.asim.authentication.core.service.SessionService;
+package com.asim.authentication.common.jwt;
 
 import java.util.Map;
 

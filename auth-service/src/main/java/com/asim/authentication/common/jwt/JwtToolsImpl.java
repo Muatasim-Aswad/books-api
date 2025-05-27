@@ -1,4 +1,4 @@
-package com.asim.authentication.core.service.SessionService;
+package com.asim.authentication.common.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
