@@ -1,4 +1,4 @@
-package com.asim.authentication.core.controller.annotations.springdoc.method;
+package com.asim.authentication.core.controller.annotations.springdoc.method.general;
 
 import com.asim.authentication.infrastructure.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;

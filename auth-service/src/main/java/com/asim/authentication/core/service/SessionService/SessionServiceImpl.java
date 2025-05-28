@@ -3,7 +3,7 @@ package com.asim.authentication.core.service.SessionService;
 import com.asim.authentication.common.exception.ResourceNotFoundException;
 import com.asim.authentication.common.jwt.JwtTools;
 import com.asim.authentication.core.model.dto.TokenResponse;
-import com.asim.authentication.core.model.dto.UserPublic;
+import com.asim.authentication.core.model.mapper.UserInternalMapper;
 import com.asim.authentication.core.model.mapper.UserPublicMapper;
 import com.asim.authentication.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +22,10 @@ public class SessionServiceImpl implements SessionService {
     private final UserPublicMapper userPublicMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTools jwtTools;
+    private final UserInternalMapper userInternalMapper;
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
-
-    @Value("${jwt.access-token.expiration}")
-    private long accessTokenExpiration;
-
-    @Value("${jwt.refresh-token.expiration}")
-    private long refreshTokenExpiration;
+    @Value("${jwt.access.expiry}")
+    private long accessJwtExpiration;
 
     @Override
     public TokenResponse login(String username, String password) {
@@ -43,22 +36,22 @@ public class SessionServiceImpl implements SessionService {
             throw new BadCredentialsException("Invalid credentials");
         }
 
-        return generateTokens(user.getId(), userPublicMapper.toDto(user));
+        return generateTokensById(user.getId());
     }
 
     @Override
     public TokenResponse refreshToken(String refreshToken) {
-        if (!jwtTools.validateToken(refreshToken, jwtSecret)) {
+        if (!jwtTools.validateToken(refreshToken, "refresh")) {
             throw new BadCredentialsException("Invalid refresh token");
         }
 
-        Map<String, Object> claims = jwtTools.parseToken(refreshToken, jwtSecret);
+        Map<String, Object> claims = jwtTools.parseToken(refreshToken, "refresh");
         Long userId = Long.valueOf(claims.get("userId").toString());
 
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
-        return generateTokens(userId, userPublicMapper.toDto(user));
+        return generateTokensById(userId);
     }
 
     @Override
@@ -67,25 +60,17 @@ public class SessionServiceImpl implements SessionService {
         // This could involve adding it to a blacklist or using a token registry
     }
 
-    private TokenResponse generateTokens(Long userId, UserPublic userPublic) {
-        Map<String, Object> accessClaims = new HashMap<>();
-        accessClaims.put("userId", userId);
-        accessClaims.put("type", "access");
 
-        Map<String, Object> refreshClaims = new HashMap<>();
-        refreshClaims.put("userId", userId);
-        refreshClaims.put("type", "refresh");
-        refreshClaims.put("tokenId", UUID.randomUUID().toString());
+    private TokenResponse generateTokensById(Long userId) {
 
-        String accessToken = jwtTools.generateToken(accessClaims, jwtSecret, accessTokenExpiration);
-        String refreshToken = jwtTools.generateToken(refreshClaims, jwtSecret, refreshTokenExpiration);
+        String accessToken = jwtTools.generateToken(userId, "access");
+        String refreshToken = jwtTools.generateToken(userId, "refresh");
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tokenType("Bearer")
-                .expiresIn(accessTokenExpiration / 1000)
-                .user(userPublic)
+                .expiresIn(accessJwtExpiration / 1000)
                 .build();
     }
 }

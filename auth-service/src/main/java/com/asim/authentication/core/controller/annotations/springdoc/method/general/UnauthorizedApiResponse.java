@@ -1,4 +1,4 @@
-package com.asim.authentication.core.controller.annotations.springdoc.method;
+package com.asim.authentication.core.controller.annotations.springdoc.method.general;
 
 import com.asim.authentication.infrastructure.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,14 +9,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.lang.annotation.*;
 
 /**
- * Response for validation errors (400).
+ * Response for forbidden operations (403).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ApiResponses({
-        @ApiResponse(responseCode = "400", description = "Invalid input - validation errors",
+        @ApiResponse(responseCode = "401", description = "Unauthorized - authentication required",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 })
-public @interface ValidationFailureApiResponse {
+public @interface UnauthorizedApiResponse {
 }

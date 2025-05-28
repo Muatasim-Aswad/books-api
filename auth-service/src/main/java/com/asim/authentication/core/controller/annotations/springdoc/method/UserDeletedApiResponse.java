@@ -13,8 +13,8 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ApiResponses(@ApiResponse(responseCode = "204", description = "Resource deleted successfully",
+@ApiResponses(@ApiResponse(responseCode = "204", description = "User deleted successfully",
         content = @Content(schema = @Schema(implementation = Void.class)))
 )
-public @interface ResourceDeletedApiResponse {
+public @interface UserDeletedApiResponse {
 }

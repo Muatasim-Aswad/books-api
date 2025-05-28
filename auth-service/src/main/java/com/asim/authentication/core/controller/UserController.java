@@ -1,31 +1,39 @@
 package com.asim.authentication.core.controller;
 
+import com.asim.authentication.core.model.dto.UserInput;
 import com.asim.authentication.core.model.dto.UserPublic;
+import com.asim.authentication.core.service.UserService.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/auth/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserApi {
 
+    private final UserService userService;
+
+    @Override
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserPublic register() {
-        return new UserPublic();
+    public UserPublic register(@RequestBody UserInput userInput) {
+
+        return userService.registerUser(userInput);
     }
 
+    @Override
     @PutMapping("/change-password")
     @ResponseStatus(HttpStatus.OK)
-    public UserPublic updateUser() {
-        return new UserPublic();
+    public UserPublic changePassword(@RequestBody UserInput userInput) {
+        return userService.changePassword(userInput);
     }
 
+    @Override
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser() {
-        // Logic to delete user
+        userService.deleteUser();
     }
 }

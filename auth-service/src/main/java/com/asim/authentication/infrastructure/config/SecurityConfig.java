@@ -35,10 +35,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers("/api/v1/auth/sessions/login",
-                                         "/api/v1/auth/sessions/refresh",
-                                         "/api/v1/auth/users/register").permitAll()
+                                "/api/v1/auth/sessions/refresh",
+                                "/api/v1/auth/users/register").permitAll()
                         // Swagger/OpenAPI endpoints
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )

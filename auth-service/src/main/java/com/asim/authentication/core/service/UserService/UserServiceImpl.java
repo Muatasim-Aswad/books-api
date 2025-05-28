@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser() {
         Long userId = getCurrentUserId();
 
-        // Check if user exists
+        // Check if the user exists
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("User", userId);
         }
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
         return userPublicMapper.toDto(user);
     }
-    
+
     private Long getCurrentUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof Long) {
