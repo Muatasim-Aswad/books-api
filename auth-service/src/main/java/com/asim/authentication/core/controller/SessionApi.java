@@ -1,6 +1,6 @@
 package com.asim.authentication.core.controller;
 
-import com.asim.authentication.core.model.dto.RefreshTokenRequest;
+import com.asim.authentication.core.model.dto.RefreshToken;
 import com.asim.authentication.core.model.dto.TokenResponse;
 import com.asim.authentication.core.model.dto.UserInput;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,9 +11,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "Authentication and session management endpoints")
 public interface SessionApi {
@@ -36,16 +34,16 @@ public interface SessionApi {
                                         }
                                 )
                         )
-                        UserInput user);
+                        UserInput userInput);
 
     @Operation(summary = "Refresh tokens", description = "Generate new access token using a valid refresh token")
     @ApiResponse(responseCode = "200", description = "Successfully refreshed tokens",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
-    TokenResponse refresh(@Valid RefreshTokenRequest request);
+    TokenResponse refresh(@Valid RefreshToken request);
 
     @Operation(summary = "Logout user", description = "Invalidates the current user session")
     @ApiResponse(responseCode = "204", description = "Successfully logged out")
     @ApiResponse(responseCode = "401", description = "Unauthorized")
-    void logout(Authentication authentication);
+    void logout(@Valid RefreshToken request);
 }

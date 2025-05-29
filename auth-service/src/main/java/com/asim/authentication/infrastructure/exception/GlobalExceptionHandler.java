@@ -165,6 +165,25 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // 401 Unauthorized ---------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleUnauthorizedException(UnauthorizedException ex, HttpServletRequest request) {
+        String errorId = java.util.UUID.randomUUID().toString();
+        request.setAttribute("errorId", errorId);
+
+        // Log the detailed reason and errorId
+        log.warn("Unauthorized access: reason={}, errorId={}", ex.getReason(), errorId);
+
+        // Return a general message to the client
+        return new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Authentication failed. You can contact support with error ID: " + errorId
+        );
+    }
+
     // 500 Internal Server Error ------------------------------------------------
     // --------------------------------------------------------------------------
 

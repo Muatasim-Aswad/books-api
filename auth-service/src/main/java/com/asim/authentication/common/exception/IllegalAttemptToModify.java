@@ -17,4 +17,8 @@ public class IllegalAttemptToModify extends RuntimeException {
     public IllegalAttemptToModify(String resourceName, Long id, String MoreInfo) {
         super("Illegal attempt to modify " + resourceName + " with id " + id + ". " + MoreInfo);
     }
+
+    public IllegalAttemptToModify(String resourceName) {
+        super("Illegal attempt to modify " + resourceName);
+    }
 }

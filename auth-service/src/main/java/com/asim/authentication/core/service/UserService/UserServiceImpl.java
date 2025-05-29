@@ -1,7 +1,9 @@
 package com.asim.authentication.core.service.UserService;
 
 import com.asim.authentication.common.exception.DuplicateResourceException;
+import com.asim.authentication.common.exception.IllegalAttemptToModify;
 import com.asim.authentication.common.exception.ResourceNotFoundException;
+import com.asim.authentication.common.exception.UnauthorizedException;
 import com.asim.authentication.core.model.dto.UserInput;
 import com.asim.authentication.core.model.dto.UserPublic;
 import com.asim.authentication.core.model.mapper.UserInputMapper;
@@ -58,6 +60,11 @@ public class UserServiceImpl implements UserService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
+        // Check if the name is different from the current one
+        if (!user.getName().equals(userInput.getName())) {
+            throw new IllegalAttemptToModify("user name");
+        }
+
         // Check if the new password is different from the old one
         if (passwordEncoder.matches(userInput.getPassword(), user.getPassword())) {
             return userPublicMapper.toDto(user);
@@ -77,6 +84,6 @@ public class UserServiceImpl implements UserService {
         if (principal instanceof Long) {
             return (Long) principal;
         }
-        throw new IllegalStateException("User not authenticated");
+        throw new UnauthorizedException("User not authenticated");
     }
 }

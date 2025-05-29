@@ -1,6 +1,7 @@
 package com.asim.authentication.core.service.SessionService;
 
 import com.asim.authentication.common.exception.ResourceNotFoundException;
+import com.asim.authentication.common.exception.UnauthorizedException;
 import com.asim.authentication.common.jwt.JwtTools;
 import com.asim.authentication.core.model.dto.TokenResponse;
 import com.asim.authentication.core.model.mapper.UserInternalMapper;
@@ -8,7 +9,8 @@ import com.asim.authentication.core.model.mapper.UserPublicMapper;
 import com.asim.authentication.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class SessionServiceImpl implements SessionService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTools jwtTools;
     private final UserInternalMapper userInternalMapper;
+    private final CacheManager cacheManager;
 
     @Value("${jwt.access.expiry}")
     private long accessJwtExpiration;
@@ -30,47 +33,54 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public TokenResponse login(String username, String password) {
         var user = userRepository.findByName(username)
-                .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
+                .orElseThrow(() -> new UnauthorizedException("User not found"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Invalid credentials");
+            throw new UnauthorizedException("Wrong password");
         }
 
-        return generateTokensById(user.getId());
+        return generateTokensById(user.getId(), null);
     }
 
     @Override
     public TokenResponse refreshToken(String refreshToken) {
-        if (!jwtTools.validateToken(refreshToken, "refresh")) {
-            throw new BadCredentialsException("Invalid refresh token");
-        }
+        Map<String, Object> claims = jwtTools.validateAndParseToken(refreshToken, "refresh");
 
-        Map<String, Object> claims = jwtTools.parseToken(refreshToken, "refresh");
         Long userId = Long.valueOf(claims.get("userId").toString());
 
-        var user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
-        return generateTokensById(userId);
+        return generateTokensById(userId, refreshToken);
     }
 
     @Override
     public void logout(String refreshToken) {
-        // In a more complete implementation, you would invalidate the token
-        // This could involve adding it to a blacklist or using a token registry
+
+            // Get the sessionId from the refresh token
+            String sessionId = jwtTools.getSessionId(refreshToken, "refresh");
+
+            // Add to invalidated sessions cache
+            Cache cache = cacheManager.getCache("invalidSessions");
+            if (cache != null) {
+                cache.put(sessionId, true);
+            }
     }
 
+    private TokenResponse generateTokensById(Long userId, String refreshToken) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            refreshToken = jwtTools.generateToken(userId, "refresh", null);
+        }
 
-    private TokenResponse generateTokensById(Long userId) {
+        String sessionId = jwtTools.getSessionId(refreshToken, "refresh");
 
-        String accessToken = jwtTools.generateToken(userId, "access");
-        String refreshToken = jwtTools.generateToken(userId, "refresh");
+        String accessToken = jwtTools.generateToken(userId, "access", sessionId);
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tokenType("Bearer")
-                .expiresIn(accessJwtExpiration / 1000)
+                .expiresInSeconds(accessJwtExpiration / 1000)
                 .build();
     }
 }

@@ -25,6 +25,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final SecurityProperties securityProperties;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,16 +35,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/v1/auth/sessions/login",
-                                "/api/v1/auth/sessions/refresh",
-                                "/api/v1/auth/users/register").permitAll()
-                        // Swagger/OpenAPI endpoints
-                        .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                        // All other endpoints require authentication
-                        .anyRequest().authenticated()
-                )
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint))
+                .authorizeHttpRequests(auth -> {
+                    // Public endpoints
+                    securityProperties.getPublicEndpoints().forEach(path ->
+                            auth.requestMatchers(path).permitAll());
+                    // Swagger/OpenAPI endpoints
+                    securityProperties.getSwaggerEndpoints().forEach(path ->
+                            auth.requestMatchers(path).permitAll());
+                    // All other endpoints require authentication
+                    auth.anyRequest().authenticated();
+                })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

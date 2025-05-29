@@ -1,10 +1,14 @@
 package com.asim.authentication.common.jwt;
 
+import com.asim.authentication.common.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -16,7 +20,10 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JwtToolsImpl implements JwtTools {
+
+    private final CacheManager cacheManager;
 
     @Value("${jwt.access.secret}")
     private String accessJwtSecret;
@@ -31,14 +38,21 @@ public class JwtToolsImpl implements JwtTools {
     private long refreshJwtExpiration;
 
     @Override
-    public String generateToken(Long id, String type) {
+    public String generateToken(Long userId, String type, String sessionId) {
+        if (type == null || userId == null || (sessionId == null && type.equals("access"))) {
+            throw new IllegalArgumentException("User ID, token type, and session ID (for access tokens) must not be null");
+        }
+
         String secret = type.equals("access") ? accessJwtSecret : refreshJwtSecret;
         long expiryMs = type.equals("access") ? accessJwtExpiration : refreshJwtExpiration;
+        String session = sessionId != null ? sessionId : UUID.randomUUID().toString();
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", id);
+        claims.put("userId", userId);
         claims.put("type", type);
         claims.put("jti", UUID.randomUUID().toString()); // JWT ID for uniqueness
+        claims.put("sessionId", session); // Session ID for tracking
+
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiryMs);
@@ -54,37 +68,33 @@ public class JwtToolsImpl implements JwtTools {
     }
 
     @Override
-    public boolean validateToken(String token, String type) {
+    public Map<String, Object> validateAndParseToken(String token, String type) {
         try {
-            String secret = type.equals("access") ? accessJwtSecret : refreshJwtSecret;
+            Map<String, Object> claims = parseToken(token, type);
 
-            SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-            var claims = Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-            // Check if the token type matches
-            if (!claims.get("type").equals(type)) {
-                log.error("Invalid token type");
-                return false;
+            // Check if session has been invalidated
+            String sessionId = claims.get("sessionId").toString();
+            Cache cache = cacheManager.getCache("invalidSessions");
+            if (cache != null && cache.get(sessionId) != null) {
+                throw new UnauthorizedException("Session has been invalidated");
             }
 
-            // add later to check if the token is blacklisted or not
-            return true;
+            return claims;
         } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
+            throw new UnauthorizedException("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
+            throw new UnauthorizedException("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+            throw new UnauthorizedException("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
+            throw new UnauthorizedException("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty");
+            throw new UnauthorizedException("JWT claims string is empty");
+        } catch (UnauthorizedException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new UnauthorizedException(ex.getMessage());
         }
-        return false;
     }
 
     @Override
@@ -98,6 +108,17 @@ public class JwtToolsImpl implements JwtTools {
                 .parseSignedClaims(token)
                 .getPayload();
 
+        // Check if the token type matches
+        if (!claims.get("type").equals(type)) {
+            throw new UnauthorizedException("Invalid token type. Expected: " + type + ", Found: " + claims.get("type"));
+        }
+
         return new HashMap<>(claims);
+    }
+
+    @Override
+    public String getSessionId(String token, String type) {
+        Map<String, Object> claims = parseToken(token, type);
+        return claims.get("sessionId").toString();
     }
 }
