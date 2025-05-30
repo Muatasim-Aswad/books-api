@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.asim</groupId>
+    <artifactId>books-api-repo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>auth-service</module>
+        <module>business-service</module>
+        <module>grpc-shared</module>
+    </modules>
+
+    <properties>
+        <java.version>23</java.version>
+        <!-- Add shared properties here if needed -->
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Shared dependency versions (optional) -->
+        </dependencies>
+    </dependencyManagement>
+
+</project>

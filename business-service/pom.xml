@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.asim</groupId>
-    <artifactId>books</artifactId>
+    <artifactId>business-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>books</name>
-    <description>books</description>
+    <name>business-service</name>
+    <description>manages domain logic and business services including authorization</description>
     <url/>
     <licenses>
         <license/>

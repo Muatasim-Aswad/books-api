@@ -14,7 +14,7 @@
     <artifactId>auth-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>auth-service</name>
-    <description>auth-service</description>
+    <description>manages authentication, session, and user credentials</description>
     
     <url/>
     <licenses>

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package com.asim.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.asim.grpc.generated";
+option java_outer_classname = "UserServiceProto";
+
+import "google/protobuf/timestamp.proto";
+
+// Service definition for user operations
+service CommunicationService {
+  // Send user data when a user is created
+  rpc SendUserCreated(NewUser) returns (NewUserSynced);
+
+  // Block a session when a user logs out
+  rpc BlockSession(InvalidateToken) returns (TokenInvalidated);
+}
+
+// Message representing a user's internal data
+message NewUser {
+  int64 id = 1;
+  string name = 2;
+}
+
+// Response for user operations
+message NewUserSynced {
+  bool success = 1;
+}
+
+// Request to block a session
+message InvalidateToken {
+  string session_id = 1; // session UUID of the jwt token to block
+}
+
+// Response for session blocking
+message TokenInvalidated {
+  bool success = 1;
+}
