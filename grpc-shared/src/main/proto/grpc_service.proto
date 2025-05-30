@@ -6,10 +6,8 @@ option java_multiple_files = true;
 option java_package = "com.asim.grpc.generated";
 option java_outer_classname = "UserServiceProto";
 
-import "google/protobuf/timestamp.proto";
-
 // Service definition for user operations
-service CommunicationService {
+service GrpcService {
   // Send user data when a user is created
   rpc SendUserCreated(NewUser) returns (NewUserSynced);
 

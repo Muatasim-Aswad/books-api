@@ -7,6 +7,7 @@ import com.asim.authentication.core.model.dto.TokenResponse;
 import com.asim.authentication.core.model.mapper.UserInternalMapper;
 import com.asim.authentication.core.model.mapper.UserPublicMapper;
 import com.asim.authentication.core.repository.UserRepository;
+import com.asim.authentication.infrastructure.grpc.GrpcClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -26,6 +27,7 @@ public class SessionServiceImpl implements SessionService {
     private final JwtTools jwtTools;
     private final UserInternalMapper userInternalMapper;
     private final CacheManager cacheManager;
+    private final GrpcClientService grpcClientService;
 
     @Value("${jwt.access.expiry}")
     private long accessJwtExpiration;
@@ -65,6 +67,9 @@ public class SessionServiceImpl implements SessionService {
             if (cache != null) {
                 cache.put(sessionId, true);
             }
+
+            // send to business service via gRPC
+            grpcClientService.blockSession(sessionId);
     }
 
     private TokenResponse generateTokensById(Long userId, String refreshToken) {

@@ -10,6 +10,7 @@ import com.asim.authentication.core.model.mapper.UserInputMapper;
 import com.asim.authentication.core.model.mapper.UserInternalMapper;
 import com.asim.authentication.core.model.mapper.UserPublicMapper;
 import com.asim.authentication.core.repository.UserRepository;
+import com.asim.authentication.infrastructure.grpc.GrpcClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserPublicMapper userPublicMapper;
     private final UserInternalMapper userInternalMapper;
     private final PasswordEncoder passwordEncoder;
+    private final GrpcClientService grpcClientService;
 
     public UserPublic registerUser(UserInput userInput) {
         // Check if a user already exists by name
@@ -37,6 +39,10 @@ public class UserServiceImpl implements UserService {
         // Save to the db
         var user = userInputMapper.toEntity(userInput);
         user = userRepository.save(user);
+
+        // send to business service via gRPC
+        var userInternal = userInternalMapper.toDto(user);
+        grpcClientService.sendUserCreated(userInternal);
 
         return userPublicMapper.toDto(user);
     }

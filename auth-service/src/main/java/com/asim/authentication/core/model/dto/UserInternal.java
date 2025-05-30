@@ -1,19 +1,16 @@
 package com.asim.authentication.core.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 
 /**
  * Internal user DTO that extends UserPublic and adds an ID field.
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class UserInternal extends UserPublic {
+@Builder
+public class UserInternal {
     private Long id;
+    private String name;
 }

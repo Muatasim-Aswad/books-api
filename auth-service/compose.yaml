@@ -1,13 +1,13 @@
 services:
-  postgres:
+  auth-postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=auth_db'
+      - 'POSTGRES_PASSWORD=auth_secret'
+      - 'POSTGRES_USER=auth_user'
     ports:
-      - '5432'
-  redis:
+      - '5433:5432'
+  auth-redis:
     image: 'redis:latest'
     ports:
-      - '6379'
+      - '6380:6379'
