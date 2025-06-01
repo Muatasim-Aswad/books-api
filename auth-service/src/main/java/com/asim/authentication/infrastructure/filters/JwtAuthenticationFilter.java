@@ -3,6 +3,7 @@ package com.asim.authentication.infrastructure.filters;
 import com.asim.authentication.common.exception.UnauthorizedException;
 import com.asim.authentication.common.jwt.JwtTools;
 import com.asim.authentication.infrastructure.config.SecurityProperties;
+import com.asim.authentication.infrastructure.security.JwtAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,10 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Map<String, Object> claims = jwtTools.validateAndParseToken(jwt, "access");
 
                 Long userId = Long.valueOf(claims.get("userId").toString());
+                String sessionId = claims.get("sessionId").toString();
 
                 // Create an Authentication object with the userId as the principal
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userId, null, null);
+                JwtAuthenticationToken authentication =
+                        new JwtAuthenticationToken(userId, null, null, sessionId);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 // Set the authentication in the security context

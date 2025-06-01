@@ -7,5 +7,5 @@ public interface SessionService {
 
     TokenResponse refreshToken(String refreshToken);
 
-    void logout(String refreshToken);
+    void logout();
 }

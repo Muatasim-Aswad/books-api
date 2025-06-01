@@ -30,7 +30,7 @@ public class SessionController implements SessionApi{
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@RequestBody RefreshToken refreshToken) {
-        sessionService.logout(refreshToken.getRefreshToken());
+    public void logout() {
+        sessionService.logout();
     }
 }

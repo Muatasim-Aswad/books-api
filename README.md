@@ -5,278 +5,161 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![JUnit](https://img.shields.io/badge/JUnit-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![gRPC](https://img.shields.io/badge/gRPC-4285F4?style=for-the-badge&logo=grpc&logoColor=white)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?style=for-the-badge&logo=openapi-initiative&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+# Books API Platform
 
-# Books REST API
+A modular Java backend platform for managing books, authors, and user authentication, built with Spring Boot, gRPC, and PostgreSQL. The project demonstrates modern backend practices, clean architecture, and microservice design.
 
-A Spring Boot REST API demonstration for managing & accessing books and authors data. This project showcases modern Java backend
-development practices with a focus on clean architecture, best practices, and including different features.
-
-> [!NOTE]
-> This repository is not final, and some parts of it are still a work in progress.
-
----
-
-## 📋 Overview
-
-This API provides complete CRUD operations for book and author resources with advanced querying capabilities, thorough
-validation, and comprehensive documentation.
+> **Note:** This repository is under active development. Some features may be incomplete or subject to change.
 
 ---
 
 ## 📑 Table of Contents
-
-- [📋 Overview](#-overview)
-- [🚀 Tech Stack](#-tech-stack)
-- [✨ Features](#-features)
-- [🔍 API Documentation](#-api-documentation)
-- [🛠️ Getting Started](#%EF%B8%8F-getting-started)
-- [📁 Project Structure](#-project-structure)
-- [🏗️ Design](#%EF%B8%8F-design)
-- [🔜 Roadmap](#-roadmap)
-- [📄 License](#-license)
+- [Tech Stack](#-tech-stack)
+- [Features](#-features)
+- [Getting Started](#-getting-started)
+- [API Documentation](#-api-documentation)
+- [Project Structure](#-project-structure)
+- [Design & Architecture](#-design--architecture)
+- [License](#-license)
 
 ---
 
 ## 🚀 Tech Stack
 
-- **Java 23**
-- **Spring Boot 3.4.3**
-- **Maven 4.0.0**
-- **Database**
-    - PostgreSQL (containerized for development)
-    - H2 (for testing)
-- **ORM**: Spring Data JPA with Hibernate
-- **Documentation**: OpenAPI/Swagger (springdoc-openapi v2.8.5)
-- **Testing**: JUnit 5, MockMvc, Hamcrest, Mockito
-- **API Features**: Validation, Exception Handling, Logging & Auditing, Caching
+- **Java 21+**
+- **Spring Boot 3.4.x**
+- **Maven**
+- **gRPC** (with protobuf)
+- **PostgreSQL** (main DB)
+- **H2** (for testing)
+- **Redis** (for caching, via Spring Data Redis)
+- **OpenAPI/Swagger** (API docs)
+- **JUnit 5, Hamcrest, Mockito, MockMVC** (testing)
+- **Docker & Docker Compose** (for local development)
 
 ---
 
 ## ✨ Features
 
-### Core Functionality
-
-- Complete CRUD operations for books and authors
-- Comprehensive input validation
-- Global exception handling
+- Modular multi-service architecture (auth, business, shared)
+- gRPC-based internal communication
+- RESTful APIs for external clients
+- JWT-based authentication and session management
+- Role-based access control
+- CRUD for books and authors with advanced querying (pagination, filtering, nested sorting)
+- Input validation and global exception handling
 - Request/response logging and auditing
-- Caching
-
-### Advanced Querying
-
-- Pagination support
-- Multi-field and nested sorting
-- Flexible search and filtering
-
-### Developer Experience
-
-- Comprehensive API documentation with Swagger UI
-- Containerized development environment
-- Extensive test coverage (unit & integration)
-
----
-
-## 🔍 API Documentation
-
-API documentation is available via Swagger UI when the application is running on default local port:
-http://localhost:8080/swagger-ui/index.html
+- Caching (in-memory and Redis)
+- Comprehensive API documentation (Swagger UI)
+- Containerized development and test environments
+- Unit and integration tests
 
 ---
 
 ## 🛠️ Getting Started
 
 ### Prerequisites
-
-- Java 23 or higher
+- Java 21 or higher
 - Maven 4.0.0 or higher
-- Docker and Docker Compose (for development database)
+- Docker & Docker Compose
 
-### Running Locally
+### Build All Modules
 
-1. Clone the repository
-   ```bash
-   git clone <repository-url>
-   cd books
-    ```
-2. Build the application
-   ```bash
-   mvn clean install
-    ```
-3. Run the application while docker desktop is running
-   ```bash
-   mvn spring-boot:run
-    ```
+```bash
+mvn clean install
+```
 
-The API will be available at http://localhost:8080
+### Run Services
 
-### Testing the Application
+Each service can be run independently. For local development, ensure Docker is running for PostgreSQL/Redis.
 
-4. Testing the application
-   ```bash
-   mvn test
-    ```
+#### Start business-service
+```bash
+cd business-service
+mvn spring-boot:run
+```
 
-### Test Standards
+#### Start auth-service
+```bash
+cd auth-service
+mvn spring-boot:run
+```
 
-The project has unit, integration, web layer tests with a high degree of coverage.
-For detailed test standards and guidelines, refer to
-the [Test Standards and Guidelines](src/test/java/testStandards.md).
+#### (Optional) Start with Docker Compose
+Each service has its own `compose.yaml` for DB dependencies.
+
+---
+
+## 🔍 API Documentation
+
+- **REST API**: Available at `http://localhost:8081/swagger-ui` (auth-service) and `http://localhost:8082/swagger-ui` (business-service)
+- **gRPC API**: See proto files in `grpc-shared/src/main/proto`
 
 ---
 
 ## 📁 Project Structure
 
-The project is organized by feature domains (book, author, user) then the technical layers (controller - service ...).
-
-### Core Structure
-
-```plaintext
-src/main/java/com/asim/books/
-├── BooksApplication.java            # Application entry point
-├── common/                          # Shared utilities and base components
-├── domain/                          # Feature domains (book, author, etc.)
-│   ├── author/                      # Author domain components
-│   └── book/                        # Book domain components
-└── infrastructure/                  # Cross-cutting concerns
-    ├── config/                      # Application configuration
-    ├── exception/                   # Global exception handling
-    └── logging/                     # Logging infrastructure
+```
+books-api-repo/
+├── auth-service/         # Authentication microservice (gRPC client + REST)
+├── business-service/     # Business logic microservice (gRPC server + REST)
+├── grpc-shared/          # Shared gRPC proto definitions and generated code
+└── ...
 ```
 
-### Domain Organization
-
-Each domain follows a consistent structure (Author Example):
+- Each service is a standalone Spring Boot app with its own dependencies and configuration.
+- `grpc-shared` is imported as a dependency in both services for gRPC contract sharing.
 
 ```plaintext
-domain/author/
+src/main/java/com/y/x/
+├── XApplication.java                # Application entry point
+├── common/                          # Shared utilities and base components
+├── domain/                          # Feature domains (book, author, etc.)
+└── infrastructure/                  # Cross-cutting concerns
+```
+
+```plaintext
+domain/x/
 ├── controller/                      # REST API endpoints and API annotations
-│   ├── AuthorApi.java               # Interface defining the API contract
-│   ├── AuthorController.java        # Implementation of API endpoints
-│   └── annotation/                  # OpenAPI/Swagger annotations
+│   ├── XApi.java                    # Interface defining the API specification
+│   └── XController.java             # Implementation of API specification
 ├── model/                           # Domain models
 │   ├── dto/                         # Data Transfer Objects
 │   ├── entity/                      # JPA entities
 │   └── mapper/                      # Object mappers
 ├── repository/                      # Data access layer
-│   └── AuthorRepository.java        # Spring Data JPA repository
 ├── service/                         # Business logic
-│   ├── AuthorService.java           # Service interface
-│   └── AuthorServiceImpl.java       # Service implementation
-└── facade/                          # Orchestration layer
-    ├── AuthorFacade.java            # Interface for business operations
-    └── AuthorFacadeImpl.java        # Implementation of business logic
-
-
-domain/book/
-└── gateway/                         # Gateway layer for using external services
-    ├── AuthorGateway.java           # Interface for external service interactions
-    └── AuthorGatewayImpl.java       # Implementation of external service interactions
+├── facade/                          # Exposes internal services to other local services
+└── gateway/                         # Enable external local services for internal consumption
 ```
 
-The facade and gateway layers are designed to manage internal interactions between domain services, providing a clear
-separation of concerns.
-The facade provides an API to define and restrict access to its services.
-The gateway is used by client to restrict the usage of a facade.
-
-### Common Components
-
-The common directory contains shared components, utilities, and base classes used across the app.
-
-```plaintext
-common/
-├── annotation/                      # Custom annotations. e.g. for documentation and validation
-├── exception/                       # Custom exception types
-├── model/                           # Common model components. e.g. EntityDtoMapper Base class
-└── util/                            # Utility classes
-    ├── ContradictionUtils.java      # Custom type of equality checker
-    ├── ReflectionUtils.java         # Reflection-based utilities
-    └── SortUtils.java               # Sorting query parameter handling
-```
-
-### Infrastructure
-
-The infrastructure directory contains cross-cutting concerns such as configuration, exception handling, and logging.
-
-```plaintext
-infrastructure/
-├── config/                          # Application configuration
-│   ├── JpaConfig.java               # Database configuration
-│   └── WebMvcConfig.java            # MVC configuration
-├── exception/                       # Global exception handling
-│   └── GlobalExceptionHandler.java  # Centralized exception handling
-└── logging/                         # Logging components
-    └── RequestLoggingInterceptor.java  # HTTP request/response logging
-```
-
-### Modularization
-
-A module with only one possible user should be next to it. If the module has the potential to be reused, it should be
-in the root directory of potential users.
-e.g. `annotations` can be in the `/common/annotation` directory, but if not foreseen to be used out of `/domain/author/controller`, it
-should be in the directory `... /controller/annotation`.
-
+- While business-service is structured feature-wise then technical, auth-service is structured first by technical layer, e.g., `core/controllers/XController.java`. This decision is made according to the service's complexity and requirements.
 ---
 
-## 🏗️ Design
+## 🏗️ Design & Architecture
 
-### Entity Relationship Diagram (ERD)
+The system consists of the following main services:
+- **auth-service**: Handles authentication, JWT issuance, and user credentials.
+- **business-service**: Manages domain logic, books/authors/userProfiles CRUD, and authorization.
 
-For live view: [Diagrams](https://lucid.app/lucidchart/9c1f16ff-2505-4885-bc86-c9f241fdff4f/edit?viewport_loc=-1252%2C-1366%2C3727%2C1780%2C0_0&invitationId=inv_e1cb1f5d-6387-4fc5-a183-bd0aacc8608a)
+Services communicate internally using gRPC and expose REST API for clients.
 
 <img width="554" alt="system design" src="https://github.com/user-attachments/assets/665183e5-58ef-4572-a5d7-d41b6fea010c" />
 
 <img width="708" alt="erd" src="https://github.com/user-attachments/assets/ea1e3755-6799-4bc2-ac27-4429725192cc" />
 
-### Principles
-
-Even within a monolithic design, the services and domains should have minimal interactions to ensure a maximum separation of concerns, and maintainability. The interactions between internal services should be managed through a well-defined API contract for loose coupling.
-
-### Auth Management
-
-Regardless of the auth strategy, the auth lifecycle should be managed using **JWT tokens** to achieve a high degree of statelessness.
-
-- **Issuance**: The auth service issues JWT tokens (Access, Refresh) upon successful authentication and refreshes the access token as requested by the client.
-- **Revocation**: The auth service marks both tokens as invalid on a logout request. Communicates the invalidated access token to the business service.
-- **Validation**: Access token validation is performed explicitly by the business services.
-
 ---
 
-## 🔜 Roadmap
+- **Separation of Concerns and Minimal Dependencies**: Services whether local or global should have minimal coupling. Any interaction` between services is done through well-defined interfaces.
+- **gRPC for Internal APIs**: Fast, strongly typed communication between services.
+- **REST for External APIs**: Standard HTTP/JSON for client interaction.
+- **JWT Auth**: Stateless authentication, where issuance and refreshing is done by the auth service, while validating access tokens is in the consumer service.
+- **Role-based Access Control**: Different permissions for users.
+- **Clean Architecture**: Feature-based package structure, clear layering (controller, service, repository, etc).
 
-### Security Implementation
-
-#### User Management
-
-- Credentials management: auth service
-- Profile management: domain services
-
-#### Role-Based Access Control
-
-- **Admin**: Editor + Promote/Demote User
-- **Editor**: Contributor + Update/Delete Resources
-- **Contributor (user)**: Viewer + Create Resources
-- **Viewer (no registration)**: Read-Only
-
-#### Authentication
-
-- JWT Authentication
-- OAuth2 Integration
-
-#### API Protection
-
-- Rate Limiting
-
-### Deployment
-
-- CI/CD pipeline setup
-- Dockerize the application
-- Deploy to a cloud provider
-- Kubernetes deployment
-
-### Caching
-
-- Use Redis for caching instead of in-memory caching
-      
 ---
 
 ## 📄 License

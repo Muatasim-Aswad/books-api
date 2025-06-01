@@ -12,12 +12,14 @@ import com.asim.authentication.core.model.mapper.UserPublicMapper;
 import com.asim.authentication.core.repository.UserRepository;
 import com.asim.authentication.infrastructure.grpc.GrpcClientService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -42,7 +44,9 @@ public class UserServiceImpl implements UserService {
 
         // send to business service via gRPC
         var userInternal = userInternalMapper.toDto(user);
-        grpcClientService.sendUserCreated(userInternal);
+        var isDone = grpcClientService.sendUserCreated(userInternal);
+
+        log.info("User registration is done: {}", isDone);
 
         return userPublicMapper.toDto(user);
     }

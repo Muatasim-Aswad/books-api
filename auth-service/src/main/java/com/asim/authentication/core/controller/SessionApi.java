@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,10 @@ import org.springframework.security.core.Authentication;
 @Tag(name = "Authentication", description = "Authentication and session management endpoints")
 public interface SessionApi {
 
-    @Operation(summary = "Login a user", description = "Authenticates user credentials and returns access and refresh tokens")
+    @Operation(
+            summary = "Login a user",
+            description = "Authenticates user credentials and returns access & refresh tokens"
+    )
     @ApiResponse(responseCode = "200", description = "Successfully authenticated",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     @ApiResponse(responseCode = "401", description = "Invalid credentials")
@@ -36,14 +40,21 @@ public interface SessionApi {
                         )
                         UserInput userInput);
 
-    @Operation(summary = "Refresh tokens", description = "Generate new access token using a valid refresh token")
+    @Operation(
+            summary = "Refresh tokens",
+            description = "Generate new access token using a valid refresh token"
+    )
     @ApiResponse(responseCode = "200", description = "Successfully refreshed tokens",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
     TokenResponse refresh(@Valid RefreshToken request);
 
-    @Operation(summary = "Logout user", description = "Invalidates the current user session")
+    @Operation(
+            summary = "Logout user",
+            description = "Invalidates the current user session",
+            security = { @SecurityRequirement(name = "bearerAuth") }
+    )
     @ApiResponse(responseCode = "204", description = "Successfully logged out")
     @ApiResponse(responseCode = "401", description = "Unauthorized")
-    void logout(@Valid RefreshToken request);
+    void logout();
 }

@@ -43,10 +43,10 @@ public class AuthorController implements AuthorApi {
 
     @GetMapping
     public Page<AuthorDto> getAuthors(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String[] sort,
-            @RequestParam(required = false) String name) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "sort", required = false) String[] sort,
+            @RequestParam(name = "name", required = false) String name) {
 
         Sort sortObj = sortUtils.createObject(sort, AuthorDto.class);
         Pageable pageable = PageRequest.of(page, size, sortObj);

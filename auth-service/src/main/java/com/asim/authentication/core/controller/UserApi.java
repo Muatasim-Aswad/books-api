@@ -22,7 +22,10 @@ import org.springframework.validation.annotation.Validated;
 @Tag(name = "Users", description = "User management endpoints")
 public interface UserApi {
 
-    @Operation(summary = "Register a new user", description = "Creates a new user account")
+    @Operation(
+            summary = "Register a new user",
+            description = "Creates a new user account"
+    )
     @UserCreatedApiResponse
     @ValidationFailureApiResponse
     @DuplicateResourceApiResponse
@@ -46,6 +49,7 @@ public interface UserApi {
         summary = "Change user password", 
         description = "Updates the password for the authenticated user",
         security = { @SecurityRequirement(name = "bearerAuth") }
+
     )
     @PasswordUpdatedApiResponse
     @UnauthorizedApiResponse
@@ -70,6 +74,7 @@ public interface UserApi {
         summary = "Delete user account", 
         description = "Permanently removes the user account",
         security = { @SecurityRequirement(name = "bearerAuth") }
+
     )
     @UserDeletedApiResponse
     @UnauthorizedApiResponse

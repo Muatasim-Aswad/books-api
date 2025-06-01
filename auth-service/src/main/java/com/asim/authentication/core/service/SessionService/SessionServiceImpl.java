@@ -8,15 +8,20 @@ import com.asim.authentication.core.model.mapper.UserInternalMapper;
 import com.asim.authentication.core.model.mapper.UserPublicMapper;
 import com.asim.authentication.core.repository.UserRepository;
 import com.asim.authentication.infrastructure.grpc.GrpcClientService;
+import com.asim.authentication.infrastructure.security.JwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
@@ -57,10 +62,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public void logout(String refreshToken) {
-
-            // Get the sessionId from the refresh token
-            String sessionId = jwtTools.getSessionId(refreshToken, "refresh");
+    public void logout() {
+            var sessionId = getSessionId();
 
             // Add to invalidated sessions cache
             Cache cache = cacheManager.getCache("invalidSessions");
@@ -68,8 +71,10 @@ public class SessionServiceImpl implements SessionService {
                 cache.put(sessionId, true);
             }
 
-            // send to business service via gRPC
-            grpcClientService.blockSession(sessionId);
+            // send the sessionId to business service via gRPC
+            var isDone = grpcClientService.blockSession(sessionId);
+
+            log.info("Session invalidation is done: {}", isDone);
     }
 
     private TokenResponse generateTokensById(Long userId, String refreshToken) {
@@ -87,5 +92,14 @@ public class SessionServiceImpl implements SessionService {
                 .tokenType("Bearer")
                 .expiresInSeconds(accessJwtExpiration / 1000)
                 .build();
+    }
+
+    private String getSessionId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof JwtAuthenticationToken jwtAuth) {
+            return jwtAuth.getSessionId();
+        }
+
+        throw new UnauthorizedException("User not authenticated or session ID not available");
     }
 }

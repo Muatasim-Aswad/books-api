@@ -20,7 +20,6 @@ public class OpenApiConfig {
                         .title("Authentication API")
                         .version("v1")
                         .description("Authentication service API documentation"))
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
                                 new SecurityScheme()
