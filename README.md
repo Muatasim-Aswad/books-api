@@ -12,7 +12,8 @@
 
 A modular Java backend platform for managing books, authors, and user authentication, built with Spring Boot, gRPC, and PostgreSQL. The project demonstrates modern backend practices, clean architecture, and microservice design.
 
-> **Note:** This repository is under active development. Some features may be incomplete or subject to change.
+> [!NOTE]
+> This repository is under active development. Some features may be incomplete or subject to change.
 
 ---
 
