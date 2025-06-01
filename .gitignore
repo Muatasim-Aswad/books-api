@@ -32,9 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 /application.log
-*.log
-*.log.*.gz
 
 ### OS ###
 .DS_Store
 **/.DS_Store
+
+logs/**
+*.log
+*.log.*
+**/logs/**
