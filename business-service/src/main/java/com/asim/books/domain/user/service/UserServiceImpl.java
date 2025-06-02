@@ -5,7 +5,6 @@ import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.common.exception.OptimisticLockException;
 import com.asim.books.common.model.mapper.EntityDtoMapper;
 import com.asim.books.domain.user.model.dto.UserCreateDto;
-import com.asim.books.domain.user.model.dto.UserNameUpdateDto;
 import com.asim.books.domain.user.model.dto.UserRoleUpdateDto;
 import com.asim.books.domain.user.model.dto.UserViewDto;
 import com.asim.books.domain.user.model.entity.Role;
@@ -14,7 +13,6 @@ import com.asim.books.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -49,26 +47,6 @@ public class UserServiceImpl implements UserService {
         user.setName(userCreateDto.getName());
         user.setRole(Role.EDITOR); // Default role
 
-        user = userRepository.save(user);
-        entityManager.flush();
-        
-        return userMapper.toDto(user);
-    }
-
-    @Override
-    @Transactional
-    @CachePut(value = "users", key = "#userId")
-    public UserViewDto updateUserName(Long userId, UserNameUpdateDto userNameUpdateDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
-        
-        // Check version for optimistic locking
-        if (!user.getVersion().equals(userNameUpdateDto.getVersion())) {
-            throw new OptimisticLockException("User has been modified by another request. Current version: " 
-                    + user.getVersion() + ", provided version: " + userNameUpdateDto.getVersion());
-        }
-        
-        user.setName(userNameUpdateDto.getName());
         user = userRepository.save(user);
         entityManager.flush();
         

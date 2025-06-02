@@ -4,7 +4,6 @@ import com.asim.books.common.exception.DuplicateResourceException;
 import com.asim.books.common.exception.ResourceNotFoundException;
 import com.asim.books.common.exception.OptimisticLockException;
 import com.asim.books.domain.user.model.dto.UserCreateDto;
-import com.asim.books.domain.user.model.dto.UserNameUpdateDto;
 import com.asim.books.domain.user.model.dto.UserRoleUpdateDto;
 import com.asim.books.domain.user.model.dto.UserViewDto;
 
@@ -17,18 +16,6 @@ public interface UserService {
      * @throws DuplicateResourceException if user with the same ID already exists
      */
     UserViewDto createUser(UserCreateDto userCreateDto) throws DuplicateResourceException;
-
-    /**
-     * Updates user's name
-     *
-     * @param userId          User ID
-     * @param userNameUpdateDto User name update data
-     * @return UserViewDto of the updated user
-     * @throws ResourceNotFoundException if user not found
-     * @throws OptimisticLockException   if version mismatch
-     */
-    UserViewDto updateUserName(Long userId, UserNameUpdateDto userNameUpdateDto) 
-            throws ResourceNotFoundException, OptimisticLockException;
 
     /**
      * Updates user's role
