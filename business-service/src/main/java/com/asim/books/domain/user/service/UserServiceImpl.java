@@ -56,9 +56,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @CachePut(value = "users", key = "#userId")
-    public UserViewDto updateUserRole(Long userId, UserRoleUpdateDto userRoleUpdateDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+    public UserViewDto updateUserRole(UserRoleUpdateDto userRoleUpdateDto) {
+        String userName = userRoleUpdateDto.getName();
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userName));
 
         // Check version for optimistic locking
         if (!user.getVersion().equals(userRoleUpdateDto.getVersion())) {

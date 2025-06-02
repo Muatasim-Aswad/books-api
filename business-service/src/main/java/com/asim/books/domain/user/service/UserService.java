@@ -20,13 +20,12 @@ public interface UserService {
     /**
      * Updates user's role
      *
-     * @param userId           User ID
      * @param userRoleUpdateDto User role update data
      * @return UserViewDto of the updated user
      * @throws ResourceNotFoundException if user not found
      * @throws OptimisticLockException   if version mismatch
      */
-    UserViewDto updateUserRole(Long userId, UserRoleUpdateDto userRoleUpdateDto)
+    UserViewDto updateUserRole(UserRoleUpdateDto userRoleUpdateDto)
             throws ResourceNotFoundException, OptimisticLockException;
 
     /**

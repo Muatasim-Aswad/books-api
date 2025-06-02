@@ -1,6 +1,7 @@
 package com.asim.books.domain.user.model.dto;
 
 import com.asim.books.common.annotation.validation.RequiredNumber;
+import com.asim.books.common.annotation.validation.domain.Name;
 import com.asim.books.domain.user.model.entity.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserRoleUpdateDto {
+    @Name
+    private String name;
+
     @NotNull
     private Role role;
 
