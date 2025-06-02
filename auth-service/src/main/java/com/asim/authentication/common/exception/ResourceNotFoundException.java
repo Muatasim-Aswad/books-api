@@ -11,9 +11,8 @@ public class ResourceNotFoundException extends RuntimeException {
      * message: "Author with id '1' not found"
      *
      * @param resourceType The type of the resource that is not found.
-     * @param id           The id of the resource that is not found.
      */
-    public ResourceNotFoundException(String resourceType, Long id) {
-        super(resourceType + " with id '" + id + "' not found");
+    public ResourceNotFoundException(String resourceType) {
+        super(resourceType + " is not found");
     }
 }

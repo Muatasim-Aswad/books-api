@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
         // Check if the user exists
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("User", userId);
+            throw new ResourceNotFoundException("User");
         }
 
         // Delete the user
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
         // get the user from the db
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User"));
 
         // Check if the name is different from the current one
         if (!user.getName().equals(userInput.getName())) {

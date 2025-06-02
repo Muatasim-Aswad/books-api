@@ -1,5 +1,6 @@
 package com.asim.books.infrastructure.grpc;
 
+import com.asim.books.infrastructure.sync.UserSyncServiceImpl;
 import com.asim.grpc.generated.GrpcServiceGrpc;
 import com.asim.grpc.generated.InvalidateToken;
 import com.asim.grpc.generated.NewUser;
@@ -15,13 +16,14 @@ import net.devh.boot.grpc.server.service.GrpcService;
 @Slf4j
 public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase {
 
-    private final UserSyncService userSyncService;
+    private final UserSyncServiceImpl userSyncServiceImpl;
+    private final GrpcUserMapper grpcUserMapper;
 
     @Override
     public void sendUserCreated(NewUser request, StreamObserver<NewUserSynced> responseObserver) {
         log.info("Received user created notification for user ID: {}", request.getId());
 
-        userSyncService.processUserCreation(request);
+        userSyncServiceImpl.processUserCreation(grpcUserMapper.toUserCeateDto((request)));
 
         NewUserSynced response = NewUserSynced.newBuilder()
                 .setSuccess(true)
@@ -36,7 +38,7 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase {
         String sessionId = request.getSessionId();
         log.info("Received request to invalidate token with session ID: {}", sessionId);
 
-        userSyncService.invalidateToken(sessionId);
+        userSyncServiceImpl.invalidateToken(sessionId);
 
         TokenInvalidated response = TokenInvalidated.newBuilder()
                 .setSuccess(true)

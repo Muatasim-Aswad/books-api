@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserFacadeImpl implements UserFacade{
-    UserService userService;
+    private final UserService userService;
 
     @Override
     public UserViewDto createUser(UserCreateDto userCreateDto) throws DuplicateResourceException {

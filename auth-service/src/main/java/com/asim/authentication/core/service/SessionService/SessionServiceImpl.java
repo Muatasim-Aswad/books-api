@@ -56,7 +56,7 @@ public class SessionServiceImpl implements SessionService {
         Long userId = Long.valueOf(claims.get("userId").toString());
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User"));
 
         return generateTokensById(userId, refreshToken);
     }

@@ -29,22 +29,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @CachePut(value = "users", key = "#result.id")
+    @CachePut(value = "users", key = "#result.name")
     public UserViewDto createUser(UserCreateDto userCreateDto) {
+        Long userId = userCreateDto.getId();
+        String userName = userCreateDto.getName();
         // Check if user with same ID already exists
-        if (userCreateDto.getId() != null && userRepository.existsById(userCreateDto.getId())) {
+        if (userId != null && userRepository.existsById(userId)) {
             throw new DuplicateResourceException("User", "id", userCreateDto.getId().toString());
         }
 
         // Check if user with same name already exists
-        if (userRepository.existsByName(userCreateDto.getName())) {
+        if (userRepository.existsByName(userName)) {
             throw new DuplicateResourceException("User", "name", userCreateDto.getName());
         }
 
         // Create and save new user with default role READER
         User user = new User();
-        user.setId(userCreateDto.getId());
-        user.setName(userCreateDto.getName());
+        user.setId(userId);
+        user.setName(userName);
         user.setRole(Role.EDITOR); // Default role
 
         user = userRepository.save(user);
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @CachePut(value = "users", key = "#userId")
+    @CachePut(value = "users", key = "#result.name")
     public UserViewDto updateUserRole(UserRoleUpdateDto userRoleUpdateDto) {
         String userName = userRoleUpdateDto.getName();
         User user = userRepository.findByName(userName)
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "users", key = "#userId")
+    @Cacheable(value = "users", key = "#result.name")
     public UserViewDto getUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
