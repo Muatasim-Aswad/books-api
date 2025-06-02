@@ -3,7 +3,7 @@
 ## Package Organization
 
 - Test packages should mirror the main source structure
-    - Example: `main/java/com.asim.books.author.controller` → `test/java/com.asim.books.author.controller`
+    - Example: `main/java/com.asim.business.author.controller` → `test/java/com.asim.business.author.controller`
 - If needed, sub-packages can be created.
     - Example: `...controller.integration` `...controller.unit` `...controller.util`
 - Any common test java utilities should be placed in the `util` package within `test/java`

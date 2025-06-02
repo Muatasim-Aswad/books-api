@@ -3,7 +3,7 @@ services:
     image: 'postgres:latest'
     environment:
       - 'POSTGRES_DB=auth_db'
-      - 'POSTGRES_PASSWORD=auth_secret'
+      - 'POSTGRES_PASSWORD=pg_auth_password'
       - 'POSTGRES_USER=auth_user'
     ports:
       - '5433:5432'

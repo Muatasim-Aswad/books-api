@@ -8,9 +8,11 @@
 ![gRPC](https://img.shields.io/badge/gRPC-4285F4?style=for-the-badge&logo=grpc&logoColor=white)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?style=for-the-badge&logo=openapi-initiative&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+
 # Books API Platform
 
-A modular Java backend platform for managing books, authors, and user authentication, built with Spring Boot, gRPC, and PostgreSQL. The project demonstrates modern backend practices, clean architecture, and microservice design.
+A modular Java backend platform for managing books, authors, and user authentication, built with Spring Boot, gRPC, and
+PostgreSQL. The project demonstrates modern backend practices, clean architecture, and microservice design.
 
 > [!NOTE]
 > This repository is under active development. Some features may be incomplete or subject to change.
@@ -18,6 +20,7 @@ A modular Java backend platform for managing books, authors, and user authentica
 ---
 
 ## 📑 Table of Contents
+
 - [Tech Stack](#-tech-stack)
 - [Features](#-features)
 - [Getting Started](#-getting-started)
@@ -63,6 +66,7 @@ A modular Java backend platform for managing books, authors, and user authentica
 ## 🛠️ Getting Started
 
 ### Prerequisites
+
 - Java 21 or higher
 - Maven 4.0.0 or higher
 - Docker & Docker Compose
@@ -78,25 +82,29 @@ mvn clean install
 Each service can be run independently. For local development, ensure Docker is running for PostgreSQL/Redis.
 
 #### Start business-service
+
 ```bash
 cd business-service
 mvn spring-boot:run
 ```
 
 #### Start auth-service
+
 ```bash
 cd auth-service
 mvn spring-boot:run
 ```
 
 #### (Optional) Start with Docker Compose
+
 Each service has its own `compose.yaml` for DB dependencies.
 
 ---
 
 ## 🔍 API Documentation
 
-- **REST API**: Available at `http://localhost:8081/swagger-ui` (auth-service) and `http://localhost:8082/swagger-ui` (business-service)
+- **REST API**: Available at `http://localhost:8081/swagger-ui` (auth-service) and `http://localhost:8082/swagger-ui` (
+  business-service)
 - **gRPC API**: See proto files in `grpc-shared/src/main/proto`
 
 ---
@@ -137,12 +145,16 @@ domain/x/
 └── gateway/                         # Enable external local services for internal consumption
 ```
 
-- While business-service is structured feature-wise then technical, auth-service is structured first by technical layer, e.g., `core/controllers/XController.java`. This decision is made according to the service's complexity and requirements.
+- While business-service is structured feature-wise then technical, auth-service is structured first by technical layer,
+  e.g., `core/controllers/XController.java`. This decision is made according to the service's complexity and
+  requirements.
+
 ---
 
 ## 🏗️ Design & Architecture
 
 The system consists of the following main services:
+
 - **auth-service**: Handles authentication, JWT issuance, and user credentials.
 - **business-service**: Manages domain logic, books/authors/userProfiles CRUD, and authorization.
 
@@ -154,10 +166,12 @@ Services communicate internally using gRPC and expose REST API for clients.
 
 ---
 
-- **Separation of Concerns and Minimal Dependencies**: Services whether local or global should have minimal coupling. Any interaction` between services is done through well-defined interfaces.
+- **Separation of Concerns and Minimal Dependencies**: Services whether local or global should have minimal coupling.
+  Any interaction` between services is done through well-defined interfaces.
 - **gRPC for Internal APIs**: Fast, strongly typed communication between services.
 - **REST for External APIs**: Standard HTTP/JSON for client interaction.
-- **JWT Auth**: Stateless authentication, where issuance and refreshing is done by the auth service, while validating access tokens is in the consumer service.
+- **JWT Auth**: Stateless authentication, where issuance and refreshing is done by the auth service, while validating
+  access tokens is in the consumer service.
 - **Role-based Access Control**: Different permissions for users.
 - **Clean Architecture**: Feature-based package structure, clear layering (controller, service, repository, etc).
 
