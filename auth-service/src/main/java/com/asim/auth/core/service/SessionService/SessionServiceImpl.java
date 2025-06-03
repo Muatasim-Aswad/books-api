@@ -7,6 +7,7 @@ import com.asim.auth.core.model.dto.TokenResponse;
 import com.asim.auth.core.model.mapper.UserInternalMapper;
 import com.asim.auth.core.model.mapper.UserPublicMapper;
 import com.asim.auth.core.repository.UserRepository;
+import com.asim.auth.infrastructure.config.CacheConfigs;
 import com.asim.auth.infrastructure.grpc.GrpcClientService;
 import com.asim.auth.infrastructure.security.JwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,8 +34,8 @@ public class SessionServiceImpl implements SessionService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTools jwtTools;
     private final UserInternalMapper userInternalMapper;
-    private final CacheManager cacheManager;
     private final GrpcClientService grpcClientService;
+    private final CacheManager cacheManager;
 
     @Value("${jwt.access.expiry}")
     private long accessJwtExpiration;
@@ -66,10 +69,11 @@ public class SessionServiceImpl implements SessionService {
         var sessionId = getSessionId();
 
         // Add to invalidated sessions cache
-        Cache cache = cacheManager.getCache("invalidSessions");
-        if (cache != null) {
-            cache.put(sessionId, true);
+        Cache cache = cacheManager.getCache(CacheConfigs.INVALID_SESSION);
+        if (cache == null) {
+            throw new IllegalStateException("Cache for invalid sessions is not configured");
         }
+        cache.put(sessionId, true);
 
         // send the sessionId to business service via gRPC
         var isDone = grpcClientService.blockSession(sessionId);
@@ -102,4 +106,5 @@ public class SessionServiceImpl implements SessionService {
 
         throw new UnauthorizedException("User not authenticated or session ID not available");
     }
+
 }

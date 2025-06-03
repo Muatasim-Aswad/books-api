@@ -2,7 +2,7 @@ package com.asim.business.infrastructure.sync;
 
 import com.asim.business.domain.user.facade.UserFacade;
 import com.asim.business.domain.user.model.dto.UserCreateDto;
-import com.asim.business.infrastructure.config.CacheConfig;
+import com.asim.business.infrastructure.config.CacheConfigs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,7 +33,7 @@ public class AuthServiceSyncServiceImpl implements AuthServiceSyncService {
     }
 
     @Override
-    @Cacheable(value = CacheConfig.REDIS_ONE_HOUR_CACHE, key = "#sessionId")
+    @Cacheable(value = CacheConfigs.INVALID_SESSION, key = "#sessionId")
     public boolean invalidateToken(String sessionId) {
         log.info("Invalidating token with session ID: {}", sessionId);
         // The @Cacheable will store the sessionId in the "invalidated sessions" cache

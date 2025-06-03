@@ -1,21 +1,25 @@
 package com.asim.business.common.util;
 
-import com.asim.business.infrastructure.config.CacheConfig;
+import com.asim.business.infrastructure.config.CacheConfigs;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Utility class for reflection operations
- * * Made as a Spring component to enable caching of field names with @Cacheable.
+ * Actual logic is in {@link ReflectionHelper}
+ * This class is a wrapper to provide caching
  */
 @Slf4j
 @Component
+@CacheConfig(cacheNames = CacheConfigs.RUNTIME_MEMORY_CACHE)
+@RequiredArgsConstructor
 public class ReflectionUtils {
+    private final ReflectionHelper reflectionHelper;
     /**
      * Determines if a class is a custom class from the application
      * rather than a Java standard library, primitive, array, or enum.
@@ -23,18 +27,9 @@ public class ReflectionUtils {
      * @param clazz The class to check
      * @return true if the class is a custom application class, false otherwise
      */
-    @Cacheable(value = CacheConfig.RUNTIME_MEMORY_CACHE, key = "'customClass-' + #clazz.name")
+    @Cacheable(key = "'customClass-' + #clazz.name")
     public boolean isCustomClass(Class<?> clazz) {
-        if (clazz == null || clazz.isPrimitive() || clazz.isArray() || clazz.isEnum()) {
-            return false;
-        }
-
-        Package pkg = clazz.getPackage();
-        if (pkg == null) return false;
-
-        String packageName = pkg.getName();
-
-        return packageName.startsWith("com.asim.books");
+       return reflectionHelper.isCustomClass(clazz);
     }
 
 
@@ -45,14 +40,9 @@ public class ReflectionUtils {
      * @param clazz Class to extract fields from
      * @return Array containing the fields
      */
-    @Cacheable(value = CacheConfig.RUNTIME_MEMORY_CACHE, key = "'declaredFields-' + #clazz.name")
+    @Cacheable(key = "'declaredFields-' + #clazz.name")
     public Field[] getDeclaredFields(Class<?> clazz) {
-        try {
-            return clazz.getDeclaredFields();
-        } catch (SecurityException e) {
-            log.error("Security exception while getting fields from class {}: {}", clazz.getName(), e.getMessage());
-            return new Field[0];
-        }
+        return reflectionHelper.getDeclaredFields(clazz);
     }
 
     /**
@@ -63,36 +53,8 @@ public class ReflectionUtils {
      * @param clazz Class to extract field names from
      * @return Set containing the field names
      */
-    @Cacheable(value = CacheConfig.RUNTIME_MEMORY_CACHE, key = "'fieldNames-' + #clazz.name")
+    @Cacheable(key = "'fieldNames-' + #clazz.name")
     public Set<String> getFieldNames(Class<?> clazz) {
-        Set<String> fieldNames = new HashSet<>();
-        populateFieldNames(clazz, "", fieldNames);
-        return fieldNames;
-    }
-
-    /**
-     * Recursively populates a set with field names from the given class
-     *
-     * @param clazz      Class to extract field names from
-     * @param prefix     Prefix to add to the field names
-     * @param fieldNames Set to populate with field names
-     */
-    private void populateFieldNames(Class<?> clazz, String prefix, Set<String> fieldNames) {
-
-        // Get all declared fields from the class
-        Field[] fields = getDeclaredFields(clazz);
-
-        // Add all field names to the set
-        for (Field field : fields) {
-            String fieldName = prefix + field.getName();
-            fieldNames.add(fieldName);
-
-            // For non-primitive, non-JDK types, custom types recursively add nested fields
-            Class<?> fieldType = field.getType();
-            if (isCustomClass(fieldType)) {
-                populateFieldNames(fieldType, fieldName + ".", fieldNames);
-            }
-        }
-
+        return reflectionHelper.getFieldNames(clazz, this);
     }
 }

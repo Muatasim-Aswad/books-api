@@ -23,7 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReflectionHandlerUtilsTest {
 
     @Autowired
-    private ReflectionUtils reflectionUtils;
+    private ReflectionHelper reflectionHelper;
+
+    @Autowired
+    private ReflectionUtils cacheService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -32,8 +35,13 @@ class ReflectionHandlerUtilsTest {
     @Configuration
     static class TestConfig {
         @Bean
-        public ReflectionUtils reflectionUtils() {
-            return new ReflectionUtils();
+        public ReflectionHelper reflectionHelper() {
+            return new ReflectionHelper();
+        }
+
+        @Bean
+        public ReflectionUtils reflectionUtils(ReflectionHelper reflectionHelper) {
+            return new ReflectionUtils(reflectionHelper);
         }
 
         @Bean
@@ -88,7 +96,7 @@ class ReflectionHandlerUtilsTest {
         @DisplayName("should extract all field names from simple class")
         void whenSimpleClass_thenExtractAllFieldNames() {
             // Act
-            Set<String> fieldNames = reflectionUtils.getFieldNames(SimpleClass.class);
+            Set<String> fieldNames = reflectionHelper.getFieldNames(SimpleClass.class, cacheService);
 
             // Assert
             assertThat(fieldNames).isNotNull();
@@ -100,7 +108,7 @@ class ReflectionHandlerUtilsTest {
         @DisplayName("should extract all field names from complex class with nested fields")
         void whenComplexClass_thenExtractAllFieldNames() {
             // Act
-            Set<String> fieldNames = reflectionUtils.getFieldNames(ComplexClass.class);
+            Set<String> fieldNames = reflectionHelper.getFieldNames(ComplexClass.class, cacheService);
 
             // Assert
             assertThat(fieldNames).isNotNull();
@@ -114,7 +122,7 @@ class ReflectionHandlerUtilsTest {
         @DisplayName("should handle classes with primitive fields")
         void whenClassWithPrimitiveFields_thenExtractCorrectly() {
             // Act
-            Set<String> fieldNames = reflectionUtils.getFieldNames(PrimitiveClass.class);
+            Set<String> fieldNames = reflectionHelper.getFieldNames(PrimitiveClass.class, cacheService);
 
             // Assert
             assertThat(fieldNames).isNotNull();
@@ -125,7 +133,7 @@ class ReflectionHandlerUtilsTest {
         @DisplayName("should handle classes with array fields")
         void whenClassWithArrayFields_thenExtractCorrectly() {
             // Act
-            Set<String> fieldNames = reflectionUtils.getFieldNames(ArrayClass.class);
+            Set<String> fieldNames = reflectionHelper.getFieldNames(ArrayClass.class, cacheService);
 
             // Assert
             assertThat(fieldNames).isNotNull();
@@ -136,7 +144,7 @@ class ReflectionHandlerUtilsTest {
         @DisplayName("should handle classes with Java standard library fields")
         void whenClassWithJavaLibraryFields_thenExtractCorrectly() {
             // Act
-            Set<String> fieldNames = reflectionUtils.getFieldNames(JavaLibraryClass.class);
+            Set<String> fieldNames = reflectionHelper.getFieldNames(JavaLibraryClass.class, cacheService);
 
             // Assert
             assertThat(fieldNames).isNotNull();
@@ -147,7 +155,7 @@ class ReflectionHandlerUtilsTest {
         @DisplayName("should handle empty classes")
         void whenEmptyClass_thenReturnEmptySet() {
             // Act
-            Set<String> fieldNames = reflectionUtils.getFieldNames(EmptyClass.class);
+            Set<String> fieldNames = reflectionHelper.getFieldNames(EmptyClass.class, cacheService);
 
             // Assert
             assertThat(fieldNames).isNotNull();
@@ -166,10 +174,10 @@ class ReflectionHandlerUtilsTest {
             String cacheName = "fieldNames";
 
             // First call should populate cache
-            reflectionUtils.getFieldNames(ComplexClass.class);
+            reflectionHelper.getFieldNames(ComplexClass.class, cacheService);
 
             // Act - Second call should use cache
-            reflectionUtils.getFieldNames(ComplexClass.class);
+            reflectionHelper.getFieldNames(ComplexClass.class, cacheService);
 
             // Assert
             assertThat(cacheManager.getCache(cacheName)).isNotNull();

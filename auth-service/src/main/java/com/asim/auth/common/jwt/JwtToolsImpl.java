@@ -1,6 +1,7 @@
 package com.asim.auth.common.jwt;
 
 import com.asim.auth.common.exception.UnauthorizedException;
+import com.asim.auth.infrastructure.config.CacheConfigs;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -74,7 +75,7 @@ public class JwtToolsImpl implements JwtTools {
 
             // Check if session has been invalidated
             String sessionId = claims.get("sessionId").toString();
-            Cache cache = cacheManager.getCache("invalidSessions");
+            Cache cache = cacheManager.getCache(CacheConfigs.INVALID_SESSION);
             if (cache != null && cache.get(sessionId) != null) {
                 throw new UnauthorizedException("Session has been invalidated");
             }

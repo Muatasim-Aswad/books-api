@@ -10,8 +10,10 @@ import com.asim.business.domain.book.gateway.AuthorGateway;
 import com.asim.business.domain.book.model.dto.BookDto;
 import com.asim.business.domain.book.model.entity.Book;
 import com.asim.business.domain.book.repository.BookRepository;
+import com.asim.business.infrastructure.config.CacheConfigs;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,6 +34,7 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConfigs.BOOKS)
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final EntityDtoMapper<Book, BookDto> bookMapper;
@@ -43,7 +46,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    @CachePut(value = "books", key = "#result.id")
+    @CachePut(key = "#result.id")
     public BookDto addBook(BookDto bookDto) {
 
         AuthorDto author = validateAuthor(bookDto.getAuthor());
@@ -65,7 +68,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Cacheable(value = "books", key = "#id")
+    @Cacheable(key = "#id")
     public BookDto getBook(Long id) {
 
         Book book = bookRepository.findById(id)
@@ -79,7 +82,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    @CachePut(value = "books", key = "#id")
+    @CachePut(key = "#id")
     public BookDto updateBook(Long id, BookDto update) {
 
         Book book = bookRepository.findById(id)
@@ -109,7 +112,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @CacheEvict(value = "books", key = "#id")
+    @CacheEvict(key = "#id")
     public void deleteBook(Long id) {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book", id);

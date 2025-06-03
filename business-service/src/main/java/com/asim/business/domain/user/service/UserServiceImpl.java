@@ -10,9 +10,11 @@ import com.asim.business.domain.user.model.dto.UserViewDto;
 import com.asim.business.domain.user.model.entity.Role;
 import com.asim.business.domain.user.model.entity.User;
 import com.asim.business.domain.user.repository.UserRepository;
+import com.asim.business.infrastructure.config.CacheConfigs;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConfigs.USERS)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @CachePut(value = "users", key = "#result.name")
+    @CachePut(key = "#result.name")
     public UserViewDto createUser(UserCreateDto userCreateDto) {
         Long userId = userCreateDto.getId();
         String userName = userCreateDto.getName();
@@ -57,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @CachePut(value = "users", key = "#result.name")
+    @CachePut(key = "#result.name")
     public UserViewDto updateUserRole(UserRoleUpdateDto userRoleUpdateDto) {
         String userName = userRoleUpdateDto.getName();
         User user = userRepository.findByName(userName)
@@ -77,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "users", key = "#result.name")
+    @Cacheable(key = "#result.name")
     public UserViewDto getUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));

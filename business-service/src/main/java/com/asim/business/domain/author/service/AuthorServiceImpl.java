@@ -8,10 +8,11 @@ import com.asim.business.common.model.mapper.EntityDtoMapper;
 import com.asim.business.domain.author.model.dto.AuthorDto;
 import com.asim.business.domain.author.model.entity.Author;
 import com.asim.business.domain.author.repository.AuthorRepository;
-import com.asim.business.infrastructure.config.CacheConfig;
+import com.asim.business.infrastructure.config.CacheConfigs;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConfigs.AUTHORS)
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -34,8 +36,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    @CachePut(value = CacheConfig.REDIS_ONE_DAY_CACHE
-            , key = "'author' + #result.id")
+    @CachePut(key = "#result.id")
     public AuthorDto addAuthor(AuthorDto authorDto) {
         //Check if already exists.
         if (authorRepository.existsByNameAndAge(authorDto.getName(), authorDto.getAge())) {
@@ -50,8 +51,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    @Cacheable(value = CacheConfig.REDIS_ONE_DAY_CACHE
-            , key = "'author' + #id")
+    @Cacheable(key = "#id")
     public AuthorDto getAuthor(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
@@ -61,8 +61,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    @CachePut(value = CacheConfig.REDIS_ONE_DAY_CACHE
-            , key = "'author' + #id")
+    @CachePut(key = "#id")
     public AuthorDto updateAuthor(Long id, AuthorDto update) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", id));
@@ -83,8 +82,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    @CacheEvict(value = CacheConfig.REDIS_ONE_DAY_CACHE
-            , key = "'author' + #id")
+    @CacheEvict(key = "#id")
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Author", id);
