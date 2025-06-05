@@ -39,20 +39,19 @@ public class JwtToolsImpl implements JwtTools {
     private long refreshJwtExpiration;
 
     @Override
-    public String generateToken(Long userId, String type, String sessionId) {
-        if (type == null || userId == null || (sessionId == null && type.equals("access"))) {
-            throw new IllegalArgumentException("User ID, token type, and session ID (for access tokens) must not be null");
+    public String generateToken(Long userId, String sessionId, String type) {
+        if (type == null || userId == null || sessionId == null) {
+            throw new IllegalArgumentException("User ID, session ID, and token type must not be null");
         }
 
         String secret = type.equals("access") ? accessJwtSecret : refreshJwtSecret;
         long expiryMs = type.equals("access") ? accessJwtExpiration : refreshJwtExpiration;
-        String session = sessionId != null ? sessionId : UUID.randomUUID().toString();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("type", type);
         claims.put("jti", UUID.randomUUID().toString()); // JWT ID for uniqueness
-        claims.put("sessionId", session); // Session ID for tracking
+        claims.put("sessionId", sessionId); // Session ID for tracking
 
 
         Date now = new Date();
@@ -64,7 +63,7 @@ public class JwtToolsImpl implements JwtTools {
                 .claims(claims)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(key)
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -73,7 +72,7 @@ public class JwtToolsImpl implements JwtTools {
         try {
             Map<String, Object> claims = parseToken(token, type);
 
-            // Check if session has been invalidated
+            // Check if the session has been invalidated
             String sessionId = claims.get("sessionId").toString();
             Cache cache = cacheManager.getCache(CacheConfigs.INVALID_SESSION);
             if (cache != null && cache.get(sessionId) != null) {
@@ -116,11 +115,5 @@ public class JwtToolsImpl implements JwtTools {
         }
 
         return new HashMap<>(claims);
-    }
-
-    @Override
-    public String getSessionId(String token, String type) {
-        Map<String, Object> claims = parseToken(token, type);
-        return claims.get("sessionId").toString();
     }
 }

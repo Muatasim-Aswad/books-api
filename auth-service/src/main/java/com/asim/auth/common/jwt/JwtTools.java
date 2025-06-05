@@ -9,12 +9,12 @@ public interface JwtTools {
     /**
      * Generates a JWT token with the given claims
      *
-     * @param id        The user ID to include in the token
+     * @param userId        The user ID to include in the token
      * @param type      The type of token (e.g., "access" or "refresh")
      * @param sessionId The session ID to include in the token (required for access tokens)
      * @return The generated JWT token string
      */
-    String generateToken(Long id, String type, String sessionId);
+    String generateToken(Long userId, String sessionId, String type);
 
     /**
      * Validates if a token is valid and not expired
@@ -34,6 +34,4 @@ public interface JwtTools {
      * @return Map of all claims in the token
      */
     Map<String, Object> parseToken(String token, String type);
-
-    String getSessionId(String token, String type);
 }

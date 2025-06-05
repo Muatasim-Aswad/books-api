@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -49,7 +50,10 @@ public class SessionServiceImpl implements SessionService {
             throw new UnauthorizedException("Wrong password");
         }
 
-        return generateTokensById(user.getId(), null);
+        Long userId = user.getId();
+        String sessionId = UUID.randomUUID().toString();
+
+        return generateTokensById(userId, sessionId, null);
     }
 
     @Override
@@ -57,11 +61,12 @@ public class SessionServiceImpl implements SessionService {
         Map<String, Object> claims = jwtTools.validateAndParseToken(refreshToken, "refresh");
 
         Long userId = Long.valueOf(claims.get("userId").toString());
+        String sessionId = String.valueOf(claims.get("sessionId"));
 
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User"));
 
-        return generateTokensById(userId, refreshToken);
+        return generateTokensById(userId, sessionId, refreshToken);
     }
 
     @Override
@@ -81,14 +86,12 @@ public class SessionServiceImpl implements SessionService {
         log.info("Session invalidation is done: {}", isDone);
     }
 
-    private TokenResponse generateTokensById(Long userId, String refreshToken) {
+    private TokenResponse generateTokensById(Long userId, String sessionId ,String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
-            refreshToken = jwtTools.generateToken(userId, "refresh", null);
+            refreshToken = jwtTools.generateToken(userId, sessionId, "refresh");
         }
 
-        String sessionId = jwtTools.getSessionId(refreshToken, "refresh");
-
-        String accessToken = jwtTools.generateToken(userId, "access", sessionId);
+        String accessToken = jwtTools.generateToken(userId, sessionId, "access");
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
