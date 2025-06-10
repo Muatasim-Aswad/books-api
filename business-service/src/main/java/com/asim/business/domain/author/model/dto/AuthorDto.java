@@ -43,9 +43,9 @@ public class AuthorDto implements ContradictionCheckable<AuthorDto> {
     @ReadOnly
     private ZonedDateTime updatedAt;
     @ReadOnly
-    private Long createdBy;
+    private String createdBy;
     @ReadOnly
-    private Long lastModifiedBy;
+    private String lastModifiedBy;
 
     @ReadOnly(groups = {OnCreate.class})
     private Integer version;

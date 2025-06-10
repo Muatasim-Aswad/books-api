@@ -23,9 +23,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 public abstract class Auditable extends TimeAuditable {
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false)
-    private Long createdBy;
+    private String createdBy;
 
     @LastModifiedBy
-    @Column(name = "last_modified_by")
-    private Long lastModifiedBy;
+    @Column(name = "last_modified_by", nullable = false)
+    private String lastModifiedBy;
 }

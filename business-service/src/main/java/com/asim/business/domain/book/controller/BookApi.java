@@ -16,6 +16,7 @@ import com.asim.business.domain.book.controller.annotation.springdoc.param.BookT
 import com.asim.business.domain.book.model.dto.BookDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,10 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public interface BookApi {
 
-    @Operation(summary = "Create a new book", description = "Creates a book. Author can be created, or selected from existing authors by ID.")
+    @Operation(
+            summary = "Create a new book",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
     @BookCreatedApiResponse
     @DuplicateResourceApiResponse
     @ForbiddenOperationApiResponse
@@ -41,13 +45,11 @@ public interface BookApi {
                     BookDto book);
 
 
-    @Operation(summary = "Get a book")
-    @BookRetrievedApiResponse
-    @ResourceNotFoundApiResponse
-    BookDto getBook(@ValidID @IdParam Long id);
-
-
-    @Operation(summary = "Update a book")
+    @Operation(
+            summary = "Update a book",
+            description = "Updates a book by its ID. The ID must be a valid positive number. Only fields that are not auto-generated can be updated.",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
     @BookUpdatedApiResponse
     @ResourceNotFoundApiResponse
     @ForbiddenOperationApiResponse
@@ -56,13 +58,30 @@ public interface BookApi {
                        BookDto book);
 
 
-    @Operation(summary = "Delete a book")
+    @Operation(
+            summary = "Delete a book",
+            description = "Deletes a book by its ID. The ID must be a valid positive number.",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
     @ResourceDeletedApiResponse
     @ResourceNotFoundApiResponse
     void deleteBook(@ValidID @IdParam Long id);
 
 
-    @Operation(summary = "Get all books with pagination, sorting and filtering")
+
+    @Operation(
+            summary = "Get a book",
+            description = "Retrieves a book by its ID. The ID must be a valid positive number."
+    )
+    @BookRetrievedApiResponse
+    @ResourceNotFoundApiResponse
+    BookDto getBook(@ValidID @IdParam Long id);
+
+
+    @Operation(
+            summary = "Get all books with pagination, sorting and filtering",
+            description = "Retrieves a paginated list of books. Supports sorting and filtering by title and author name."
+    )
     @ResourcesRetrievedApiResponse
     Page<BookDto> getBooks(
             @PageNumberQuery int page,

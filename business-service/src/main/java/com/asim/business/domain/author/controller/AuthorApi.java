@@ -14,6 +14,7 @@ import com.asim.business.domain.author.controller.annotation.springdoc.param.Aut
 import com.asim.business.domain.author.model.dto.AuthorDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -30,20 +31,20 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public interface AuthorApi {
 
-    @Operation(summary = "Create a new author")
+    @Operation(
+            summary = "Create a new author",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
     @AuthorCreatedApiResponse
     @DuplicateResourceApiResponse
     AuthorDto addAuthor(@Validated(AuthorDto.OnCreate.class) @RequestBody(description = "Author details, excluding auto-generated fields", required = true)
                         AuthorDto author);
 
 
-    @Operation(summary = "Get an author")
-    @AuthorRetrievedApiResponse
-    @ResourceNotFoundApiResponse
-    AuthorDto getAuthor(@ValidID @IdParam Long id);
-
-
-    @Operation(summary = "Update an author")
+    @Operation(
+            summary = "Update an author",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
     @AuthorUpdatedApiResponse
     @ResourceNotFoundApiResponse
     AuthorDto updateAuthor(@ValidID @IdParam Long id,
@@ -51,10 +52,19 @@ public interface AuthorApi {
                            AuthorDto author);
 
 
-    @Operation(summary = "Delete an author")
+    @Operation(
+            summary = "Delete an author",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
     @ResourceDeletedApiResponse
     @ResourceNotFoundApiResponse
     void deleteAuthor(@ValidID @IdParam Long id);
+
+
+    @Operation(summary = "Get an author")
+    @AuthorRetrievedApiResponse
+    @ResourceNotFoundApiResponse
+    AuthorDto getAuthor(@ValidID @IdParam Long id);
 
 
     @Operation(summary = "Get all authors with pagination, sorting and filtering")
