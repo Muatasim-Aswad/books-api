@@ -14,6 +14,8 @@ import com.asim.business.infrastructure.config.CacheConfigs;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,10 +31,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EntityDtoMapper<User, UserViewDto> userMapper;
     private final EntityManager entityManager;
+    private final CacheManager cacheManager;
 
     @Override
     @Transactional
-    @CachePut(key = "#result.name")
+    @CachePut(key = "#userCreateDto.id")
     public UserViewDto createUser(UserCreateDto userCreateDto) {
         Long userId = userCreateDto.getId();
         String userName = userCreateDto.getName();
@@ -60,7 +63,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @CachePut(key = "#result.name")
     public UserViewDto updateUserRole(UserRoleUpdateDto userRoleUpdateDto) {
         String userName = userRoleUpdateDto.getName();
         User user = userRepository.findByName(userName)
@@ -76,7 +78,14 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         entityManager.flush();
 
-        return userMapper.toDto(user);
+        var result = userMapper.toDto(user);
+
+        Cache cache = cacheManager.getCache(CacheConfigs.USERS);
+        if (cache != null) {
+            cache.put(user.getId(), result);
+        }
+
+        return result;
     }
 
     @Override
