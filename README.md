@@ -81,6 +81,13 @@ mvn clean install
 
 Each service can be run independently. For local development, ensure Docker is running for PostgreSQL/Redis.
 
+#### Start auth-service
+
+```bash
+cd auth-service
+mvn spring-boot:run
+```
+
 #### Start business-service
 
 ```bash
@@ -88,11 +95,11 @@ cd business-service
 mvn spring-boot:run
 ```
 
-#### Start auth-service
-
+#### Additional
+To complete setting up the `admin` role in the database, run the following script:
 ```bash
-cd auth-service
-mvn spring-boot:run
+chmod +x update_admin_role.sh
+./update_admin_role.sh
 ```
 
 #### (Optional) Start with Docker Compose

@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setId(userId);
         user.setName(userName);
-        user.setRole(Role.EDITOR); // Default role
+        user.setRole(Role.CONTRIBUTOR); // Default role
 
         user = userRepository.save(user);
         entityManager.flush();

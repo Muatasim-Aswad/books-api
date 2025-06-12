@@ -48,7 +48,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         String errorId = UUID.randomUUID().toString();
 
         // Log the authentication failure with error ID for debugging
-        log.error("Auth error",authException);
         log.error("Responding with unauthorized error. Message - {}, ErrorId - {}",
                 authException.getMessage(), errorId, authException);
 

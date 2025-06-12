@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,23 +37,25 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final List<String> publicEndpoints = List.of(
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final RoleHierarchy roleHierarchy;
+
+    private final List<String> docsEndpoints = List.of(
             "/swagger-ui/**",
             "/api-docs/**"
     );
 
-    private final List<String> publicEndpointsGetters = List.of(
+    private final List<String> resourcesEndpoints = List.of(
             "/api/v1/authors/*",
             "/api/v1/books/*",
             "/api/v1/authors",
             "/api/v1/books"
     );
 
-    // Custom filter for JWT token processing
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    // Custom handler for authentication failures
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final List<String> adminEndpoints = List.of(
+            "/api/v1/users/role"
+    );
 
     // Configuration properties for security settings
 
@@ -81,15 +85,24 @@ public class SecurityConfig {
 
                 // Configure authorization rules for different endpoints
                 .authorizeHttpRequests(auth -> {
-                    // Allow access to totally public endpoints
-                    publicEndpoints.forEach(path ->
+                    // Manage access
+                    docsEndpoints.forEach(path ->
                             auth.requestMatchers(path).permitAll());
 
-                    // Allow access to public GET endpoints
-                    publicEndpointsGetters.forEach(path ->
-                            auth.requestMatchers(HttpMethod.GET, path).permitAll());
-                    // Require authentication for all other endpoints
-                    auth.anyRequest().authenticated();
+                    resourcesEndpoints.forEach(path ->
+                            auth.requestMatchers(HttpMethod.GET, path).permitAll()
+                                .requestMatchers(HttpMethod.POST, path).hasRole("CONTRIBUTOR")
+                                .requestMatchers(HttpMethod.PUT, path).hasRole("EDITOR")
+                                .requestMatchers(HttpMethod.PATCH, path).hasRole("EDITOR")
+                                .requestMatchers(HttpMethod.DELETE, path).hasRole("EDITOR")
+                    );
+
+                    adminEndpoints.forEach(path ->
+                            auth.requestMatchers(HttpMethod.POST, path).hasRole("ADMIN"));
+
+                    // Guard for all other endpoints
+                    // This ensures that any request not explicitly allowed above requires admin privileges
+                    auth.anyRequest().hasRole("ADMIN");
                 })
 
                 // Add custom JWT filter before the standard username/password filter
@@ -97,6 +110,14 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+    @Bean
+    public DefaultMethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy);
+        return expressionHandler;
+    }
+
 
     /**
      * Configures Cross-Origin Resource Sharing (CORS) settings.

@@ -1,6 +1,7 @@
 
 package com.asim.business.infrastructure.security;
 
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -17,6 +18,7 @@ import java.util.Collection;
  * - Supports Spring Security's authority/role system
  * - Automatically marks the token as authenticated upon creation
  */
+@Getter
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     // The authenticated user's identifier (typically user ID)
@@ -69,16 +71,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return this.principal;
-    }
-
-    /**
-     * Returns the session ID associated with this authentication.
-     * Used for session management and invalidation tracking.
-     *
-     * @return The session identifier
-     */
-    public String getSessionId() {
-        return this.sessionId;
     }
 
     /**
