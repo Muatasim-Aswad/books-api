@@ -1,6 +1,7 @@
 
 package com.asim.business.infrastructure.config;
 
+import com.asim.business.infrastructure.security.CustomAccessDeniedHandler;
 import com.asim.business.infrastructure.security.CustomAuthenticationEntryPoint;
 import com.asim.business.infrastructure.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final RoleHierarchy roleHierarchy;
 
     private final List<String> docsEndpoints = List.of(
@@ -81,7 +83,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // Configure custom authentication error handling
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler))
 
                 // Configure authorization rules for different endpoints
                 .authorizeHttpRequests(auth -> {
