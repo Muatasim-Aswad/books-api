@@ -1,8 +1,6 @@
 package com.asim.business.infrastructure.security;
 
-import com.asim.business.common.exception.UnauthorizedException;
 import com.asim.business.domain.user.service.UserService;
-import com.asim.business.domain.user.model.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final Jwt jwt;
+    private final JwtTools jwtTools;
     private final UserService userService;
 
     @Override
@@ -39,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwtToken = extractJwtFromRequest(request);
 
         if (jwtToken != null && !jwtToken.isEmpty()) {
-            Map<String, Object> claims = jwt.validateAndParseToken(jwtToken);
+            Map<String, Object> claims = jwtTools.validateAndParseToken(jwtToken);
             Long userId = Long.valueOf(claims.get("userId").toString());
             String sessionId = claims.get("sessionId").toString();
 

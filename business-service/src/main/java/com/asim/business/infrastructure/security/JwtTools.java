@@ -22,14 +22,13 @@ import java.util.Map;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtImpl implements Jwt {
+public class JwtTools {
 
     private final CacheManager cacheManager;
 
     @Value("${jwt.access.secret}")
     private String secret;
 
-    @Override
     public Map<String, Object> validateAndParseToken(String token) {
         try {
             Map<String, Object> claims = parseToken(token);
