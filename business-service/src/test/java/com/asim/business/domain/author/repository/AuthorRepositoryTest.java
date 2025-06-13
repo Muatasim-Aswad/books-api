@@ -32,7 +32,7 @@ class AuthorRepositoryTest {
         authorToSave = Author.builder()
                 .name("Test Author")
                 .age(30)
-                .createdBy(1L)
+                .createdBy("testUser")
                 .build();
 
         savedAuthor = authorRepository.save(authorToSave);
@@ -83,7 +83,7 @@ class AuthorRepositoryTest {
     void whenUpdatingAuthor_thenVersionIsIncremented() {
         // Arrange
         savedAuthor.setName("Updated Author");
-        savedAuthor.setLastModifiedBy(2L);
+        savedAuthor.setLastModifiedBy("testUser_two");
 
         // Act
         authorRepository.save(savedAuthor);

@@ -40,8 +40,8 @@ public final class AuthorTestFixtures {
                 .age(age)
                 .id(id)
                 .version(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE)
-                .createdBy(CommonTestFixtures.SMALL_NUMBER)
-                .lastModifiedBy(CommonTestFixtures.SMALL_NUMBER)
+                .createdBy(CommonTestFixtures.VALID_USERNAME)
+                .lastModifiedBy(CommonTestFixtures.VALID_USERNAME)
                 .createdAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
                 .updatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
                 .version(0)
@@ -61,8 +61,8 @@ public final class AuthorTestFixtures {
     public static AuthorDto getOneDtoWithAllFields() {
         AuthorDto authorDto = getOneDtoWithId();
         authorDto.setVersion(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE);
-        authorDto.setCreatedBy(CommonTestFixtures.SMALL_NUMBER);
-        authorDto.setLastModifiedBy(CommonTestFixtures.SMALL_NUMBER);
+        authorDto.setCreatedBy(CommonTestFixtures.VALID_USERNAME);
+        authorDto.setLastModifiedBy(CommonTestFixtures.VALID_USERNAME);
         authorDto.setCreatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
         authorDto.setUpdatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
         return authorDto;

@@ -25,6 +25,10 @@ public final class CommonTestFixtures {
     public static final String TAB_CHARACTER = "text\twith\ttabs";
     public static final String NEWLINE_CHARACTER = "text\nwith\nnewlines";
 
+    //Usernames
+    public static final String VALID_USERNAME = "validUser";
+    public static final String VALID_USERNAME_2 = "another-validUser"; // contains space
+
     // Special characters
     public static final String SPECIAL_CHARACTERS = "!@#$%^&*()_+";
     public static final String HTML_TAGS = "<script>alert('XSS')</script>";

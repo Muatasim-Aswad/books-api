@@ -79,7 +79,7 @@ public final class BookTestFixtures {
                 .author(author)
                 .id(id)
                 .version(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE)
-                .createdBy(CommonTestFixtures.SMALL_NUMBER)
+                .createdBy(CommonTestFixtures.VALID_USERNAME)
                 .createdAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME)
                 .build();
     }
@@ -100,9 +100,9 @@ public final class BookTestFixtures {
 
         bookDto.setId(CommonTestFixtures.POSITIVE_NUMBER);
         bookDto.setVersion(CommonTestFixtures.INTEGER_BOUNDARY_POSITIVE);
-        bookDto.setCreatedBy(CommonTestFixtures.SMALL_NUMBER);
+        bookDto.setCreatedBy(CommonTestFixtures.VALID_USERNAME);
         bookDto.setCreatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
-        bookDto.setLastModifiedBy(CommonTestFixtures.SMALL_NUMBER);
+        bookDto.setLastModifiedBy(CommonTestFixtures.VALID_USERNAME);
         bookDto.setUpdatedAt(CommonTestFixtures.PRESENT_ZONED_DATE_TIME);
 
         return bookDto;
