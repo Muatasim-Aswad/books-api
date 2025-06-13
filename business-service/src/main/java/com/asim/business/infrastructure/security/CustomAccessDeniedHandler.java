@@ -61,10 +61,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         // Set HTTP status to 403 Forbidden
         response.setStatus(status);
-        // Create a structured error response body
-        Map<String, Object> body = new HashMap<>();
-        body.put("status", status);
-        body.put("message", message);
 
         // Write the JSON error response to the output stream
         objectMapper.writeValue(response.getOutputStream(), new ErrorResponse(status, message));
