@@ -15,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -86,7 +84,7 @@ public class SessionServiceImpl implements SessionService {
         log.info("Session invalidation is done: {}", isDone);
     }
 
-    private TokenResponse generateTokensById(Long userId, String sessionId ,String refreshToken) {
+    private TokenResponse generateTokensById(Long userId, String sessionId, String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
             refreshToken = jwtTools.generateToken(userId, sessionId, "refresh");
         }

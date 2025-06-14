@@ -1,4 +1,3 @@
-
 package com.asim.business.infrastructure.security;
 
 import lombok.Getter;
@@ -11,7 +10,7 @@ import java.util.Collection;
  * Custom Spring Security Authentication token for JWT-based authentication.
  * This class extends AbstractAuthenticationToken to represent an authenticated user
  * in the Spring Security context.
- *
+ * <p>
  * Key features:
  * - Stores user ID as the principal
  * - Stores session ID for session management
@@ -23,12 +22,10 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     // The authenticated user's identifier (typically user ID)
     private final Object principal;
-
-    // User credentials (typically null for JWT tokens as they're stateless)
-    private Object credentials;
-
     // Session identifier for tracking user sessions
     private final String sessionId;
+    // User credentials (typically null for JWT tokens as they're stateless)
+    private Object credentials;
 
     /**
      * Constructor for creating an authenticated JWT token.

@@ -20,6 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ReflectionUtils {
     private final ReflectionHelper reflectionHelper;
+
     /**
      * Determines if a class is a custom class from the application
      * rather than a Java standard library, primitive, array, or enum.
@@ -29,7 +30,7 @@ public class ReflectionUtils {
      */
     @Cacheable(key = "'customClass-' + #clazz.name")
     public boolean isCustomClass(Class<?> clazz) {
-       return reflectionHelper.isCustomClass(clazz);
+        return reflectionHelper.isCustomClass(clazz);
     }
 
 

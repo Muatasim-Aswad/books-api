@@ -1,4 +1,3 @@
-
 package com.asim.business.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
@@ -12,10 +11,10 @@ public class RoleHierarchyConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         String hierarchy = """
-            ROLE_ADMIN > ROLE_EDITOR
-            ROLE_EDITOR > ROLE_CONTRIBUTOR
-            ROLE_CONTRIBUTOR > ROLE_VIEWER
-            """;
+                ROLE_ADMIN > ROLE_EDITOR
+                ROLE_EDITOR > ROLE_CONTRIBUTOR
+                ROLE_CONTRIBUTOR > ROLE_VIEWER
+                """;
         return RoleHierarchyImpl.fromHierarchy(hierarchy);
     }
 }

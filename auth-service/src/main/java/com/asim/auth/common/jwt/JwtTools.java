@@ -9,7 +9,7 @@ public interface JwtTools {
     /**
      * Generates a JWT token with the given claims
      *
-     * @param userId        The user ID to include in the token
+     * @param userId    The user ID to include in the token
      * @param type      The type of token (e.g., "access" or "refresh")
      * @param sessionId The session ID to include in the token (required for access tokens)
      * @return The generated JWT token string

@@ -68,7 +68,6 @@ public interface BookApi {
     void deleteBook(@ValidID @IdParam Long id);
 
 
-
     @Operation(
             summary = "Get a book",
             description = "Retrieves a book by its ID. The ID must be a valid positive number."

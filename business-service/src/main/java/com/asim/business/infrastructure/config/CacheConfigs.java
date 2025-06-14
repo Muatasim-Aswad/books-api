@@ -25,21 +25,17 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CacheConfigs {
 
-    private final ObjectMapper objectMapper;
-
-    @Value("${jwt.access.expiry}")
-    private long accessJwtExpiration;
-
-    private static final String CACHE_NAME_PREFIX = "business:";
-    private static final Long DEFAULT_EXPIRATION = 7L;// in days
-
     public static final String RUNTIME_MEMORY_CACHE = "runtime";
-
     // Redis cache names
     public static final String INVALID_SESSION = "invalidSession";
     public static final String USERS = "user";
     public static final String AUTHORS = "author";
     public static final String BOOKS = "book";
+    private static final String CACHE_NAME_PREFIX = "business:";
+    private static final Long DEFAULT_EXPIRATION = 7L;// in days
+    private final ObjectMapper objectMapper;
+    @Value("${jwt.access.expiry}")
+    private long accessJwtExpiration;
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {

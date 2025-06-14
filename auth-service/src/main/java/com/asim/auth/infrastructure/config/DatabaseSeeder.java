@@ -1,18 +1,15 @@
 package com.asim.auth.infrastructure.config;
 
 import com.asim.auth.common.exception.DuplicateResourceException;
-import com.asim.auth.core.model.dto.UserPublic;
-import com.asim.auth.core.model.entity.User;
-import com.asim.auth.core.repository.UserRepository;
-import com.asim.auth.core.service.UserService.UserService;
 import com.asim.auth.core.model.dto.UserInput;
+import com.asim.auth.core.model.dto.UserPublic;
+import com.asim.auth.core.service.UserService.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Slf4j
 @Configuration
@@ -26,12 +23,12 @@ public class DatabaseSeeder {
     @Bean
     public CommandLineRunner seedDatabase() {
         return args -> {
-                seedAdminUser();
+            seedAdminUser();
         };
     }
 
     private void seedAdminUser() {
-        if(activeProfile.equals("production") || activeProfile.equals("prod")) {
+        if (activeProfile.equals("production") || activeProfile.equals("prod")) {
             log.info("Skipping default admin user creation in production mode");
             return;
         }

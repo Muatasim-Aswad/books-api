@@ -1,4 +1,3 @@
-
 package com.asim.business.infrastructure.config;
 
 import com.asim.business.infrastructure.security.CustomAccessDeniedHandler;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Spring Security configuration for JWT-based authentication.
  * This configuration sets up a stateless security architecture suitable for REST APIs.
- *
+ * <p>
  * Key features:
  * - JWT-based authentication (stateless)
  * - CORS support for cross-origin requests
@@ -95,10 +94,10 @@ public class SecurityConfig {
 
                     resourcesEndpoints.forEach(path ->
                             auth.requestMatchers(HttpMethod.GET, path).permitAll()
-                                .requestMatchers(HttpMethod.POST, path).hasRole("CONTRIBUTOR")
-                                .requestMatchers(HttpMethod.PUT, path).hasRole("EDITOR")
-                                .requestMatchers(HttpMethod.PATCH, path).hasRole("EDITOR")
-                                .requestMatchers(HttpMethod.DELETE, path).hasRole("EDITOR")
+                                    .requestMatchers(HttpMethod.POST, path).hasRole("CONTRIBUTOR")
+                                    .requestMatchers(HttpMethod.PUT, path).hasRole("EDITOR")
+                                    .requestMatchers(HttpMethod.PATCH, path).hasRole("EDITOR")
+                                    .requestMatchers(HttpMethod.DELETE, path).hasRole("EDITOR")
                     );
 
                     adminEndpoints.forEach(path ->

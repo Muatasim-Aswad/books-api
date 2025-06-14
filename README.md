@@ -96,7 +96,9 @@ mvn spring-boot:run
 ```
 
 #### Additional
+
 To complete setting up the `admin` role in the database, run the following script:
+
 ```bash
 chmod +x update_admin_role.sh
 ./update_admin_role.sh

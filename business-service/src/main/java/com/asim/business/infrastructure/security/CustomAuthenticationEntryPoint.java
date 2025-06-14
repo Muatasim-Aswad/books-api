@@ -12,15 +12,13 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
  * Custom Authentication Entry Point that handles unauthorized access attempts.
  * This component is triggered when a user tries to access a protected resource
  * without proper authentication or with invalid/expired credentials.
- *
+ * <p>
  * Instead of redirecting to a login page (typical for web applications),
  * this entry point returns a JSON error response suitable for REST APIs.
  */
