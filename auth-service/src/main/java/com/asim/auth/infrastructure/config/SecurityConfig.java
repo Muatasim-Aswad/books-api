@@ -1,6 +1,7 @@
 package com.asim.auth.infrastructure.config;
 
-import com.asim.auth.infrastructure.filters.JwtAuthenticationFilter;
+import com.asim.auth.infrastructure.security.CustomAuthenticationEntryPoint;
+import com.asim.auth.infrastructure.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

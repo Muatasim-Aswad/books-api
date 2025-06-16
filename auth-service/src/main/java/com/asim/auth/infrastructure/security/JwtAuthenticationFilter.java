@@ -1,9 +1,8 @@
-package com.asim.auth.infrastructure.filters;
+package com.asim.auth.infrastructure.security;
 
 import com.asim.auth.common.exception.UnauthorizedException;
 import com.asim.auth.common.jwt.JwtTools;
 import com.asim.auth.infrastructure.config.SecurityProperties;
-import com.asim.auth.infrastructure.security.JwtAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
