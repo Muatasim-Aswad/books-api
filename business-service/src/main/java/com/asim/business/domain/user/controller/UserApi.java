@@ -17,6 +17,8 @@ import org.springframework.validation.annotation.Validated;
 @Tag(name = "Users", description = "User management API endpoints")
 @InternalServerErrorApiResponse
 @ValidationFailureApiResponse
+@UnauthorizedApiResponse
+@ForbiddenOperationApiResponse
 @Validated
 public interface UserApi {
 

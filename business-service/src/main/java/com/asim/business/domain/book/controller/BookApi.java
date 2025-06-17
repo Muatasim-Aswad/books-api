@@ -30,6 +30,8 @@ import org.springframework.validation.annotation.Validated;
 @Tag(name = "Books", description = "Book management API endpoints")
 @InternalServerErrorApiResponse
 @ValidationFailureApiResponse
+@UnauthorizedApiResponse
+@ForbiddenOperationApiResponse
 @Validated
 public interface BookApi {
 

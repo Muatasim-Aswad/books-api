@@ -39,6 +39,7 @@ public interface SessionApi {
                         )
                         UserInput userInput);
 
+
     @Operation(
             summary = "Refresh tokens",
             description = "Generate new access token using a valid refresh token"
@@ -47,6 +48,7 @@ public interface SessionApi {
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
     TokenResponse refresh(@Valid RefreshToken request);
+
 
     @Operation(
             summary = "Logout user",

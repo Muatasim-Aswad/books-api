@@ -28,6 +28,8 @@ import org.springframework.validation.annotation.Validated;
 @Tag(name = "Authors", description = "Author management API endpoints")
 @InternalServerErrorApiResponse
 @ValidationFailureApiResponse
+@UnauthorizedApiResponse
+@ForbiddenOperationApiResponse
 @Validated
 public interface AuthorApi {
 
