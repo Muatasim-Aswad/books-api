@@ -52,7 +52,11 @@ PostgreSQL. The project demonstrates modern backend practices, clean architectur
 - gRPC-based internal communication
 - RESTful APIs for external clients
 - JWT-based authentication and session management
-- Role-based access control
+- Role-based access control following RBAC principles::
+  - Viewer/Unauthenticated: Can access public resources (read-only)
+  - Contributor: Can add new resources
+  - Editor: Can add, update, and delete resources
+  - Admin: Can manage permissions by promoting or demoting users
 - CRUD for books and authors with advanced querying (pagination, filtering, nested sorting)
 - Input validation and global exception handling
 - Request/response logging and auditing
