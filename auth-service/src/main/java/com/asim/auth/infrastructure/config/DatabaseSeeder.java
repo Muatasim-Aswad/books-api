@@ -20,21 +20,28 @@ public class DatabaseSeeder {
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
+    @Value("${app.admin.username:}")
+    private String adminUsername;
+
+    @Value("${app.admin.password:}")
+    private String adminPassword;
+
+
+
     @Bean
     public CommandLineRunner seedDatabase() {
-        return args -> {
-            seedAdminUser();
-        };
+        return args -> seedAdminUser();
     }
 
     private void seedAdminUser() {
         if (activeProfile.equals("production") || activeProfile.equals("prod")) {
-            log.info("Skipping default admin user creation in production mode");
-            return;
+            log.warn("Creating admin user in production environment. Be cautious!");
         }
 
-        String adminUsername = "admin";
-        String adminPassword = "adminPassword123!";
+        if (adminUsername.isEmpty() || adminPassword.isEmpty()) {
+            log.warn("Admin username or password not configured, skipping admin user creation.");
+            return;
+        }
 
         try {
             UserInput adminInput = new UserInput();

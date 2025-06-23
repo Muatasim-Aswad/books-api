@@ -105,7 +105,7 @@ To complete setting up the `admin` role in the database, run the following scrip
 
 ```bash
 chmod +x update_admin_role.sh
-./update_admin_role.sh
+APP_ADMIN_USERNAME=admin ./update_admin_role.sh
 ```
 
 #### (Optional) Start with Docker Compose
